@@ -1,0 +1,317 @@
+const INDUSTRY_CRITERIA = {
+    BUSINESS_PROCESS_OUTSOURCING: {
+        required: ["ENGLISH", "FILIPINO", "FOREIGN_LANGUAGE"],  // above average grade
+        preferred: ["COMPUTER", "TLE"],  // average
+        optional: ["ARALING_PANLIPUNAN", "MATH", "SCIENCE", "MAPEH"], // low
+    },
+    AGRICULTURE: {
+        required: ["ARALING_PANLIPUNAN"],
+        preferred: ["MATH", "SCIENCE", "TLE"],
+        optional: ["ENGLISH", "FILIPINO", "COMPUTER", "MAPEH", "FOREIGN_LANGUAGE"],
+    },
+    HEALTHCARE: {
+        required: ["SCIENCE"],
+        preferred: ["MATH", "TLE", "FOREIGN_LANGUAGE"],
+        optional: ["ENGLISH", "FILIPINO", "MAPEH", "ARALING_PANLIPUNAN", "COMPUTER"],
+    },
+    MANUFACTURING: {
+        required: ["TLE"],
+        preferred: ["MATH", "SCIENCE", "COMPUTER", "MAPEH"],
+        optional: ["ENGLISH", "FILIPINO", "FOREIGN_LANGUAGE", "ARALING_PANLIPUNAN"],
+    },
+    CONSTRUCTION: {
+        required: ["MATH", "TLE"],
+        preferred: ["SCIENCE", "COMPUTER"],
+        optional: ["ENGLISH", "FILIPINO", "FOREIGN_LANGUAGE", "MAPEH", "ARALING_PANLIPUNAN"],
+    },
+    FINANCIAL_SERVICES: {
+        required: ["MATH", "ENGLISH"],
+        preferred: ["COMPUTER", "ARALING_PANLIPUNAN"],
+        optional: ["SCIENCE", "FILIPINO", "TLE", "MAPEH", "FOREIGN_LANGUAGE"],
+    },
+    TECHNOLOGY: {
+        required: ["COMPUTER", "SCIENCE", "ENGLISH"],
+        preferred: ["MATH", "TLE"],
+        optional: ["FILIPINO", "FOREIGN_LANGUAGE", "MAPEH", "ARALING_PANLIPUNAN"],
+    },
+    TOURISM: {
+        required: ["ENGLISH", "FILIPINO"],
+        preferred: ["ARALING_PANLIPUNAN", "FOREIGN_LANGUAGE"],
+        optional: ["MATH", "SCIENCE", "TLE", "COMPUTER", "MAPEH"],
+    },
+};
+
+const TRACK_INDUSTRY_MATCH = {
+    STEM: {
+        BUSINESS_PROCESS_OUTSOURCING: 80,
+        AGRICULTURE: 80,
+        HEALTHCARE: 100,
+        MANUFACTURING: 80,
+        CONSTRUCTION: 100,
+        FINANCIAL_SERVICES: 70,
+        TECHNOLOGY: 95,
+        TOURISM: 50,
+    },
+    HUMSS: {
+        BUSINESS_PROCESS_OUTSOURCING: 85,
+        AGRICULTURE: 50,
+        HEALTHCARE: 70,
+        MANUFACTURING: 80,
+        CONSTRUCTION: 50,
+        FINANCIAL_SERVICES: 75,
+        TECHNOLOGY: 65,
+        TOURISM: 90,
+    },
+    ABM: {
+        BUSINESS_PROCESS_OUTSOURCING: 90,
+        AGRICULTURE: 40,
+        HEALTHCARE: 60,
+        MANUFACTURING: 50,
+        CONSTRUCTION: 65,
+        FINANCIAL_SERVICES: 100,
+        TECHNOLOGY: 75,
+        TOURISM: 85,
+    },
+    "HOME ECONOMICS": {
+        BUSINESS_PROCESS_OUTSOURCING: 60,
+        AGRICULTURE: 70,
+        HEALTHCARE: 80,
+        MANUFACTURING: 85,
+        CONSTRUCTION: 75,
+        FINANCIAL_SERVICES: 65,
+        TECHNOLOGY: 55,
+        TOURISM: 95,
+    },
+    ICT: {
+        BUSINESS_PROCESS_OUTSOURCING: 80,
+        AGRICULTURE: 50,
+        HEALTHCARE: 65,
+        MANUFACTURING: 70,
+        CONSTRUCTION: 75,
+        FINANCIAL_SERVICES: 85,
+        TECHNOLOGY: 95,
+        TOURISM: 60,
+    },
+};
+
+const ACADEMIC_STATUS_INDUSTRIES = {
+    "Above Average": {
+        BUSINESS_PROCESS_OUTSOURCING: 70,
+        AGRICULTURE: 60,
+        HEALTHCARE: 85,
+        MANUFACTURING: 70,
+        CONSTRUCTION: 75,
+        FINANCIAL_SERVICES: 90,
+        TECHNOLOGY: 95,
+        TOURISM: 60,
+    },
+    Average: {
+        BUSINESS_PROCESS_OUTSOURCING: 85,
+        AGRICULTURE: 75,
+        HEALTHCARE: 70,
+        MANUFACTURING: 65,
+        CONSTRUCTION: 70,
+        FINANCIAL_SERVICES: 75,
+        TECHNOLOGY: 80,
+        TOURISM: 85,
+    },
+    "Low Average": {
+        BUSINESS_PROCESS_OUTSOURCING: 90,
+        AGRICULTURE: 85,
+        HEALTHCARE: 55,
+        MANUFACTURING: 80,
+        CONSTRUCTION: 85,
+        FINANCIAL_SERVICES: 60,
+        TECHNOLOGY: 65,
+        TOURISM: 95,
+    },
+};
+
+const MEDICAL_RECORDS_INDUSTRIES = {
+    "No History of Illness": {
+        BUSINESS_PROCESS_OUTSOURCING: 100,
+        AGRICULTURE: 100,
+        HEALTHCARE: 100,
+        MANUFACTURING: 100,
+        CONSTRUCTION: 100,
+        FINANCIAL_SERVICES: 100,
+        TECHNOLOGY: 100,
+        TOURISM: 100,
+    },
+    "Has History of Illness": {
+        BUSINESS_PROCESS_OUTSOURCING: 75,
+        AGRICULTURE: 60,
+        HEALTHCARE: 70,
+        MANUFACTURING: 65,
+        CONSTRUCTION: 50,
+        FINANCIAL_SERVICES: 80,
+        TECHNOLOGY: 90,
+        TOURISM: 75,
+    },
+};
+
+// Edit this object to change the weight of each criteria this must be equal to 100
+const recommendationPercentageBasis = {
+    grades: 30, 
+    track: 40, 
+    academicStatus: 20,
+    medicalRecord: 10, 
+}
+
+
+// Grade classification functions
+const isAbove = (grade) => grade >= 85;
+const isAverage = (grade) => grade >= 70 && grade < 85;
+
+// Helper function to calculate industry score
+const calculateIndustryScore = async (grades, criteria) => {
+    let score = 0;
+
+    // Scoring logic
+    for (const subject of criteria.required) {
+        if (isAbove(grades[subject])) score += 2; // High priority
+    }
+
+    for (const subject of criteria.preferred) {
+        if (isAbove(grades[subject])) score += 1.5;
+        else if (isAverage(grades[subject])) score += 1; // Medium priority
+    }
+
+    for (const subject of criteria.optional) {
+        if (isAbove(grades[subject])) score += 1;
+        else if (isAverage(grades[subject])) score += 0.5; // Low priority
+    }
+
+    return score;
+};
+
+async function recommendIndustriesByGrades(grades) {
+    const industryScores = {};
+
+    // Calculate scores for each industry
+    for (const industry of Object.keys(INDUSTRY_CRITERIA)) {
+        industryScores[industry] = await calculateIndustryScore(grades, INDUSTRY_CRITERIA[industry]);
+    }
+
+    // Convert scores to percentages
+    const maxScore = Math.max(...Object.values(industryScores));
+    const industryPercentages = {};
+
+    for (const [industry, score] of Object.entries(industryScores)) {
+        const percentage = ((score / maxScore) * 100);
+        const subjectPercentage = (recommendationPercentageBasis.grades * percentage / 100).toFixed(2);
+        industryPercentages[industry] = parseFloat(subjectPercentage);
+    }
+
+    return industryPercentages;
+}
+
+async function recommendIndustriesByTrack(trackName) {
+    const industries = TRACK_INDUSTRY_MATCH[trackName.toUpperCase()];
+
+    if (!industries) {
+        return { error: `Invalid track name: ${trackName}` };
+    }
+
+    const recommendations = Object.entries(industries).reduce((result, [industry, percentage]) => {
+        const subjectPercentage = (recommendationPercentageBasis.track * percentage / 100).toFixed(2);
+        result[industry] = parseFloat(subjectPercentage);
+        return result;
+    }, {});
+
+    return recommendations;
+}
+
+async function recommendIndustriesByAcademicStatus(status) {
+    const industries = ACADEMIC_STATUS_INDUSTRIES[status];
+
+    if (!industries) {
+        return `Invalid academic status: ${status}`;
+    }
+
+    const industryPercentages = {};
+    for (const [industry, percentage] of Object.entries(industries)) {
+        const trackPercentage = (recommendationPercentageBasis.academicStatus * percentage / 100).toFixed(2);
+        industryPercentages[industry] = parseFloat(trackPercentage);
+    }
+
+    return industryPercentages;
+}
+
+async function recommendIndustriesByMedicalRecord(recordStatus) {
+    const industries = MEDICAL_RECORDS_INDUSTRIES[recordStatus];
+
+    if (!industries) {
+        return `Invalid medical record status: ${recordStatus}`;
+    }
+
+    const industryPercentages = {};
+    for (const [industry, percentage] of Object.entries(industries)) {
+        const trackPercentage = (recommendationPercentageBasis.medicalRecord * percentage / 100).toFixed(2);
+        industryPercentages[industry] = parseFloat(trackPercentage);
+    }
+
+    return industryPercentages;
+}
+
+async function recommend(studentData) {
+    const resultScore = {};
+    const { grades, academicTrack, vocationalTrack, academicStatus, medicalRecord } = studentData;
+
+    const track = academicTrack || vocationalTrack;
+
+    const subjectScore = await recommendIndustriesByGrades(grades);
+    const trackScore = await recommendIndustriesByTrack(track);
+    const academicStatusScore = await recommendIndustriesByAcademicStatus(academicStatus);
+    const medicalRecordScore = await recommendIndustriesByMedicalRecord(medicalRecord);
+
+    Object.keys(subjectScore).forEach((industry) => {
+        resultScore[industry] = (subjectScore[industry] ?? 0) +
+            (trackScore[industry] ?? 0) +
+            (academicStatusScore[industry] ?? 0) +
+            (medicalRecordScore[industry] ?? 0);
+    });
+
+    const highestIndustry = Object.entries(resultScore).reduce(
+        (max, [industry, score]) =>
+            score > max.score ? { industry, score } : max,
+        { industry: null, score: 0 }
+    );
+
+    // Sort industries by their scores in descending order
+    const sortedIndustries = Object.entries(resultScore)
+        .sort(([, scoreA], [, scoreB]) => scoreB - scoreA);
+
+    // Extract the top 3 industries
+    const topIndustries = sortedIndustries.slice(0, 3).map(([industry, score]) => ({ industry, score }));
+
+    return topIndustries 
+}
+
+export default recommend;
+// =============================================================================
+
+// TESTING 
+
+// Weighted Scoring Algorithm
+
+
+const studentData = {
+    grades: {
+        ENGLISH: 80,
+        FILIPINO: 85,
+        ARALING_PANLIPUNAN: 90,
+        MATH: 80,
+        SCIENCE: 90,
+        COMPUTER: 70,
+        TLE: 10,
+        FOREIGN_LANGUAGE: 85,
+        MAPEH: 78,
+    },
+    academicTrack: "HUMMS", // ABM, STEM, HUMMS 
+    vocationalTrack: "", // Home Economic, ICT
+    preferredCourse: "Culinary Arts",
+    academicStatus: "Above Average", // "Above Average", "Average", "Low Average"
+    medicalRecord: "No History of Illness", // "No History of Illness" or "Has History of Illness"
+};
+
