@@ -8,9 +8,9 @@
 //     const onSubmit = async (data) => {
 //         const { username, password, role } = data;
 //         console.log('Data being sent:', { username, password, role });  // Check data being sent
-    
+
 //         try {
-//             const response = await axios.post('http://localhost:8000/register/', {
+//             const response = await axios.post('https://sclcm-backend.onrender.com/register/', {
 //                 username,
 //                 password,
 //                 role: role.toLowerCase()  // Ensure the role is always lowercase
@@ -19,7 +19,7 @@
 //                     'Content-Type': 'application/json',
 //                 }
 //             });
-    
+
 //             alert('User created successfully');
 //             reset();
 //         } catch (error) {
@@ -27,7 +27,6 @@
 //             alert('Error creating user');
 //         }
 //     };
-    
 
 //     return (
 //         <div>
@@ -115,15 +114,19 @@ const SignUp = () => {
     console.log("Data being sent:", { username, password, role });
 
     try {
-      const response = await axios.post("http://localhost:8000/register/", {
-        username,
-        password,
-        role: role.toLowerCase(), // Ensure the role is always lowercase
-      }, {
-        headers: {
-          "Content-Type": "application/json",
+      const response = await axios.post(
+        "https://sclcm-backend.onrender.com/register/",
+        {
+          username,
+          password,
+          role: role.toLowerCase(), // Ensure the role is always lowercase
         },
-      });
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       alert("User created successfully");
       reset(); // Reset form after submission
@@ -237,21 +240,33 @@ const SignUp = () => {
               />
 
               {/* Role Selection */}
-              <FormControl fullWidth error={!!errors.role} sx={{ borderRadius: "8px" }}>
+              <FormControl
+                fullWidth
+                error={!!errors.role}
+                sx={{ borderRadius: "8px" }}
+              >
                 <InputLabel>Role</InputLabel>
                 <Controller
                   name="role"
                   control={control}
                   defaultValue="Student"
                   render={({ field }) => (
-                    <Select {...field} label="Role" sx={{ borderRadius: "8px" }}>
+                    <Select
+                      {...field}
+                      label="Role"
+                      sx={{ borderRadius: "8px" }}
+                    >
                       <MenuItem value="Student">Student</MenuItem>
                       <MenuItem value="Counselor">Counselor</MenuItem>
-                      <MenuItem value="Psychometrician">Psychometrician</MenuItem>
+                      <MenuItem value="Psychometrician">
+                        Psychometrician
+                      </MenuItem>
                     </Select>
                   )}
                 />
-                {errors.role && <FormHelperText>{errors.role.message}</FormHelperText>}
+                {errors.role && (
+                  <FormHelperText>{errors.role.message}</FormHelperText>
+                )}
               </FormControl>
 
               {/* Submit Button */}

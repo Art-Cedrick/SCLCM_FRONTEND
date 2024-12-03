@@ -135,7 +135,7 @@
 //     e.preventDefault();
 
 //     try {
-//       const response = await axios.post("http://localhost:8000/login/", {
+//       const response = await axios.post("https://sclcm-backend.onrender.com/login/", {
 //         username: username,  // Use the updated variable
 //         password: password,
 //       });
@@ -326,9 +326,9 @@ import {
   Box,
   Divider,
   Typography,
-  GlobalStyles
+  GlobalStyles,
 } from "@mui/material";
-import { createTheme, ThemeProvider } from '@mui/material/styles'; // Import ThemeProvider and createTheme from MUI
+import { createTheme, ThemeProvider } from "@mui/material/styles"; // Import ThemeProvider and createTheme from MUI
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import logo from "./images/LOGO.jpg"; // Use the exact casing for your logo file
@@ -340,13 +340,13 @@ const theme = createTheme({
   typography: {
     fontFamily: "'Rozha One'", // Set the font globally
     h6: {
-      fontSize: '1.5rem',  // Adjust size for h6 headings
+      fontSize: "1.5rem", // Adjust size for h6 headings
     },
     body1: {
-      fontSize: '1rem', // Default body text size
+      fontSize: "1rem", // Default body text size
     },
     button: {
-      fontSize: '0.875rem', // Font size for buttons
+      fontSize: "0.875rem", // Font size for buttons
     },
   },
 });
@@ -357,7 +357,7 @@ function CustomUsernameField({ username, setUsername }) {
       id="input-with-icon-textfield"
       label="Student/Employee Number"
       name="username"
-      type="text"  // Change type to "text" to accept characters and numbers
+      type="text" // Change type to "text" to accept characters and numbers
       size="small"
       required
       fullWidth
@@ -448,10 +448,13 @@ function CustomSignInForm() {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8000/login/", {
-        username: username,  // Use the updated variable
-        password: password,
-      });
+      const response = await axios.post(
+        "https://sclcm-backend.onrender.com/login/",
+        {
+          username: username, // Use the updated variable
+          password: password,
+        }
+      );
 
       // Store the token and role in local storage
       localStorage.setItem("token", response.data.token);
@@ -530,7 +533,9 @@ function CustomSignInForm() {
 
 export default function SlotsSignIn() {
   return (
-    <ThemeProvider theme={theme}> {/* Wrap the component with ThemeProvider */}
+    <ThemeProvider theme={theme}>
+      {" "}
+      {/* Wrap the component with ThemeProvider */}
       <GlobalStyles
         styles={{
           body: {
