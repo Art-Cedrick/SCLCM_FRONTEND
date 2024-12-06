@@ -71,61 +71,6 @@ const RoutineInterviewTable = () => {
         header: "Date",
         size: 150,
       },
-      {
-        accessorKey: "family_problem",
-        header:
-          "Personal-Social Development Problem Encountered (Family Problem)",
-        size: 270,
-      },
-      {
-        accessorKey: "family_details",
-        header: "Details",
-        size: 150,
-      },
-      {
-        accessorKey: "friends_problem",
-        header:
-          "Friends/Peers/Interpersonal Problem Encountered (Friends Problem)",
-        size: 150,
-      },
-      {
-        accessorKey: "friends_details",
-        header: "Details",
-        size: 150,
-      },
-      {
-        accessorKey: "health_problem",
-        header: "Personal & Health Problem Encountered (Health Problem)",
-        size: 150,
-      },
-      {
-        accessorKey: "health_details",
-        header: "Details",
-        size: 150,
-      },
-      {
-        accessorKey: "academic_problem",
-        header: "Academic Development Problem Encountered",
-        size: 150,
-      },
-      {
-        accessorKey: "academic_details",
-        header: "Academic Development Details",
-        size: 150,
-      },
-      {
-        accessorKey: "career_problem",
-        header: "Career Development Problem Encountered",
-        size: 150,
-      },
-      {
-        accessorKey: "career_details",
-        header: "Career Development Details",
-        size: 150,
-      },
-      { accessorKey: "remarks", header: "Counselor's Remark", size: 150 },
-      { accessorKey: "recommendation", header: "Recommendation", size: 150 },
-      { accessorKey: "other_recommendations", header: "Other Recommendations", size: 150 },
     ],
     []
   );

@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   Button,
+  Box
 } from "@mui/material";
 import { useQuery, useQueryClient } from "react-query";
 import AxiosInstance from "../Axios";
@@ -39,6 +40,11 @@ const IndividualRecordFormTable = () => {
     setOpen(true);
   };
 
+  const handleOpenForm = () => {
+    setEdit(null);
+    setOpen(true);
+  }
+
   const handleClose = () => {
     setEdit(null);
     setOpen(false);
@@ -67,47 +73,6 @@ const IndividualRecordFormTable = () => {
       { accessorKey: "middlename", header: "Middle Name", size: 150 },
       { accessorKey: "year", header: "Year", size: 150 },
       { accessorKey: "section", header: "Section", size: 150 },
-      { accessorKey: "completeAddress", header: "Complete Address", size: 150 },
-      { accessorKey: "fatherName", header: "Father Name", size: 150 },
-      {
-        accessorKey: "fatherOccupation",
-        header: "Father Occupation",
-        size: 150,
-      },
-      {
-        accessorKey: "fatherContactNumber",
-        header: "Father Contact Number",
-        size: 150,
-      },
-      {
-        accessorKey: "fatherEmailAddress",
-        header: "Father Email Address",
-        size: 150,
-      },
-      { accessorKey: "motherName", header: "Mother Name", size: 150 },
-      {
-        accessorKey: "motherOccupation",
-        header: "Mother Occupation",
-        size: 150,
-      },
-      {
-        accessorKey: "motherContactNumber",
-        header: "Mother Contact Number",
-        size: 150,
-      },
-      {
-        accessorKey: "motherEmailAddress",
-        header: "Mother Email Address",
-        size: 150,
-      },
-      { accessorKey: "parents", header: "Parents", size: 150 },
-      { accessorKey: "living_with", header: "Living With", size: 150 },
-      { accessorKey: "relationship", header: "Relationship", size: 150 },
-      {
-        accessorKey: "club",
-        header: "Club Membership / Position Handled",
-        size: 150,
-      },
     ],
     []
   );
@@ -127,9 +92,21 @@ const IndividualRecordFormTable = () => {
         justifyContent: "center",
         width: "100%",
         overflowX: "auto",
+        position: "relative",
       }}
     >
-      <div style={{ width: "1200px", height: "600px" }}>
+      <div
+        sx={{
+          display: "flex",
+          top: "10px",
+          right: "10px",
+        }}
+      >
+        <Button variant="contained" color="primary" type="submit" onClick={handleOpenForm}>
+          Submit
+        </Button>
+      </div>
+      <div style={{ width: "1200px", height: "600px", marginTop: 50 }}>
         <MaterialReactTable
           columns={columns}
           data={data}
@@ -160,7 +137,9 @@ const IndividualRecordFormTable = () => {
           ]}
         />
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-          <DialogTitle>Edit Individual Record Form</DialogTitle>
+          <DialogTitle>
+            {editData ? "Edit Individual Record Form" : "Add New Reord"}
+          </DialogTitle>
           <DialogContent>
             <IndividualRecordForm
               initialData={editData}

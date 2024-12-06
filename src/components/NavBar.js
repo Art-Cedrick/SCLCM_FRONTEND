@@ -3,6 +3,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import MenuIcon from "@mui/icons-material/Menu";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import NotesIcon from "@mui/icons-material/Notes";
 import { IconButton, Menu, MenuItem, useMediaQuery } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
@@ -20,8 +21,6 @@ import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
 import file from "./images/file.png";
 import SignUp from "./SignUp"; // Importing SignUp component
-import CouncilorActiveFDropdown from "./CouncilorActiveFDropdown";
-import CouncilorActiveRDropdown from "./CouncilorActiveRDropdown";
 
 const NavBar = React.memo((props) => {
   const { drawerWidth = 260, content } = props;
@@ -63,8 +62,8 @@ const NavBar = React.memo((props) => {
       icon: <NotesIcon />,
       link: "/counselor/resourcesharing",
     },
-    // { text: "Forms", icon: <AssignmentIcon />, link: "/counselor/forms" },
-    // { text: "Records", icon: <FileCopyIcon />, link: "/counselor/records" },
+    { text: "Forms", icon: <AssignmentIcon />, link: "/counselor/forms" },
+    { text: "Records", icon: <FileCopyIcon />, link: "/counselor/records" },
   ];
 
   const isMobile = useMediaQuery("(max-width: 768px)"); // Check if screen width is less than 768px
@@ -95,6 +94,24 @@ const NavBar = React.memo((props) => {
           style={{ width: 60, height: 60, margin: "10px auto 0" }}
         />
       </Toolbar>
+      <Typography
+              variant="h6"
+              component="div"
+              sx={{ 
+                color: "#FFFFFF",
+                textTransform: "uppercase",
+                letterSpacing: 0.5,
+                fontFamily: "'Rozha One'",
+                fontSize: "0.8rem",
+                "&:hover": {
+                  color: "#1E90FF",
+                  cursor: "pointer",
+                  onClick: "/counselor/dashboard"
+                },
+              }}
+            >
+              Student Center for Life and Career Management
+            </Typography>
       <List>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
@@ -108,6 +125,8 @@ const NavBar = React.memo((props) => {
                   backgroundColor: "#ffffff", // White background for selected item
                   borderTopLeftRadius: "20px", // Round only the left side
                   borderBottomLeftRadius: "20px", // Round only the left side
+                  borderTopRighttRadius: "20px", // Round only the left side
+                  borderBottomRightRadius: "20px", // Round only the left side
                   color: "#000", // Change text color to black when selected
                   "& .MuiListItemIcon-root": {
                     color: "#000", // Change icon color to black for selected item
@@ -144,12 +163,6 @@ const NavBar = React.memo((props) => {
             </ListItemButton>
           </ListItem>
         ))}
-        <ListItem disablePadding>
-          <CouncilorActiveFDropdown pathname={path} />
-        </ListItem>
-        <ListItem disablePadding>
-          <CouncilorActiveRDropdown pathname={path} />
-        </ListItem>
       </List>
     </Box>
   );
@@ -166,6 +179,23 @@ const NavBar = React.memo((props) => {
     }
 
     return content; // Render default content when `showSignUp` is false
+  };
+
+  const getTitle = () => {
+    switch (path) {
+      case "/counselor/dashboard":
+        return "Dashboard";
+      case "/counselor/appointment":
+        return "Schedule";
+      case "/counselor/resourcesharing":
+        return "Resource Sharing";
+      case "/counselor/forms":
+        return "Forms";
+      case "/counselor/records":
+        return "Records";
+      default: 
+        return "Student Center for Life and Career Management";
+    }
   };
 
   return (
@@ -198,19 +228,14 @@ const NavBar = React.memo((props) => {
               variant="h6"
               component="div"
               sx={{
-                fontWeight: "bold",
                 color: "rgba(5, 21, 54, 255)",
                 textTransform: "uppercase",
                 letterSpacing: 1.5,
                 fontFamily: "'Rozha One'",
                 fontSize: "1.25rem",
-                "&:hover": {
-                  color: "#1E90FF",
-                  cursor: "pointer",
-                },
               }}
             >
-              Student Center for Life and Career Management
+              {getTitle()}
             </Typography>
           </Box>
           <Box>
