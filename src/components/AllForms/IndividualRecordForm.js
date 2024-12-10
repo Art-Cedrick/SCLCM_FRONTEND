@@ -111,18 +111,12 @@ const IndividualRecordForm = ({initialData, onClose}) => {
 
   return (
     <form onSubmit={handleSubmit(submission)} >
-    <Card elevation={3} sx={{ maxWidth: "900px", margin: "20px auto" }}>
-      <CardContent>
-        <Typography variant="h5" gutterBottom align="center">
-          INDIVIDUAL RECORD FORM
-        </Typography>
-
+   
         <Paper
-          elevation={3}
+          elevation={0}
           sx={{
-            padding: "40px",
+            paddingY: "20px",
             borderRadius: "8px",
-            backgroundColor: "#f7f9fc",
             minHeight: "60vh",
           }}
         >
@@ -438,8 +432,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
             </Stack>
           </Stack>
         </Paper>
-      </CardContent>
-    </Card>
+    
     </form>
   );
 };
