@@ -86,86 +86,74 @@ const Grade12Table = () => {
   if (error) return <p>Error loading data</p>;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        width: "100%",
-        height: "60vh",
-        overflow: "auto",
-        marginTop: "1in",
-        marginBottom: "16px",
-      }}
-    >
-      <div style={{ maxWidth: "1000px", width: "100%", height: "100%" }}>
-        <MaterialReactTable
-          columns={columns}
-          data={myData}
-          enableRowActions
-          renderRowActionMenuItems={({ row, table }) => [
-            <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
-              icon={
-                <IconButton>
-                  <Edit />
-                </IconButton>
-              }
-              key="edit"
-              label="Edit"
-              onClick={() => handleEdit(row)}
-              table={table}
-            />,
-            <MRT_ActionMenuItem
-              icon={
-                <IconButton>
-                  <Delete />
-                </IconButton>
-              }
-              key="delete"
-              label="Delete"
-              onClick={() => setConfirmDelete({ open: true, row })}
-              table={table}
-            />,
-          ]}
-        />
-        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-          <DialogTitle>Edit Grade Twelve Form</DialogTitle>
-          <DialogContent>
-            <Grade12 initialData={editData} onClose={handleClose} />
-          </DialogContent>
-        </Dialog>
+    <>
+      <MaterialReactTable
+        columns={columns}
+        data={myData}
+        enableRowActions
+        renderRowActionMenuItems={({ row, table }) => [
+          <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
+            icon={
+              <IconButton>
+                <Edit />
+              </IconButton>
+            }
+            key="edit"
+            label="Edit"
+            onClick={() => handleEdit(row)}
+            table={table}
+          />,
+          <MRT_ActionMenuItem
+            icon={
+              <IconButton>
+                <Delete />
+              </IconButton>
+            }
+            key="delete"
+            label="Delete"
+            onClick={() => setConfirmDelete({ open: true, row })}
+            table={table}
+          />,
+        ]}
+      />
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+        <DialogTitle>Edit Grade Twelve Form</DialogTitle>
+        <DialogContent>
+          <Grade12 initialData={editData} onClose={handleClose} />
+        </DialogContent>
+      </Dialog>
 
-        <Dialog
-          open={confirmDelete.open}
-          onClose={() => setConfirmDelete({ open: false, row: null })}
-        >
-          <DialogTitle>Confirm Delete</DialogTitle>
-          <DialogContent>
-            <p>Are you sure you want to delete this record?</p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "10px",
-              }}
+      <Dialog
+        open={confirmDelete.open}
+        onClose={() => setConfirmDelete({ open: false, row: null })}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <p>Are you sure you want to delete this record?</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "10px",
+            }}
+          >
+            <Button
+              variant="outlined"
+              onClick={() => setConfirmDelete({ open: false, row: null })}
             >
-              <Button
-                variant="outlined"
-                onClick={() => setConfirmDelete({ open: false, row: null })}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => handleDelete(confirmDelete.row)}
-              >
-                Delete
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </div>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => handleDelete(confirmDelete.row)}
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

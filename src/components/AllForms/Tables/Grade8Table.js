@@ -77,18 +77,7 @@ const Grade8Table = () => {
   if (error) return <p>Error loading data</p>;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        width: "100%",
-        height: "60vh",
-        overflow: "auto",
-        marginTop: "1in",
-        marginBottom: "16px",
-      }}
-    >
-      <div style={{ maxWidth: "1000px", width: "100%", height: "100%" }}>
+    <>
       <MaterialReactTable 
           columns={columns} 
           data={myData} 
@@ -140,8 +129,7 @@ const Grade8Table = () => {
                 </div>
               </DialogContent>
             </Dialog>
-      </div>
-    </div>
+      </>
   );
 };
 

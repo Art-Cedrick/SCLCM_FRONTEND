@@ -144,7 +144,7 @@ const NavBarPsych = (props) => {
                 <MenuIcon sx={{ color: "rgba(5, 21, 54, 255)" }} />
               </IconButton>
             )}
-            <Typography
+            {/* <Typography
               variant="h6"
               component="div"
               sx={{
@@ -161,7 +161,7 @@ const NavBarPsych = (props) => {
               }}
             >
               Student Center for Life and Career Management
-            </Typography>
+            </Typography> */}
           </Box>
           <Box>
             <IconButton color="inherit" onClick={handleProfileMenuOpen} sx={{ color: "rgba(5, 21, 54, 255)" }}>
