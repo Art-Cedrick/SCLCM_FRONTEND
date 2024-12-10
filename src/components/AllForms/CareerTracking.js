@@ -384,7 +384,6 @@ const CareerTracking = ({ initialData, onClose }) => {
     name: "",
     grade: "",
     section: "",
-
     cle: "",
     english: "",
     filipino: "",
@@ -395,13 +394,11 @@ const CareerTracking = ({ initialData, onClose }) => {
     tle: "",
     computer: "",
     fl: "",
-
     academic_track: "",
     other_track: "",
     tech_voc: "",
     other_techvoc: "",
     preferredCourse: "",
-
     medical_records: "",
     specify: "",
     academic_status: "",
@@ -442,65 +439,17 @@ const CareerTracking = ({ initialData, onClose }) => {
 
       initialData
         ? AxiosInstance.put(`/careertracking/${initialData.id}/`, {
-            name: data.name,
-            grade: data.grade,
-            section: data.section,
-
-            cle: data.cle,
-            english: data.english,
-            filipino: data.filipino,
-            ap: data.ap,
-            science: data.science,
-            math: data.math,
-            mapeh: data.mapeh,
-            tle: data.tle,
-            computer: data.computer,
-            fl: data.fl,
-
-            academic_track: data.academic_track,
-            other_track: data.other_track,
-            tech_voc: data.tech_voc,
-            other_techvoc: data.other_techvoc,
-            preferredCourse: data.preferredCourse,
-
-            medical_records: data.medical_records,
-            specify: data.specify,
-            academic_status: data.academic_status,
-            psych_results: data.psych_results,
-            top_one: res[0].industry,
-            top_two: res[1].industry,
-            top_three: res[2].industry,
-          })
+          ...data,
+          top_one: res[0].industry,
+          top_two: res[1].industry,
+          top_three: res[2].industry,
+        })
         : AxiosInstance.post(`/careertracking/`, {
-            name: data.name,
-            grade: data.grade,
-            section: data.section,
-
-            cle: data.cle,
-            english: data.english,
-            filipino: data.filipino,
-            ap: data.ap,
-            science: data.science,
-            math: data.math,
-            mapeh: data.mapeh,
-            tle: data.tle,
-            computer: data.computer,
-            fl: data.fl,
-
-            academic_track: data.academic_track,
-            other_track: data.other_track,
-            tech_voc: data.tech_voc,
-            other_techvoc: data.other_techvoc,
-            preferredCourse: data.preferredCourse,
-
-            medical_records: data.medical_records,
-            specify: data.specify,
-            academic_status: data.academic_status,
-            psych_results: data.psych_results,
-            top_one: res[0].industry,
-            top_two: res[1].industry,
-            top_three: res[2].industry,
-          });
+          ...data,
+          top_one: res[0].industry,
+          top_two: res[1].industry,
+          top_three: res[2].industry,
+        });
     },
     {
       onSuccess: () => {
@@ -533,40 +482,30 @@ const CareerTracking = ({ initialData, onClose }) => {
 
   return (
     <form onSubmit={handleSubmit(submission)}>
-      <Card
-        elevation={3}
-        sx={{ padding: 2, maxWidth: "900px", margin: "20px auto" }}
+      <Paper
+        elevation={0}
+        sx={{
+          paddingY: "20px",
+          borderRadius: "8px"
+        }}
       >
-        <Typography variant="h5" gutterBottom align="center">
-          CAREER TRACKING
-        </Typography>
-        <Paper
-          elevation={3}
-          sx={{
-            width: "100%",
-            padding: 4,
-            backgroundColor: "#f7f9fc",
-            borderRadius: 2,
-          }}
+        {page === 1 && <PageOne control={control} />}
+        {page === 2 && <PageTwo control={control} />}
+        {page === 3 && <PageThree control={control} />}
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="center"
+          sx={{ mt: 4 }}
         >
-          {page === 1 && <PageOne control={control} />}
-          {page === 2 && <PageTwo control={control} />}
-          {page === 3 && <PageThree control={control} />}
-          <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-            sx={{ mt: 4 }}
-          >
-            <IconButton onClick={handleBack} disabled={page === 1}>
-              <ArrowBack />
-            </IconButton>
-            <IconButton onClick={handleNext} disabled={page === 3}>
-              <ArrowForward />
-            </IconButton>
-          </Stack>
-        </Paper>
-      </Card>
+          <IconButton onClick={handleBack} disabled={page === 1}>
+            <ArrowBack />
+          </IconButton>
+          <IconButton onClick={handleNext} disabled={page === 3}>
+            <ArrowForward />
+          </IconButton>
+        </Stack>
+      </Paper>
     </form>
   );
 };

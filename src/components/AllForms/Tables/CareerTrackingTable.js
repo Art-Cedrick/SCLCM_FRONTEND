@@ -5,6 +5,7 @@ import { Edit, Delete } from '@mui/icons-material';
 import { IconButton, Dialog, DialogContent, DialogTitle, Button } from "@mui/material";
 import { useQuery, useQueryClient } from "react-query";
 import CareerTracking from "../CareerTracking";
+import { FilePlus2 } from "lucide-react";
 
 const fetchData = async () => {
   const response = await AxiosInstance.get(`/careertracking/`);
@@ -21,6 +22,11 @@ const CareerTrackingTable = () => {
   const [editData, setEdit] = useState(null);
   const [open, setOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState({open: false, row: null})
+
+  const handleOpenForm = () => {
+    setEdit(null);
+    setOpen(true);
+  }
 
   const handleEdit = (row) => {
     setEdit(row.original);
@@ -110,22 +116,26 @@ const CareerTrackingTable = () => {
   if (error) return <p>Error loading data</p>;
 
   return (
-    <div
-      style={{
+    <div style={{
+      position: "relative",
+    }}>
+      <div style={{
+        position: "absolute",
+        left: 8,
+        top: 8,
+        zIndex: 2,
         display: "flex",
-        justifyContent: "center",
-        width: "100%",
-        overflowX: "auto",
-      }}
-    >
-      <div style={{ width: "1200px", height: "600px" }}>
+      }}>
+        <Button variant="contained" color="primary" size="small" onClick={handleOpenForm} type="submit"> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
+      </div>
+
         <MaterialReactTable 
           columns={columns} 
           data={myData} 
           
           enableRowActions
           renderRowActionMenuItems={({ row, table }) => [
-            <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
+            <MRT_ActionMenuItem 
               icon={
               <IconButton>
               <Edit />
@@ -150,7 +160,9 @@ const CareerTrackingTable = () => {
           ]}
             />
           <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-              <DialogTitle>Edit Career Tracking Form</DialogTitle>
+          <DialogTitle style={{
+          fontWeight: "bold",
+        }}>{editData ? "Edit Career Tracking" : "New Career Tracking"}</DialogTitle>
               <DialogContent>
                 <CareerTracking initialData={editData} onClose={handleClose}/>
               </DialogContent>
@@ -171,7 +183,6 @@ const CareerTrackingTable = () => {
               </DialogContent>
             </Dialog>
       </div>
-    </div>
   );
 };
 

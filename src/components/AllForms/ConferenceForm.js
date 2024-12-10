@@ -31,29 +31,8 @@ const ConferenceForm = ({initialData, onClose}) => {
   const mutation = useMutation(
     (data) => 
       initialData
-      ? AxiosInstance.put(`/conferenceform/${initialData.id}/`, {
-        type: data.type,
-        name: data.name,
-        date: data.date,
-        grade: data.grade,
-        section: data.section,
-        teachers: data.teachers,
-        purpose: data.purpose,
-        others: data.others,
-        note: data.note,
-        recommendations: data.recommendations,})
-      : AxiosInstance.post(`/conferenceform/`, {
-        type: data.type,
-        name: data.name,
-        date: data.date,
-        grade: data.grade,
-        section: data.section,
-        teachers: data.teachers,
-        purpose: data.purpose,
-        others: data.others,
-        note: data.note,
-        recommendations: data.recommendations,
-    }), {
+      ? AxiosInstance.put(`/conferenceform/${initialData.id}/`, data)
+      : AxiosInstance.post(`/conferenceform/`, data), {
       onSuccess: () => {
         queryClient.invalidateQueries('conferenceData');
         console.log("Data invalidated");
@@ -73,28 +52,12 @@ const ConferenceForm = ({initialData, onClose}) => {
   return (
     <form onSubmit={handleSubmit(submission)}>
     <Paper
-      elevation={3}
+      elevation={0}
       sx={{
-        width: "100%",
-        maxWidth: "800px", // Restrict the maximum width
-        padding: 4,
-        backgroundColor: "#fafafa", // Light gray background
-        borderRadius: 2, // Rounded corners
-        margin: "auto", // Center the form horizontally
-        boxShadow: 3,
+        paddingY: "20px",
+        borderRadius: "8px"
       }}
     >
-      <Typography
-        variant="h6"
-        sx={{
-          color: "#3f3f3f",
-          marginBottom: 2,
-          fontWeight: "bold",
-          textAlign: "center",
-        }}
-      >
-        CONFERENCE FORM
-      </Typography>
       <Controller
           name = "type"
           control={control}

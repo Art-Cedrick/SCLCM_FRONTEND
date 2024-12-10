@@ -12,6 +12,7 @@ import {
 import AxiosInstance from "../Axios";
 import { useQuery, useQueryClient } from "react-query";
 import RoutineInterview from "../RoutineInterview";
+import { FilePlus2 } from "lucide-react";
 
 const fetchData = async () => {
   const response = await AxiosInstance.get(`/routine_interview/`);
@@ -35,6 +36,11 @@ const RoutineInterviewTable = () => {
     open: false,
     row: null,
   });
+
+  const handleOpenForm = () => {
+    setEdit(null);
+    setOpen(true);
+  }
 
   const handleEdit = (row) => {
     setEdit(row.original);
@@ -79,86 +85,92 @@ const RoutineInterviewTable = () => {
   if (isFetching) return <p>Fetching data...</p>;
   if (error) {
     console.log(error);
-    
-    return <p>Error loading data</p>;}
+
+    return <p>Error loading data</p>;
+  }
 
   return (
-    <div
-      style={{
+    <div style={{
+      position: "relative",
+    }}>
+      <div style={{
+        position: "absolute",
+        left: 8,
+        top: 8,
+        zIndex: 2,
         display: "flex",
-        justifyContent: "center",
-        width: "100%",
-        overflowX: "auto",
-      }}
-    >
-      <div style={{ width: "1200px", height: "600px" }}>
-        <MaterialReactTable
-          columns={columns}
-          data={myData}
-          enableRowActions
-          renderRowActionMenuItems={({ row, table }) => [
-            <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
-              icon={
-                <IconButton>
-                  <Edit />
-                </IconButton>
-              }
-              key="edit"
-              label="Edit"
-              onClick={() => handleEdit(row)}
-              table={table}
-            />,
-            <MRT_ActionMenuItem
-              icon={
-                <IconButton>
-                  <Delete />
-                </IconButton>
-              }
-              key="delete"
-              label="Delete"
-              onClick={() => setConfirmDelete({ open: true, row })}
-              table={table}
-            />,
-          ]}
-        />
-        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-          <DialogTitle>Edit Routine Interview Form</DialogTitle>
-          <DialogContent>
-            <RoutineInterview initialData={editData} onClose={handleClose} />
-          </DialogContent>
-        </Dialog>
-
-        <Dialog
-          open={confirmDelete.open}
-          onClose={() => setConfirmDelete({ open: false, row: null })}
-        >
-          <DialogTitle>Confirm Delete</DialogTitle>
-          <DialogContent>
-            <p>Are you sure you want to delete this record?</p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "10px",
-              }}
-            >
-              <Button
-                variant="outlined"
-                onClick={() => setConfirmDelete({ open: false, row: null })}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => handleDelete(confirmDelete.row)}
-              >
-                Delete
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+      }}>
+        <Button variant="contained" color="primary" size="small" onClick={handleOpenForm} type="submit"> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
       </div>
+
+      <MaterialReactTable
+        columns={columns}
+        data={myData}
+        enableRowActions
+        renderRowActionMenuItems={({ row, table }) => [
+          <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
+            icon={
+              <IconButton>
+                <Edit />
+              </IconButton>
+            }
+            key="edit"
+            label="Edit"
+            onClick={() => handleEdit(row)}
+            table={table}
+          />,
+          <MRT_ActionMenuItem
+            icon={
+              <IconButton>
+                <Delete />
+              </IconButton>
+            }
+            key="delete"
+            label="Delete"
+            onClick={() => setConfirmDelete({ open: true, row })}
+            table={table}
+          />,
+        ]}
+      />
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+        <DialogTitle style={{
+          fontWeight: "bold",
+        }}>{editData ? "Edit Routine Interview" : "New Routine Interview"}</DialogTitle>
+        <DialogContent>
+          <RoutineInterview initialData={editData} onClose={handleClose} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={confirmDelete.open}
+        onClose={() => setConfirmDelete({ open: false, row: null })}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <p>Are you sure you want to delete this record?</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "10px",
+            }}
+          >
+            <Button
+              variant="outlined"
+              onClick={() => setConfirmDelete({ open: false, row: null })}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => handleDelete(confirmDelete.row)}
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

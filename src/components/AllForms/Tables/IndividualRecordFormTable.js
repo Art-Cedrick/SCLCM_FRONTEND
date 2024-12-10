@@ -95,12 +95,12 @@ const IndividualRecordFormTable = () => {
     }}>
       <div style={{
         position: "absolute",
-        left: 6,
+        left: 8,
         top: 8,
         zIndex: 2,
         display: "flex",
       }}>
-        <Button variant="contained" color="primary" size="small" type="submit" onClick={handleOpenForm}> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
+        <Button variant="contained"  color="primary" size="small" type="submit" onClick={handleOpenForm}> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
       </div>
 
 
@@ -137,8 +137,10 @@ const IndividualRecordFormTable = () => {
         ]}
       />
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-        <DialogTitle>
-          {editData ? "Edit Individual Record Form" : "Add New Reord"}
+        <DialogTitle style={{
+          fontWeight: "bold",
+        }}>
+          {editData ? "Edit Individual Record" : "New Individual Record"}
         </DialogTitle>
         <DialogContent>
           <IndividualRecordForm

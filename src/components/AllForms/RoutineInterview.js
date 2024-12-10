@@ -499,7 +499,7 @@ const PageFive = ({ control }) => (
   </Box>
 );
 
-const RoutineInterview = ({initialData, onClose}) => {
+const RoutineInterview = ({ initialData, onClose }) => {
 
   const queryClient = useQueryClient();
 
@@ -516,72 +516,72 @@ const RoutineInterview = ({initialData, onClose}) => {
     health_details: '',
     academic_problem: '',
     academic_details: '',
-    career_problem: '', 
+    career_problem: '',
     career_details: '',
     remarks: '',
     recommendation: '',
     other_recommendation: '',
-     }
+  }
 
-  const { handleSubmit, reset, control } = useForm({defaultValues: initialData || defaultValues});
+  const { handleSubmit, reset, control } = useForm({ defaultValues: initialData || defaultValues });
 
   useEffect(() => {
     if (initialData) reset(initialData);
-  },[initialData, reset]);
+  }, [initialData, reset]);
 
   const mutation = useMutation(
-    (data) => 
-    initialData  
-    ? AxiosInstance.put(`/routine_interview/${initialData.id}/`,{
-      name: data.name,
-      section: data.section,
-      grade: data.grade,
-      date: data.date,
-      family_problem: data.family_problem,
-      family_details: data.family_details,
-      friends_problem: data.friends_problem,
-      friends_details: data.friends_details,
-      health_problem: data.health_problem,
-      health_details: data.health_details,
-      academic_problem: data.academic_problem,
-      academic_details: data.academic_details,
-      career_problem: data.career_problem,
-      career_details: data.career_details,
-      remarks: data.remarks,
-      recommendation: data.recommendation,
-      other_recommendation: data.other_recommendation,
-    })
-    : AxiosInstance.post(`/routine_interview/`,{
-      name: data.name,
-      section: data.section,
-      grade: data.grade,
-      date: data.date,
-      family_problem: data.family_problem,
-      family_details: data.family_details,
-      friends_problem: data.friends_problem,
-      friends_details: data.friends_details,
-      health_problem: data.health_problem,
-      health_details: data.health_details,
-      academic_problem: data.academic_problem,
-      academic_details: data.academic_details,
-      career_problem: data.career_problem,
-      career_details: data.career_details,
-      remarks: data.remarks,
-      recommendation: data.recommendation,
-      other_recommendation: data.other_recommendation,
-    }), {
-      onSuccess: () => {
-        queryClient.invalidateQueries('routineData');
-        console.log("Data invalidated");
-        queryClient.refetchQueries('routineData');
-        console.log("Data refetched");
-        reset();
-        onClose();
-        console.log("Data submitted and table refreshed");
-      }, onError: (error) => {
-        console.error("Error submitting data", error);
-      },
-    }
+    (data) =>
+      initialData
+        ? AxiosInstance.put(`/routine_interview/${initialData.id}/`, {
+          name: data.name,
+          section: data.section,
+          grade: data.grade,
+          date: data.date,
+          family_problem: data.family_problem,
+          family_details: data.family_details,
+          friends_problem: data.friends_problem,
+          friends_details: data.friends_details,
+          health_problem: data.health_problem,
+          health_details: data.health_details,
+          academic_problem: data.academic_problem,
+          academic_details: data.academic_details,
+          career_problem: data.career_problem,
+          career_details: data.career_details,
+          remarks: data.remarks,
+          recommendation: data.recommendation,
+          other_recommendation: data.other_recommendation,
+        })
+        : AxiosInstance.post(`/routine_interview/`, {
+          name: data.name,
+          section: data.section,
+          grade: data.grade,
+          date: data.date,
+          family_problem: data.family_problem,
+          family_details: data.family_details,
+          friends_problem: data.friends_problem,
+          friends_details: data.friends_details,
+          health_problem: data.health_problem,
+          health_details: data.health_details,
+          academic_problem: data.academic_problem,
+          academic_details: data.academic_details,
+          career_problem: data.career_problem,
+          career_details: data.career_details,
+          remarks: data.remarks,
+          recommendation: data.recommendation,
+          other_recommendation: data.other_recommendation,
+        }), {
+    onSuccess: () => {
+      queryClient.invalidateQueries('routineData');
+      console.log("Data invalidated");
+      queryClient.refetchQueries('routineData');
+      console.log("Data refetched");
+      reset();
+      onClose();
+      console.log("Data submitted and table refreshed");
+    }, onError: (error) => {
+      console.error("Error submitting data", error);
+    },
+  }
   );
 
   const submission = (data) => mutation.mutate(data);
@@ -597,43 +597,36 @@ const RoutineInterview = ({initialData, onClose}) => {
   };
 
   return (
-    <Card elevation={3} sx={{ padding: 2, maxWidth: "900px", margin: "20px auto" }}>
-      <form onSubmit={handleSubmit(submission)}>
-        <Typography variant="h5" gutterBottom align="center">
-          ROUTINE INTERVIEW FORM
-        </Typography>
-        <Paper
-          elevation={3}
-          sx={{
-            width: "100%",
-            padding: 4,
-            backgroundColor: "#f7f9fc",
-            borderRadius: 2,
-           
-          }}
-        >
-          {page === 1 && <PageOne control={control} />}
-          {page === 2 && <PageTwo control={control} />}
-          {page === 3 && <PageThree control={control} />}
-          {page === 4 && <PageFour control={control} />}
-          {page === 5 && <PageFive control={control} />}
 
-          <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-            sx={{ marginTop: 4 }}
-          >
-            <IconButton onClick={handleBack} disabled={page === 1}>
-              <ArrowBack />
-            </IconButton>
-            <IconButton onClick={handleNext} disabled={page === 5}>
-              <ArrowForward />
-            </IconButton>
-          </Stack>
-        </Paper>
-      </form>
-    </Card>
+    <form onSubmit={handleSubmit(submission)}>
+      <Paper
+        elevation={0}
+        sx={{
+          paddingY: "20px",
+          borderRadius: "8px"
+        }}
+      >
+        {page === 1 && <PageOne control={control} />}
+        {page === 2 && <PageTwo control={control} />}
+        {page === 3 && <PageThree control={control} />}
+        {page === 4 && <PageFour control={control} />}
+        {page === 5 && <PageFive control={control} />}
+
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="center"
+          sx={{ marginTop: 4 }}
+        >
+          <IconButton onClick={handleBack} disabled={page === 1}>
+            <ArrowBack />
+          </IconButton>
+          <IconButton onClick={handleNext} disabled={page === 5}>
+            <ArrowForward />
+          </IconButton>
+        </Stack>
+      </Paper>
+    </form>
   );
 };
 
