@@ -37,9 +37,9 @@ const Records = () => {
     <div>
       <List
       sx={{
-        display: "flex", // Makes the list horizontal
-        flexDirection: "row", // Ensures items are in a row
-        padding: 0, // Removes default padding
+        display: "flex", 
+        flexDirection: "row", 
+        padding: 0, 
       }}
       >
         {councilorFormOptions.map((item) => (
@@ -50,13 +50,10 @@ const Records = () => {
               selected={item.value === councilorActiveForm}
               onClick={() => handleMenuItemClick(item.value)}
               sx={{
+                borderTop: "4px solid transparent",
                 "&.Mui-selected": {
-                  backgroundColor: "#ADD8E6", // White background for selected item
-                  borderTopLeftRadius: "10px", // Round only the left side
-                  borderBottomLeftRadius: "10px", // Round only the left side
-                  borderTopRightRadius: "10px", // Round only the left side
-                  borderBottomRightRadius: "10px", // Round only the left side
-                  color: "#000", // Change text color to black when selected
+                  color: "#1976d2",
+                  borderTop: "4px solid #1976d2",
                 },
               }}
             >
@@ -78,6 +75,7 @@ const Records = () => {
                     fontWeight: "bold",
                     fontFamily: "'Rozha One'",
                     fontSize: "1rem",
+                    textAlign: "center",
                   },
                 }}
               />

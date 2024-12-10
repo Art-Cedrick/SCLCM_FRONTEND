@@ -62,7 +62,6 @@ const NavBar = React.memo((props) => {
       icon: <NotesIcon />,
       link: "/counselor/resourcesharing",
     },
-    { text: "Forms", icon: <AssignmentIcon />, link: "/counselor/forms" },
     { text: "Records", icon: <FileCopyIcon />, link: "/counselor/records" },
   ];
 
