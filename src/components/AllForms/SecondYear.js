@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -12,8 +12,10 @@ import {
 import { useForm, Controller } from "react-hook-form"; // Import Controller
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
-const SecondYear = () => {
+const SecondYear = ({initialData, onClose}) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
     name: "",
     age: "",
@@ -36,21 +38,32 @@ const SecondYear = () => {
     g_vi: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({
-    defaultValues: defaultValues,
-  });
+  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
 
-  // Submit handler
-  const submission = (data) => {
-    AxiosInstance.post(`/second_year/`, data)
-      .then((response) => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch((error) => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) => 
+      initialData
+      ? AxiosInstance.put(`/second_year/${initialData.id}/`, data)
+      : AxiosInstance.post(`/second_year/`, data), {
+      onSuccess: () => {
+        queryClient.invalidateQueries('secondyearData');
+        console.log("Data invalidated");
+        queryClient.refetchQueries('secondyearData');
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      }, onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  )
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>
@@ -93,11 +106,19 @@ const SecondYear = () => {
                 />
               )}
             />
-            <SingleSelect
-              label="Sex:"
+            <Controller
               name="sex"
               control={control}
-              options={["M", "F"]}
+              render={({ field }) => (
+
+                <SingleSelect
+                  {...field}
+                  label="Sex:"
+
+
+                  options={["M", "F"]}
+                />
+              )}
             />
           </Stack>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -113,11 +134,19 @@ const SecondYear = () => {
                 />
               )}
             />
-            <SingleSelect
-              label="Course:"
+            <Controller
               name="course"
               control={control}
-              options={["Course 1", "Course 2", "Course 3", "Course 4"]}
+              render={({ field }) => (
+
+                <SingleSelect
+                  {...field}
+                  label="Course:"
+
+
+                  options={["Course1", "Course2"]}
+                />
+              )}
             />
           </Stack>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>

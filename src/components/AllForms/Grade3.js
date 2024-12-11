@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -7,40 +7,60 @@ import {
   CardContent,
   Stack,
   Button,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
-const Grade3 = () => {
+const Grade3 = ({ initialData, onClose }) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
-    name: '',
-    age: '',
-    sex: '',
-    gradeLevel: '',
-    section: '',
-    raw_score: '',
-    percentile: '',
-    stanine: '',
-    verbal_interpretation: '',
+    name: "",
+    age: "",
+    sex: "",
+    gradeLevel: "",
+    section: "",
+    raw_score: "",
+    percentile: "",
+    stanine: "",
+    verbal_interpretation: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
+  const { control, handleSubmit, reset, setValue } = useForm({
+    defaultValues: defaultValues,
+  });
 
-  const submission = (data) => {
-    AxiosInstance.post(`/grade_three/`, data).then(response => {
-      console.log("Data submitted successfully:", response.data);
-      reset(); // Reset form after successful submission
-    })
-      .catch(error => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) =>
+      initialData
+        ? AxiosInstance.put(`/grade_three/${initialData.id}/`, data)
+        : AxiosInstance.post(`/grade_three/`, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("gradethreeData");
+        console.log("Data invalidated");
+        queryClient.refetchQueries("gradethreeData");
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      },
+      onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  );
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>
-
       {/* <Typography variant="h5" gutterBottom align="center">
             Grade 3
           </Typography> */}
@@ -59,7 +79,11 @@ const Grade3 = () => {
               <TextField
                 label="Student Name"
                 {...field}
-                sx={{ flex: 1, minWidth: "100%", marginBottom: { xs: 2, sm: 0 } }} // Full width
+                sx={{
+                  flex: 1,
+                  minWidth: "100%",
+                  marginBottom: { xs: 2, sm: 0 },
+                }} // Full width
               />
             )}
           />
@@ -73,7 +97,11 @@ const Grade3 = () => {
                 <TextField
                   label="Age"
                   {...field}
-                  sx={{ flex: 1, minWidth: "200px", marginBottom: { xs: 2, sm: 0 } }}
+                  sx={{
+                    flex: 1,
+                    minWidth: "200px",
+                    marginBottom: { xs: 2, sm: 0 },
+                  }}
                 />
               )}
             />
@@ -85,7 +113,11 @@ const Grade3 = () => {
                   label="Sex"
                   {...field}
                   options={["M", "F"]}
-                  sx={{ flex: 1, minWidth: "200px", marginBottom: { xs: 2, sm: 0 } }}
+                  sx={{
+                    flex: 1,
+                    minWidth: "200px",
+                    marginBottom: { xs: 2, sm: 0 },
+                  }}
                 />
               )}
             />
@@ -96,7 +128,11 @@ const Grade3 = () => {
                 <TextField
                   label="Grade Level"
                   {...field}
-                  sx={{ flex: 1, minWidth: "200px", marginBottom: { xs: 2, sm: 0 } }}
+                  sx={{
+                    flex: 1,
+                    minWidth: "200px",
+                    marginBottom: { xs: 2, sm: 0 },
+                  }}
                 />
               )}
             />
@@ -118,7 +154,11 @@ const Grade3 = () => {
                     "Sealtiel",
                     "Uriel",
                   ]}
-                  sx={{ flex: 1, minWidth: "200px", marginBottom: { xs: 2, sm: 0 } }}
+                  sx={{
+                    flex: 1,
+                    minWidth: "200px",
+                    marginBottom: { xs: 2, sm: 0 },
+                  }}
                 />
               )}
             />
@@ -129,7 +169,11 @@ const Grade3 = () => {
                 <TextField
                   label="Raw Score"
                   {...field}
-                  sx={{ flex: 1, minWidth: "200px", marginBottom: { xs: 2, sm: 0 } }}
+                  sx={{
+                    flex: 1,
+                    minWidth: "200px",
+                    marginBottom: { xs: 2, sm: 0 },
+                  }}
                 />
               )}
             />
@@ -140,7 +184,11 @@ const Grade3 = () => {
                 <TextField
                   label="Percentile"
                   {...field}
-                  sx={{ flex: 1, minWidth: "200px", marginBottom: { xs: 2, sm: 0 } }}
+                  sx={{
+                    flex: 1,
+                    minWidth: "200px",
+                    marginBottom: { xs: 2, sm: 0 },
+                  }}
                 />
               )}
             />
@@ -154,7 +202,11 @@ const Grade3 = () => {
                 <TextField
                   label="Stanine"
                   {...field}
-                  sx={{ flex: 1, minWidth: "200px", marginBottom: { xs: 2, sm: 0 } }}
+                  sx={{
+                    flex: 1,
+                    minWidth: "200px",
+                    marginBottom: { xs: 2, sm: 0 },
+                  }}
                 />
               )}
             />
@@ -173,7 +225,11 @@ const Grade3 = () => {
                     "Low",
                     "Poor",
                   ]}
-                  sx={{ flex: 1, minWidth: "200px", marginBottom: { xs: 2, sm: 0 } }}
+                  sx={{
+                    flex: 1,
+                    minWidth: "200px",
+                    marginBottom: { xs: 2, sm: 0 },
+                  }}
                 />
               )}
             />

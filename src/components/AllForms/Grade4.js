@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -12,9 +12,11 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
 
-const Grade4 = () => {
+const Grade4 = ({initialData, onClose}) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
     name: '',
     age: '',
@@ -39,16 +41,30 @@ const Grade4 = () => {
 
   const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
 
-  const submission = (data) => {
-    AxiosInstance.post(`/grade_four/`, data)
-      .then(response => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch(error => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) => 
+      initialData
+      ? AxiosInstance.put(`/grade_four/${initialData.id}/`, data)
+      : AxiosInstance.post(`/grade_four/`, data), {
+      onSuccess: () => {
+        queryClient.invalidateQueries('gradefourData');
+        console.log("Data invalidated");
+        queryClient.refetchQueries('gradefourData');
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      }, onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  )
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>

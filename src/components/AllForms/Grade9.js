@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -7,56 +7,74 @@ import {
   CardContent,
   Stack,
   Button,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
-const Grade9 = () => {
+const Grade9 = ({ initialData, onClose }) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
-    name: '',
-    age: '',
-    sex: '',
-    gradeLevel: '',
-    section: '',
-    top_one: '',
-    top_two: '',
-    top_three: '',
-    self_control: '',
-    mas_fem: '',
-    status: '',
-    infrequency: '',
-    acquiescence: '',
-    r: '',
-    i: '',
-    a: '',
-    s: '',
-    e: '',
-    c: '',
-    se: '',
-    mf: '',
-    st: '',
-    inf: '',
-    ac: '',
+    name: "",
+    age: "",
+    sex: "",
+    gradeLevel: "",
+    section: "",
+    top_one: "",
+    top_two: "",
+    top_three: "",
+    self_control: "",
+    mas_fem: "",
+    status: "",
+    infrequency: "",
+    acquiescence: "",
+    r: "",
+    i: "",
+    a: "",
+    s: "",
+    e: "",
+    c: "",
+    se: "",
+    mf: "",
+    st: "",
+    inf: "",
+    ac: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
+  const { control, handleSubmit, reset, setValue } = useForm({
+    defaultValues: defaultValues,
+  });
 
-  const submission = (data) => {
-    AxiosInstance.post(`/grade_nine/`, data)
-      .then(response => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch(error => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
 
+  const mutation = useMutation(
+    (data) =>
+      initialData
+        ? AxiosInstance.put(`/grade_nine/${initialData.id}/`, data)
+        : AxiosInstance.post(`/grade_nine/`, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("gradenineData");
+        console.log("Data invalidated");
+        queryClient.refetchQueries("gradenineData");
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      },
+      onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  );
+
+  const submission = (data) => mutation.mutate(data);
   return (
     <form onSubmit={handleSubmit(submission)}>
-
       {/* <Typography variant="h5" gutterBottom align="center">
             Grade 9
           </Typography> */}
@@ -118,12 +136,12 @@ const Grade9 = () => {
                   label="Section:"
                   {...field}
                   options={[
-                    "Gabriel",
-                    "Michael",
-                    "Judiel",
-                    "Raphael",
-                    "Sealtiel",
-                    "Uriel",
+                    "Ignatius",
+                    "Joseph",
+                    "Lorenzo",
+                    "Padre Pio",
+                    "Andrew",
+                    
                   ]}
                   fullWidth
                 />

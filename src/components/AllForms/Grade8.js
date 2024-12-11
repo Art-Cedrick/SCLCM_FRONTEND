@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -12,46 +12,65 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
-const Grade8 = () => {
+const Grade8 = ({ initialData, onClose }) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
-    name: '',
-    age: '',
-    sex: '',
-    gradeLevel: '',
-    section: '',
-    conduct: '',
-    self_image: '',
-    worry: '',
-    neg_perl_rel: '',
-    antisocial: '',
-    lie: '',
-    problem_index: '',
-    c: '',
-    si: '',
-    w: '',
-    npr: '',
-    a_s: '',
-    l: '',
-    pi: '',
+    name: "",
+    age: "",
+    sex: "",
+    gradeLevel: "",
+    section: "",
+    conduct: "",
+    self_image: "",
+    worry: "",
+    neg_perl_rel: "",
+    antisocial: "",
+    lie: "",
+    problem_index: "",
+    c: "",
+    si: "",
+    w: "",
+    npr: "",
+    a_s: "",
+    l: "",
+    pi: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
+  const { control, handleSubmit, reset, setValue } = useForm({
+    defaultValues: defaultValues,
+  });
 
-  const submission = (data) => {
-    AxiosInstance.post(`/grade_eight/`, data)
-      .then(response => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch(error => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) =>
+      initialData
+        ? AxiosInstance.put(`/grade_eight/${initialData.id}/`, data)
+        : AxiosInstance.post(`/grade_eight/`, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("gradeeightData");
+        console.log("Data invalidated");
+        queryClient.refetchQueries("gradeeightData");
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      },
+      onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  );
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>
-
       {/* <Typography variant="h5" gutterBottom align="center">
             Grade 8
           </Typography> */}
@@ -59,7 +78,7 @@ const Grade8 = () => {
         elevation={0}
         sx={{
           paddingY: "20px",
-          borderRadius: "8px"
+          borderRadius: "8px",
         }}
       >
         <Stack spacing={3}>
@@ -67,15 +86,15 @@ const Grade8 = () => {
             name="name"
             control={control}
             render={({ field }) => (
-              <TextField
-                label="Student Name"
-                {...field}
-                fullWidth
-              />
+              <TextField label="Student Name" {...field} fullWidth />
             )}
           />
 
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ flexWrap: "wrap" }}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{ flexWrap: "wrap" }}
+          >
             <Controller
               name="age"
               control={control}
@@ -112,7 +131,11 @@ const Grade8 = () => {
             />
           </Stack>
 
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ flexWrap: "wrap" }}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{ flexWrap: "wrap" }}
+          >
             <Controller
               name="section"
               control={control}
@@ -120,7 +143,15 @@ const Grade8 = () => {
                 <SingleSelect
                   label="Section"
                   {...field}
-                  options={["Gabriel", "Michael", "Judiel", "Raphael", "Sealtiel", "Uriel"]}
+                  options={[
+                    "Vincent",
+                    "Benedict",
+                    "Charles",
+                    "Christopher",
+                    "Francis",
+                    "Martin",
+                    "Sebastian"
+                  ]}
                   sx={{ flex: 1, minWidth: "200px" }}
                 />
               )}
@@ -151,7 +182,11 @@ const Grade8 = () => {
             />
           </Stack>
 
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ flexWrap: "wrap" }}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{ flexWrap: "wrap" }}
+          >
             <Controller
               name="worry"
               control={control}
@@ -190,7 +225,11 @@ const Grade8 = () => {
             />
           </Stack>
 
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ flexWrap: "wrap" }}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{ flexWrap: "wrap" }}
+          >
             <Controller
               name="lie"
               control={control}
@@ -219,61 +258,99 @@ const Grade8 = () => {
               name="c"
               control={control}
               render={({ field }) => (
-                <TextField label="C" {...field} sx={{ flex: 1, minWidth: "200px" }} />
+                <TextField
+                  label="C"
+                  {...field}
+                  sx={{ flex: 1, minWidth: "200px" }}
+                />
               )}
             />
           </Stack>
 
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ flexWrap: "wrap" }}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{ flexWrap: "wrap" }}
+          >
             <Controller
               name="si"
               control={control}
               render={({ field }) => (
-                <TextField label="SI" {...field} sx={{ flex: 1, minWidth: "200px" }} />
+                <TextField
+                  label="SI"
+                  {...field}
+                  sx={{ flex: 1, minWidth: "200px" }}
+                />
               )}
             />
             <Controller
               name="w"
               control={control}
               render={({ field }) => (
-                <TextField label="W" {...field} sx={{ flex: 1, minWidth: "200px" }} />
+                <TextField
+                  label="W"
+                  {...field}
+                  sx={{ flex: 1, minWidth: "200px" }}
+                />
               )}
             />
             <Controller
               name="npr"
               control={control}
               render={({ field }) => (
-                <TextField label="NPR" {...field} sx={{ flex: 1, minWidth: "200px" }} />
+                <TextField
+                  label="NPR"
+                  {...field}
+                  sx={{ flex: 1, minWidth: "200px" }}
+                />
               )}
             />
           </Stack>
 
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ flexWrap: "wrap" }}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{ flexWrap: "wrap" }}
+          >
             <Controller
               name="a_s"
               control={control}
               render={({ field }) => (
-                <TextField label="AS" {...field} sx={{ flex: 1, minWidth: "200px" }} />
+                <TextField
+                  label="AS"
+                  {...field}
+                  sx={{ flex: 1, minWidth: "200px" }}
+                />
               )}
             />
             <Controller
               name="l"
               control={control}
               render={({ field }) => (
-                <TextField label="L" {...field} sx={{ flex: 1, minWidth: "200px" }} />
+                <TextField
+                  label="L"
+                  {...field}
+                  sx={{ flex: 1, minWidth: "200px" }}
+                />
               )}
             />
             <Controller
               name="pi"
               control={control}
               render={({ field }) => (
-                <TextField label="PI" {...field} sx={{ flex: 1, minWidth: "200px" }} />
+                <TextField
+                  label="PI"
+                  {...field}
+                  sx={{ flex: 1, minWidth: "200px" }}
+                />
               )}
             />
           </Stack>
 
           {/* Submit Button */}
-          <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
+          >
             <Button
               variant="contained"
               color="primary"
@@ -285,7 +362,6 @@ const Grade8 = () => {
           </Box>
         </Stack>
       </Paper>
-
     </form>
   );
 };

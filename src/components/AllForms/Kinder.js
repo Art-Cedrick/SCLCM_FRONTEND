@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -12,8 +12,10 @@ import {
 import { useForm, Controller } from "react-hook-form"; // Import Controller
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios"; // Axios instance
+import { useMutation, useQueryClient } from "react-query";
 
-const Kinder = () => {
+const Kinder = ({ initialData, onClose }) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
     name: "",
     sex: "",
@@ -54,51 +56,32 @@ const Kinder = () => {
     defaultValues: defaultValues,
   });
 
-  // Submit handler
-  const submission = (data) => {
-    AxiosInstance.post(`/kinder/`, {
-      name: data.name,
-      sex: data.sex,
-      dateofbirth: data.dateofbirth,
-      address: data.address,
-      pregm: data.pregm,
-      presgm: data.presgm,
-      prefm: data.prefm,
-      presfm: data.presfm,
-      presh: data.presh,
-      pressh: data.pressh,
-      presrl: data.presrl,
-      preel: data.preel,
-      presel: data.presel,
-      prec: data.prec,
-      presc: data.presc,
-      prescalesum: data.prescalesum,
-      prestandardscore: data.prestandardscore,
-      preverbalint: data.preverbalint,
-      postgm: data.postgm,
-      postsgm: data.postsgm,
-      postfm: data.postfm,
-      postsfm: data.postsfm,
-      postsh: data.postsh,
-      postssh: data.postssh,
-      postrl: data.postrl,
-      postsrl: data.postsrl,
-      postel: data.postel,
-      postsel: data.postsel,
-      postc: data.postc,
-      postsc: data.postsc,
-      postscalesum: data.postscalesum,
-      poststandardscore: data.poststandardscore,
-      postverbalint: data.postverbalint,
-    })
-      .then((response) => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch((error) => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) =>
+      initialData
+        ? AxiosInstance.put(`/kinder/${initialData.id}/`, data)
+        : AxiosInstance.post(`/kinder/`, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("kinderData");
+        console.log("Data invalidated");
+        queryClient.refetchQueries("kinderData");
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      },
+      onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  );
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>
@@ -291,7 +274,11 @@ const Kinder = () => {
                   name="prestandardscore"
                   control={control}
                   render={({ field }) => (
-                    <TextField label="Pre Standard Score" {...field} fullWidth />
+                    <TextField
+                      label="Pre Standard Score"
+                      {...field}
+                      fullWidth
+                    />
                   )}
                 />
                 <Controller
@@ -416,7 +403,11 @@ const Kinder = () => {
                   name="poststandardscore"
                   control={control}
                   render={({ field }) => (
-                    <TextField label="Post Standard Score" {...field} fullWidth />
+                    <TextField
+                      label="Post Standard Score"
+                      {...field}
+                      fullWidth
+                    />
                   )}
                 />
                 <Controller
@@ -429,7 +420,13 @@ const Kinder = () => {
               </Stack>
 
               {/* Submit Button */}
-              <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: 2,
+                }}
+              >
                 <Button
                   variant="contained"
                   color="primary"

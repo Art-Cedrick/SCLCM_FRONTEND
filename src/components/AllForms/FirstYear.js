@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -12,8 +12,11 @@ import {
 import { useForm, Controller } from "react-hook-form"; // Import Controller
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
-const FirstYear = () => {
+
+const FirstYear = ({initialData, onClose}) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
     name: "",
     age: "",
@@ -36,21 +39,32 @@ const FirstYear = () => {
     asm: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({
-    defaultValues: defaultValues,
-  });
+  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
 
-  // Submit handler
-  const submission = (data) => {
-    AxiosInstance.post(`/first_year/`, data)
-      .then((response) => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch((error) => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) => 
+      initialData
+      ? AxiosInstance.put(`/first_year/${initialData.id}/`, data)
+      : AxiosInstance.post(`/first_Year/`, data), {
+      onSuccess: () => {
+        queryClient.invalidateQueries('firstyearData');
+        console.log("Data invalidated");
+        queryClient.refetchQueries('firstyearData');
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      }, onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  )
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>

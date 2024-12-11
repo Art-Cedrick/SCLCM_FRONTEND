@@ -62,32 +62,32 @@ const Example = () => {
 
   const columns = useMemo(
     () => [
-      { accessorKey: "studentname", header: "Student Name", size: 150 },
+      { accessorKey: "name", header: "Student Name", size: 150 },
       { accessorKey: "age", header: "Age", size: 150 },
       { accessorKey: "sex", header: "Sex", size: 200 },
       { accessorKey: "section", header: "Section", size: 150 },
       { accessorKey: "tot", header: "Total Score", size: 150 },
       { accessorKey: "beh", header: "Behavioral Adjustment", size: 200 },
       {
-        accessorKey: "int",
+        accessorKey: "inte",
         header: "Intellectual and School Status",
         size: 200,
       },
       {
-        accessorKey: "phv",
+        accessorKey: "phy",
         header: "Pysical Apperance and Attribute",
         size: 200,
       },
       { accessorKey: "fre", header: "Freedom from Anxiety", size: 200 },
-      { accessorKey: "pop", header: "Popularity", size: 200 },
+      { accessorKey: "popularity", header: "Popularity", size: 200 },
       { accessorKey: "hap", header: "Happiness and Satisfaction", size: 200 },
-      { accessorKey: "py", header: "PY (Numerical)", size: 200 },
-      { accessorKey: "beh", header: "BEH (Numerical)", size: 200 },
-      { accessorKey: "int", header: "INT (Numerical)", size: 200 },
-      { accessorKey: "phy", header: "PHY (Numerical)", size: 200 },
-      { accessorKey: "fre", header: "FRE (Numerical)", size: 200 },
-      { accessorKey: "pop", header: "POP (Numerical)", size: 200 },
-      { accessorKey: "hap", header: "HAP (Numerical)", size: 200 },
+      { accessorKey: "py_num", header: "PY (Numerical)", size: 200 },
+      { accessorKey: "beh_num", header: "BEH (Numerical)", size: 200 },
+      { accessorKey: "int_num", header: "INT (Numerical)", size: 200 },
+      { accessorKey: "phy_num", header: "PHY (Numerical)", size: 200 },
+      { accessorKey: "fre_num", header: "FRE (Numerical)", size: 200 },
+      { accessorKey: "popularity_num", header: "POP (Numerical)", size: 200 },
+      { accessorKey: "hap_num", header: "HAP (Numerical)", size: 200 },
     ],
     []
   );

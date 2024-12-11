@@ -1,6 +1,4 @@
-
-
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -9,41 +7,60 @@ import {
   CardContent,
   Stack,
   Button,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
-const Grade10 = () => {
+const Grade10 = ({ initialData, onClose }) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
-    name: '',
-    age: '',
-    sex: '',
-    gradeLevel: '',
-    section: '',
-    raw_score: '',
-    percentile: '',
-    stanine: '',
-    verbal_interpretation: '',
+    name: "",
+    age: "",
+    sex: "",
+    gradeLevel: "",
+    section: "",
+    raw_score: "",
+    percentile: "",
+    stanine: "",
+    verbal_interpretation: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
+  const { control, handleSubmit, reset, setValue } = useForm({
+    defaultValues: defaultValues,
+  });
 
-  const submission = (data) => {
-    AxiosInstance.post(`/grade_ten/`, data)
-      .then(response => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch(error => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) =>
+      initialData
+        ? AxiosInstance.put(`/grade_ten/${initialData.id}/`, data)
+        : AxiosInstance.post(`/grade_ten/`, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("gradetenData");
+        console.log("Data invalidated");
+        queryClient.refetchQueries("gradetenData");
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      },
+      onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  );
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>
-
       {/* <Typography variant="h5" gutterBottom align="center">
             Grade 10
           </Typography> */}
@@ -105,12 +122,12 @@ const Grade10 = () => {
                   label="Section:"
                   {...field}
                   options={[
-                    "Gabriel",
-                    "Michael",
-                    "Judiel",
-                    "Raphael",
-                    "Sealtiel",
-                    "Uriel",
+                    "James",
+                    "John",
+                    "Luke",
+                    "Mathew",
+                    "Paul",
+                    "Peter",
                   ]}
                   fullWidth
                 />

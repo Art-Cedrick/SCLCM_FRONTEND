@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -126,12 +125,12 @@ const PageTwo = ({ control }) => (
               label="Problems Encountered"
               {...field}
               options={[
-                "Lack of Quality Time",
-                "Parental Pressure",
-                "Sibling Rivalry",
-                "Financial Discomfort",
-                "Parent-child Misunderstanding",
-                "Others",
+                "lack of quality time",
+                "parental pressure",
+                "sibling rivalry",
+                "financial discomfort",
+                "parent-child misunderstanding",
+                "others",
               ]}
               sx={{ width: "50%" }}
             />
@@ -178,14 +177,14 @@ const PageTwo = ({ control }) => (
               {...field}
               label="Problems Encountered"
               options={[
-                "Incompatibilities",
-                "Adjustment Difficulties",
-                "Lack of Communication",
-                "Boy-Girl Relationships",
-                "Mistrust",
-                "Bullying",
-                "Peer Pressure",
-                "Others",
+                "incompatibilities",
+                "adjustment Difficulties",
+                "lack of Communication",
+                "boy-girl relationships",
+                "mistrust",
+                "bullying",
+                "peer pressure",
+                "others",
               ]}
               sx={{ width: "50%" }}
             />
@@ -232,14 +231,14 @@ const PageTwo = ({ control }) => (
               {...field}
               label="Problems Encountered"
               options={[
-                "Physical Disabilities",
-                "Stress",
-                "Hospitalization",
-                "Gender Confusion",
-                "Poor Health",
-                "Low Self-Esteem",
-                "Psychological Disturbances",
-                "Others",
+                "physical disabilities",
+                "stress",
+                "hospitalization",
+                "gender confusion",
+                "poor health",
+                "low self-esteem",
+                "psychological disturbance",
+                "others",
               ]}
               sx={{ width: "50%" }}
             />
@@ -299,17 +298,17 @@ const PageThree = ({ control }) => (
               {...field}
               label="Problems Encountered"
               options={[
-                "Failing Marks",
-                "Misbehavior",
-                "Transition to School Life",
-                "Learning Difficulties",
-                "Low Motivation",
-                "Teachers",
-                "Laziness",
-                "Difficult Subjects",
-                "Frequent D.O. Client",
-                "Failed to Comply Requirements",
-                "Others",
+                "failing marks",
+                "misbehavior",
+                "transition to School Life",
+                "learning Difficulties",
+                "low Motivation",
+                "teachers",
+                "laziness",
+                "difficult Subjects",
+                "frequent D.O. Client",
+                "failed to Comply Requirements",
+                "others",
               ]}
               sx={{ width: "50%" }}
             />
@@ -369,12 +368,12 @@ const PageFour = ({ control }) => (
               {...field}
               label="Problems Encountered"
               options={[
-                "Undecided",
-                "No Identified",
-                "Confusion",
-                "Parent's Choice",
-                "Change of Interest",
-                "Others",
+                "undecided",
+                "no identified",
+                "confusion",
+                "parent's choice",
+                "change of interest",
+                "others",
               ]}
               sx={{ width: "50%" }}
             />
@@ -449,10 +448,10 @@ const PageFive = ({ control }) => (
               {...field}
               label="Recommendation"
               options={[
-                "For Follow-up",
-                "Conference with parent/guardian",
-                "Conference with adviser/subject teachers",
-                "For Assessment",
+                "for follow-up",
+                "conference with parent/guardian",
+                "conference with adviser/subject teacher",
+                "for assessment",
               ]}
               sx={{ width: "50%" }}
             />
@@ -500,30 +499,31 @@ const PageFive = ({ control }) => (
 );
 
 const RoutineInterview = ({ initialData, onClose }) => {
-
   const queryClient = useQueryClient();
 
   const defaultValues = {
-    name: '',
-    section: '',
-    grade: '',
-    date: '',
-    family_problem: '',
-    family_details: '',
-    friends_problem: '',
-    friends_details: '',
-    health_problem: '',
-    health_details: '',
-    academic_problem: '',
-    academic_details: '',
-    career_problem: '',
-    career_details: '',
-    remarks: '',
-    recommendation: '',
-    other_recommendation: '',
-  }
+    name: "",
+    section: "",
+    grade: "",
+    date: "",
+    family_problem: "",
+    family_details: "",
+    friends_problem: "",
+    friends_details: "",
+    health_problem: "",
+    health_details: "",
+    academic_problem: "",
+    academic_details: "",
+    career_problem: "",
+    career_details: "",
+    remarks: "",
+    recommendation: "",
+    other_recommendation: "",
+  };
 
-  const { handleSubmit, reset, control } = useForm({ defaultValues: initialData || defaultValues });
+  const { handleSubmit, reset, control } = useForm({
+    defaultValues: initialData || defaultValues,
+  });
 
   useEffect(() => {
     if (initialData) reset(initialData);
@@ -533,55 +533,57 @@ const RoutineInterview = ({ initialData, onClose }) => {
     (data) =>
       initialData
         ? AxiosInstance.put(`/routine_interview/${initialData.id}/`, {
-          name: data.name,
-          section: data.section,
-          grade: data.grade,
-          date: data.date,
-          family_problem: data.family_problem,
-          family_details: data.family_details,
-          friends_problem: data.friends_problem,
-          friends_details: data.friends_details,
-          health_problem: data.health_problem,
-          health_details: data.health_details,
-          academic_problem: data.academic_problem,
-          academic_details: data.academic_details,
-          career_problem: data.career_problem,
-          career_details: data.career_details,
-          remarks: data.remarks,
-          recommendation: data.recommendation,
-          other_recommendation: data.other_recommendation,
-        })
+            name: data.name,
+            section: data.section,
+            grade: data.grade,
+            date: data.date,
+            family_problem: data.family_problem,
+            family_details: data.family_details,
+            friends_problem: data.friends_problem,
+            friends_details: data.friends_details,
+            health_problem: data.health_problem,
+            health_details: data.health_details,
+            academic_problem: data.academic_problem,
+            academic_details: data.academic_details,
+            career_problem: data.career_problem,
+            career_details: data.career_details,
+            remarks: data.remarks,
+            recommendation: data.recommendation,
+            other_recommendation: data.other_recommendation,
+          })
         : AxiosInstance.post(`/routine_interview/`, {
-          name: data.name,
-          section: data.section,
-          grade: data.grade,
-          date: data.date,
-          family_problem: data.family_problem,
-          family_details: data.family_details,
-          friends_problem: data.friends_problem,
-          friends_details: data.friends_details,
-          health_problem: data.health_problem,
-          health_details: data.health_details,
-          academic_problem: data.academic_problem,
-          academic_details: data.academic_details,
-          career_problem: data.career_problem,
-          career_details: data.career_details,
-          remarks: data.remarks,
-          recommendation: data.recommendation,
-          other_recommendation: data.other_recommendation,
-        }), {
-    onSuccess: () => {
-      queryClient.invalidateQueries('routineData');
-      console.log("Data invalidated");
-      queryClient.refetchQueries('routineData');
-      console.log("Data refetched");
-      reset();
-      onClose();
-      console.log("Data submitted and table refreshed");
-    }, onError: (error) => {
-      console.error("Error submitting data", error);
-    },
-  }
+            name: data.name,
+            section: data.section,
+            grade: data.grade,
+            date: data.date,
+            family_problem: data.family_problem,
+            family_details: data.family_details,
+            friends_problem: data.friends_problem,
+            friends_details: data.friends_details,
+            health_problem: data.health_problem,
+            health_details: data.health_details,
+            academic_problem: data.academic_problem,
+            academic_details: data.academic_details,
+            career_problem: data.career_problem,
+            career_details: data.career_details,
+            remarks: data.remarks,
+            recommendation: data.recommendation,
+            other_recommendation: data.other_recommendation,
+          }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("routineData");
+        console.log("Data invalidated");
+        queryClient.refetchQueries("routineData");
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      },
+      onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
   );
 
   const submission = (data) => mutation.mutate(data);
@@ -597,13 +599,12 @@ const RoutineInterview = ({ initialData, onClose }) => {
   };
 
   return (
-
     <form onSubmit={handleSubmit(submission)}>
       <Paper
         elevation={0}
         sx={{
           paddingY: "20px",
-          borderRadius: "8px"
+          borderRadius: "8px",
         }}
       >
         {page === 1 && <PageOne control={control} />}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -12,8 +12,10 @@ import {
 import { useForm, Controller } from "react-hook-form"; // Import Controller
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
-const ThirdYear = () => {
+const ThirdYear = ({initialData, onClose}) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
     name: "",
     age: "",
@@ -33,21 +35,32 @@ const ThirdYear = () => {
     deviation: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({
-    defaultValues: defaultValues,
-  });
+  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
 
-  // Submit handler
-  const submission = (data) => {
-    AxiosInstance.post(`/third_year/`, data)
-      .then((response) => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch((error) => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) => 
+      initialData
+      ? AxiosInstance.put(`/third_year/${initialData.id}/`, data)
+      : AxiosInstance.post(`/third_year/`, data), {
+      onSuccess: () => {
+        queryClient.invalidateQueries('thirdyearData');
+        console.log("Data invalidated");
+        queryClient.refetchQueries('thirdyearData');
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      }, onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  )
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>
@@ -90,11 +103,19 @@ const ThirdYear = () => {
                 />
               )}
             />
-            <SingleSelect
-              label="Sex:"
+            <Controller
               name="sex"
               control={control}
-              options={["M", "F"]}
+              render={({ field }) => (
+
+                <SingleSelect
+                  {...field}
+                  label="Sex:"
+
+
+                  options={["M", "F"]}
+                />
+              )}
             />
           </Stack>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -110,11 +131,19 @@ const ThirdYear = () => {
                 />
               )}
             />
-            <SingleSelect
-              label="Course:"
+           <Controller
               name="course"
               control={control}
-              options={["Course 1", "Course 2", "Course 3", "Course 4"]}
+              render={({ field }) => (
+
+                <SingleSelect
+                  {...field}
+                  label="Course:"
+
+
+                  options={["Course1", "Course2"]}
+                />
+              )}
             />
           </Stack>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>

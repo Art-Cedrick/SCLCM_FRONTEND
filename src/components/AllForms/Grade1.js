@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -12,8 +12,10 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
-const Grade1 = () => {
+const Grade1 = ({ initialData, onClose }) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
     name: "",
     age: "",
@@ -47,48 +49,35 @@ const Grade1 = () => {
     defaultValues: defaultValues,
   });
 
-  // Submit handler
-  const submission = (data) => {
-    AxiosInstance.post(`/grade_one/`, {
-      name: data.name,
-      age: data.age,
-      sex: data.sex,
-      gradeLevel: data.gradeLevel,
-      section: data.section,
-      test: data.test,
-      rawscore: data.rawscore,
-      percentile: data.percentile,
-      stanine: data.stanine,
-      rating: data.rating,
-      vocab: data.vocab,
-      letter: data.letter,
-      visual: data.visual,
-      auditory: data.auditory,
-      comp: data.comp,
-      number: data.number,
-      writing: data.writing,
-      spelling: data.spelling,
-      q_vocab: data.q_vocab,
-      q_letter: data.q_letter,
-      q_visual: data.q_visual,
-      q_auditory: data.q_auditory,
-      q_comp: data.q_comp,
-      q_number: data.number,
-      q_writing: data.q_writing,
-      q_spelling: data.q_spelling,
-    })
-      .then((response) => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch((error) => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) =>
+      initialData
+        ? AxiosInstance.put(`/grade_one/${initialData.id}/`, data)
+        : AxiosInstance.post(`/grade_one/`, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("gradeoneData");
+        console.log("Data invalidated");
+        queryClient.refetchQueries("gradeoneData");
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      },
+      onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  );
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>
-
       {/* <Typography variant="h5" gutterBottom align="center">
             Grade 1
           </Typography> */}

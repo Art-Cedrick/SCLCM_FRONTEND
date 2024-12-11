@@ -1,6 +1,4 @@
-
-
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -9,41 +7,60 @@ import {
   CardContent,
   Stack,
   Button,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
+import { useMutation, useQueryClient } from "react-query";
 
-const Grade5 = () => {
+const Grade5 = ({ initialData, onClose }) => {
+  const queryClient = useQueryClient();
   const defaultValues = {
-    name: '',
-    age: '',
-    sex: '',
-    gradeLevel: '',
-    section: '',
-    raw_score: '',
-    percentile: '',
-    stanine: '',
-    verbal_interpretation: '',
+    name: "",
+    age: "",
+    sex: "",
+    gradeLevel: "",
+    section: "",
+    raw_score: "",
+    percentile: "",
+    stanine: "",
+    verbal_interpretation: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
+  const { control, handleSubmit, reset, setValue } = useForm({
+    defaultValues: defaultValues,
+  });
 
-  const submission = (data) => {
-    AxiosInstance.post(`/grade_five/`, data)
-      .then(response => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
-      })
-      .catch(error => {
-        console.error("Error submitting data:", error);
-      });
-  };
+  useEffect(() => {
+    if (initialData) reset(initialData);
+  }, [initialData, reset]);
+
+  const mutation = useMutation(
+    (data) =>
+      initialData
+        ? AxiosInstance.put(`/grade_five/${initialData.id}/`, data)
+        : AxiosInstance.post(`/grade_five/`, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("gradefiveData");
+        console.log("Data invalidated");
+        queryClient.refetchQueries("gradefiveData");
+        console.log("Data refetched");
+        reset();
+        onClose();
+        console.log("Data submitted and table refreshed");
+      },
+      onError: (error) => {
+        console.error("Error submitting data", error);
+      },
+    }
+  );
+
+  const submission = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(submission)}>
-
       {/* <Typography variant="h5" gutterBottom align="center">
             Grade 5
           </Typography> */}
@@ -61,11 +78,7 @@ const Grade5 = () => {
               name="name"
               control={control}
               render={({ field }) => (
-                <TextField
-                  label="Student Name"
-                  {...field}
-                  fullWidth
-                />
+                <TextField label="Student Name" {...field} fullWidth />
               )}
             />
           </Stack>
@@ -95,11 +108,7 @@ const Grade5 = () => {
               name="gradeLevel"
               control={control}
               render={({ field }) => (
-                <TextField
-                  label="Grade Level"
-                  {...field}
-                  fullWidth
-                />
+                <TextField label="Grade Level" {...field} fullWidth />
               )}
             />
           </Stack>
@@ -128,22 +137,14 @@ const Grade5 = () => {
               name="raw_score"
               control={control}
               render={({ field }) => (
-                <TextField
-                  label="Raw Score"
-                  {...field}
-                  fullWidth
-                />
+                <TextField label="Raw Score" {...field} fullWidth />
               )}
             />
             <Controller
               name="percentile"
               control={control}
               render={({ field }) => (
-                <TextField
-                  label="Percentile"
-                  {...field}
-                  fullWidth
-                />
+                <TextField label="Percentile" {...field} fullWidth />
               )}
             />
           </Stack>
@@ -180,7 +181,12 @@ const Grade5 = () => {
 
         {/* Submit Button */}
         <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
-          <Button variant="contained" color="primary" type="submit" sx={{ marginTop: "10px" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            sx={{ marginTop: "10px" }}
+          >
             Submit
           </Button>
         </Box>
