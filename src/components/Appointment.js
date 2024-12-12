@@ -16,7 +16,7 @@
 //   FormControl,
 //   InputLabel,
 //   Box,
-//   Grid,
+//   Grid, // Using Grid for better layout control
 // } from "@mui/material";
 // import { useForm, Controller } from "react-hook-form";
 // import AxiosInstance from "./AllForms/Axios";
@@ -110,34 +110,45 @@
 //   };
 
 //   return (
-//     <Box sx={{ padding: "20px" }}>
-//       <Typography variant="h5" align="center" gutterBottom>
+//     <Box sx={{ padding: "20px", backgroundColor: "#f5f5f5", height:"80vh" }}>
+//       <Typography variant="h5" align="center" gutterBottom sx={{ color: "#003366" }}>
 //         Appointment Scheduler
 //       </Typography>
 
 //       {/* Add Appointment Button */}
 //       <Box sx={{ display: "flex", justifyContent: "center", marginBottom: 2 }}>
-//         <Button variant="contained" color="primary" onClick={() => setOpenDialog(true)}>
+//         <Button
+//           variant="contained"
+//           color="primary"
+//           onClick={() => setOpenDialog(true)}
+//           sx={{ backgroundColor: "#003366", "&:hover": { backgroundColor: "#004c8c" } }}
+//         >
 //           Add Appointment
 //         </Button>
 //       </Box>
 
-//       {/* Appointment Cards */}
-//       <Grid container spacing={2}>
+//       {/* Appointment Cards using Grid layout */}
+//       <Grid container spacing={3} justifyContent="center">
 //         {appointments.length === 0 ? (
-//           <Grid item xs={12}>
-//             <Paper elevation={3} sx={{ padding: 2, textAlign: "center" }}>
-//               <Typography variant="h6" color="textSecondary">
-//                 No appointments scheduled yet.
-//               </Typography>
-//             </Paper>
-//           </Grid>
+//           <Paper elevation={3} sx={{ padding: 2, textAlign: "center", backgroundColor: "#ffffff", width: '50%', marginTop:"20px" }}>
+//             <Typography variant="h6" color="textSecondary">
+//               No appointments scheduled yet.
+//             </Typography>
+//           </Paper>
 //         ) : (
 //           appointments.map((appointment, index) => (
 //             <Grid item xs={12} sm={6} md={4} key={index}>
-//               <Card elevation={3}>
+//               <Card
+//                 elevation={3}
+//                 sx={{
+//                   backgroundColor: "#ffffff",
+//                   marginBottom: 2, // Add space between rows
+//                 }}
+//               >
 //                 <CardContent>
-//                   <Typography variant="h6">{appointment.name}</Typography>
+//                   <Typography variant="h6" sx={{ color: "#003366" }}>
+//                     {appointment.name}
+//                   </Typography>
 //                   <Typography>Student Number: {appointment.sr_code}</Typography>
 //                   <Typography>Grade: {appointment.grade}</Typography>
 //                   <Typography>Section: {appointment.section}</Typography>
@@ -153,6 +164,7 @@
 //                       variant="contained"
 //                       color="success"
 //                       onClick={() => confirmDelete(appointment.id)}
+//                       sx={{ backgroundColor: "#28a745", "&:hover": { backgroundColor: "#218838" } }}
 //                     >
 //                       Done
 //                     </Button>
@@ -166,8 +178,8 @@
 
 //       {/* Dialog for Adding Appointment */}
 //       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
-//         <DialogTitle>Add New Appointment</DialogTitle>
-//         <DialogContent>
+//         <DialogTitle sx={{ backgroundColor: "#003366", color: "#ffffff", marginBottom:"10px" }}>Add New Appointment</DialogTitle>
+//         <DialogContent sx={{ backgroundColor: "#f5f5f5" }}>
 //           <form onSubmit={handleSubmit(onSubmit)}>
 //             <Stack spacing={2}>
 //               <Controller
@@ -180,41 +192,42 @@
 //                     label="Student Number"
 //                     error={!!error}
 //                     helperText={error ? error.message : ""}
+//                     sx={{ backgroundColor: "#ffffff" }}
 //                   />
 //                 )}
 //               />
 //               <Controller
 //                 name="name"
 //                 control={control}
-//                 render={({ field }) => <TextField {...field} label="Name" />}
+//                 render={({ field }) => <TextField {...field} label="Name" sx={{ backgroundColor: "#ffffff" }} />}
 //               />
 //               <Controller
 //                 name="grade"
 //                 control={control}
-//                 render={({ field }) => <TextField {...field} label="Grade" />}
+//                 render={({ field }) => <TextField {...field} label="Grade" sx={{ backgroundColor: "#ffffff" }} />}
 //               />
 //               <Controller
 //                 name="section"
 //                 control={control}
-//                 render={({ field }) => <TextField {...field} label="Section" />}
+//                 render={({ field }) => <TextField {...field} label="Section" sx={{ backgroundColor: "#ffffff" }} />}
 //               />
 //               <Controller
 //                 name="date"
 //                 control={control}
-//                 render={({ field }) => <TextField {...field} type="date" />}
+//                 render={({ field }) => <TextField {...field} type="date" sx={{ backgroundColor: "#ffffff" }} />}
 //               />
 //               <Controller
 //                 name="time"
 //                 control={control}
-//                 render={({ field }) => <TextField {...field} type="time" />}
+//                 render={({ field }) => <TextField {...field} type="time" sx={{ backgroundColor: "#ffffff" }} />}
 //               />
 //               <FormControl fullWidth>
-//                 <InputLabel>Purpose</InputLabel>
+//                 <InputLabel sx={{ color: "#003366" }}>Purpose</InputLabel>
 //                 <Controller
 //                   name="purpose"
 //                   control={control}
 //                   render={({ field }) => (
-//                     <Select {...field} label="Purpose">
+//                     <Select {...field} label="Purpose" sx={{ backgroundColor: "#ffffff" }}>
 //                       <MenuItem value="Routine Interview">Routine Interview</MenuItem>
 //                       <MenuItem value="Referral">Referral</MenuItem>
 //                       <MenuItem value="Individual Planning">Individual Planning</MenuItem>
@@ -228,17 +241,17 @@
 //                 <Controller
 //                   name="other_purpose"
 //                   control={control}
-//                   render={({ field }) => <TextField {...field} placeholder="Specify if others" />}
+//                   render={({ field }) => <TextField {...field} placeholder="Specify if others" sx={{ backgroundColor: "#ffffff" }} />}
 //                 />
 //               )}
 //             </Stack>
 //           </form>
 //         </DialogContent>
-//         <DialogActions>
-//           <Button onClick={() => setOpenDialog(false)} color="secondary">
+//         <DialogActions sx={{ backgroundColor: "#003366" }}>
+//           <Button onClick={() => setOpenDialog(false)} color="secondary" sx={{ color: "#ffffff" }}>
 //             Cancel
 //           </Button>
-//           <Button onClick={handleSubmit(onSubmit)} color="primary">
+//           <Button onClick={handleSubmit(onSubmit)} color="primary" sx={{ color: "#ffffff" }}>
 //             Submit
 //           </Button>
 //         </DialogActions>
@@ -246,15 +259,19 @@
 
 //       {/* Dialog for Deleting Appointment */}
 //       <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-//         <DialogTitle>Confirm Deletion</DialogTitle>
-//         <DialogContent>
-//           <Typography>Are you sure you want to mark this appointment as done?</Typography>
+//         <DialogTitle sx={{ backgroundColor: "#003366", color: "#ffffff" }}>
+//           Confirm Deletion
+//         </DialogTitle>
+//         <DialogContent sx={{ backgroundColor: "#f5f5f5" }}>
+//           <Typography sx={{ color: "#003366", marginTop:"10px" }}>
+//             Are you sure you want to mark this appointment as done?
+//           </Typography>
 //         </DialogContent>
-//         <DialogActions>
-//           <Button onClick={() => setOpenDeleteDialog(false)} color="secondary">
+//         <DialogActions sx={{ backgroundColor: "#003366" }}>
+//           <Button onClick={() => setOpenDeleteDialog(false)} color="secondary" sx={{ color: "#ffffff" }}>
 //             Cancel
 //           </Button>
-//           <Button onClick={handleDelete} color="primary">
+//           <Button onClick={handleDelete} color="primary" sx={{ color: "#ffffff" }}>
 //             Confirm
 //           </Button>
 //         </DialogActions>
@@ -264,6 +281,7 @@
 // };
 
 // export default Appointment;
+
 import React, { useState, useEffect } from "react";
 import {
   Typography,
@@ -286,6 +304,7 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import AxiosInstance from "./AllForms/Axios";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const Appointment = () => {
   const defaultValues = {
@@ -376,29 +395,36 @@ const Appointment = () => {
   };
 
   return (
-    <Box sx={{ padding: "20px", backgroundColor: "#f5f5f5", height:"80vh" }}>
-      <Typography variant="h5" align="center" gutterBottom sx={{ color: "#003366" }}>
-        Appointment Scheduler
+    <Box sx={{ padding: "20px", backgroundColor: "white", height:"80vh", marginTop:"-20px" }}>
+      <Typography variant="h5" align="center" gutterBottom sx={{ color: "#003366",fontFamily: "'Rozha One'" }}>
+        SCHEDULES
       </Typography>
 
       {/* Add Appointment Button */}
-      <Box sx={{ display: "flex", justifyContent: "center", marginBottom: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setOpenDialog(true)}
-          sx={{ backgroundColor: "#003366", "&:hover": { backgroundColor: "#004c8c" } }}
-        >
-          Add Appointment
-        </Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-start", marginBottom: 2 }}>
+      <Button
+    variant="contained"
+    color="primary"
+    onClick={() => setOpenDialog(true)}
+    sx={{ 
+      backgroundColor: "#003366", 
+      "&:hover": { backgroundColor: "#004c8c" },
+      fontFamily: "'Rozha One'", 
+      display: "flex", // Use flex to align the icon and text
+      alignItems: "center" // Align the text and icon
+    }}
+  >
+    <AddCircleIcon sx={{ marginRight: 1 }} /> {/* Adds the icon with a margin */}
+    Add Schedule
+  </Button>
       </Box>
 
       {/* Appointment Cards using Grid layout */}
       <Grid container spacing={3} justifyContent="center">
         {appointments.length === 0 ? (
-          <Paper elevation={3} sx={{ padding: 2, textAlign: "center", backgroundColor: "#ffffff", width: '50%', marginTop:"20px" }}>
-            <Typography variant="h6" color="textSecondary">
-              No appointments scheduled yet.
+          <Paper elevation={3} sx={{ padding: 2, textAlign: "center", backgroundColor: "#E7FBE6", width: '50%', marginTop:"20px" }}>
+            <Typography variant="h6" color="#004c8c" sx={{fontFamily: "'Rozha One'"}}>
+              No scheduled yet.
             </Typography>
           </Paper>
         ) : (
@@ -407,15 +433,15 @@ const Appointment = () => {
               <Card
                 elevation={3}
                 sx={{
-                  backgroundColor: "#ffffff",
+                  backgroundColor: "#E7FBE6",
                   marginBottom: 2, // Add space between rows
                 }}
               >
                 <CardContent>
-                  <Typography variant="h6" sx={{ color: "#003366" }}>
+                  <Typography variant="h6" sx={{ color: "black", fontWeight:"bold" }}>
                     {appointment.name}
                   </Typography>
-                  <Typography>Student Number: {appointment.sr_code}</Typography>
+                  <Typography >Student Number: {appointment.sr_code} </Typography>
                   <Typography>Grade: {appointment.grade}</Typography>
                   <Typography>Section: {appointment.section}</Typography>
                   <Typography>Date: {appointment.date}</Typography>
@@ -430,7 +456,7 @@ const Appointment = () => {
                       variant="contained"
                       color="success"
                       onClick={() => confirmDelete(appointment.id)}
-                      sx={{ backgroundColor: "#28a745", "&:hover": { backgroundColor: "#218838" } }}
+                      sx={{ backgroundColor: "#004c8c", "&:hover": { backgroundColor: "#004c8c" } }}
                     >
                       Done
                     </Button>
@@ -444,7 +470,7 @@ const Appointment = () => {
 
       {/* Dialog for Adding Appointment */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ backgroundColor: "#003366", color: "#ffffff", marginBottom:"10px" }}>Add New Appointment</DialogTitle>
+        <DialogTitle sx={{ backgroundColor: "#003366", color: "#ffffff", marginBottom:"10px",fontFamily: "'Rozha One'" }}>Add New Appointment</DialogTitle>
         <DialogContent sx={{ backgroundColor: "#f5f5f5" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2}>
@@ -458,42 +484,72 @@ const Appointment = () => {
                     label="Student Number"
                     error={!!error}
                     helperText={error ? error.message : ""}
-                    sx={{ backgroundColor: "#ffffff" }}
+                    sx={{ backgroundColor: "#ffffff" , "& .MuiInputBase-input": {
+                        fontFamily: "'Rozha One'", // Apply font to the input text
+                      },
+                      "& .MuiInputLabel-root": {
+                        fontFamily: "'Rozha One'", // Apply font to the label
+                      }, }}
                   />
                 )}
               />
               <Controller
                 name="name"
                 control={control}
-                render={({ field }) => <TextField {...field} label="Name" sx={{ backgroundColor: "#ffffff" }} />}
+                render={({ field }) => <TextField {...field} label="Name" sx={{ backgroundColor: "#ffffff", "& .MuiInputBase-input": {
+                        fontFamily: "'Rozha One'", // Apply font to the input text
+                      },
+                      "& .MuiInputLabel-root": {
+                        fontFamily: "'Rozha One'", // Apply font to the label
+                      },  }} />}
               />
               <Controller
                 name="grade"
                 control={control}
-                render={({ field }) => <TextField {...field} label="Grade" sx={{ backgroundColor: "#ffffff" }} />}
+                render={({ field }) => <TextField {...field} label="Grade" sx={{ backgroundColor: "#ffffff", "& .MuiInputBase-input": {
+                        fontFamily: "'Rozha One'", // Apply font to the input text
+                      },
+                      "& .MuiInputLabel-root": {
+                        fontFamily: "'Rozha One'", // Apply font to the label
+                      },  }} />}
               />
               <Controller
                 name="section"
                 control={control}
-                render={({ field }) => <TextField {...field} label="Section" sx={{ backgroundColor: "#ffffff" }} />}
+                render={({ field }) => <TextField {...field} label="Section" sx={{ backgroundColor: "#ffffff", "& .MuiInputBase-input": {
+                        fontFamily: "'Rozha One'", // Apply font to the input text
+                      },
+                      "& .MuiInputLabel-root": {
+                        fontFamily: "'Rozha One'", // Apply font to the label
+                      },  }} />}
               />
               <Controller
                 name="date"
                 control={control}
-                render={({ field }) => <TextField {...field} type="date" sx={{ backgroundColor: "#ffffff" }} />}
+                render={({ field }) => <TextField {...field} type="date" sx={{ backgroundColor: "#ffffff" ,"& .MuiInputBase-input": {
+                        fontFamily: "'Rozha One'", // Apply font to the input text
+                      },
+                      "& .MuiInputLabel-root": {
+                        fontFamily: "'Rozha One'", // Apply font to the label
+                      }, }} />}
               />
               <Controller
                 name="time"
                 control={control}
-                render={({ field }) => <TextField {...field} type="time" sx={{ backgroundColor: "#ffffff" }} />}
+                render={({ field }) => <TextField {...field} type="time" sx={{ backgroundColor: "#ffffff", "& .MuiInputBase-input": {
+                        fontFamily: "'Rozha One'", // Apply font to the input text
+                      },
+                      "& .MuiInputLabel-root": {
+                        fontFamily: "'Rozha One'", // Apply font to the label
+                      }, }} />}
               />
               <FormControl fullWidth>
-                <InputLabel sx={{ color: "#003366" }}>Purpose</InputLabel>
+                <InputLabel sx={{ color: "#003366", fontFamily: "'Rozha One'" }}>Purpose</InputLabel>
                 <Controller
                   name="purpose"
                   control={control}
                   render={({ field }) => (
-                    <Select {...field} label="Purpose" sx={{ backgroundColor: "#ffffff" }}>
+                    <Select {...field} label="Purpose" sx={{ backgroundColor: "#ffffff",fontFamily: "'Rozha One'" }}>
                       <MenuItem value="Routine Interview">Routine Interview</MenuItem>
                       <MenuItem value="Referral">Referral</MenuItem>
                       <MenuItem value="Individual Planning">Individual Planning</MenuItem>
@@ -507,17 +563,17 @@ const Appointment = () => {
                 <Controller
                   name="other_purpose"
                   control={control}
-                  render={({ field }) => <TextField {...field} placeholder="Specify if others" sx={{ backgroundColor: "#ffffff" }} />}
+                  render={({ field }) => <TextField {...field} placeholder="Specify if others" sx={{ backgroundColor: "#ffffff", fontFamily: "'Rozha One'"}} />}
                 />
               )}
             </Stack>
           </form>
         </DialogContent>
         <DialogActions sx={{ backgroundColor: "#003366" }}>
-          <Button onClick={() => setOpenDialog(false)} color="secondary" sx={{ color: "#ffffff" }}>
+          <Button onClick={() => setOpenDialog(false)} color="secondary" sx={{ color: "#ffffff",fontFamily: "'Rozha One'" }}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit(onSubmit)} color="primary" sx={{ color: "#ffffff" }}>
+          <Button onClick={handleSubmit(onSubmit)} color="primary" sx={{ color: "#ffffff",fontFamily: "'Rozha One'"}}>
             Submit
           </Button>
         </DialogActions>
@@ -525,19 +581,19 @@ const Appointment = () => {
 
       {/* Dialog for Deleting Appointment */}
       <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-        <DialogTitle sx={{ backgroundColor: "#003366", color: "#ffffff" }}>
+        <DialogTitle sx={{ backgroundColor: "#003366", color: "#ffffff", fontFamily: "'Rozha One'" }}>
           Confirm Deletion
         </DialogTitle>
         <DialogContent sx={{ backgroundColor: "#f5f5f5" }}>
-          <Typography sx={{ color: "#003366", marginTop:"10px" }}>
-            Are you sure you want to mark this appointment as done?
+          <Typography sx={{ color: "#003366", marginTop:"10px", fontFamily: "'Rozha One'" }}>
+            Are you sure you want to mark this scheduled as done?
           </Typography>
         </DialogContent>
         <DialogActions sx={{ backgroundColor: "#003366" }}>
-          <Button onClick={() => setOpenDeleteDialog(false)} color="secondary" sx={{ color: "#ffffff" }}>
+          <Button onClick={() => setOpenDeleteDialog(false)} color="secondary" sx={{ color: "#ffffff",fontFamily: "'Rozha One'" }}>
             Cancel
           </Button>
-          <Button onClick={handleDelete} color="primary" sx={{ color: "#ffffff" }}>
+          <Button onClick={handleDelete} color="primary" sx={{ color: "#ffffff", fontFamily: "'Rozha One'" }}>
             Confirm
           </Button>
         </DialogActions>

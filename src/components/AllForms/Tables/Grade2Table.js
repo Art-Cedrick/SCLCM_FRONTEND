@@ -54,18 +54,6 @@ const Grade2Table = () => {
       { accessorKey: "sex", header: "Sex", size: 150 },
       { accessorKey: "gradeLevel", header: "Grade Level", size: 150 },
       { accessorKey: "section", header: "Section", size: 150 },
-      { accessorKey: "totalEQ", header: "Total EQ", size: 150 },
-      {
-        accessorKey: "verbalInterpretation",
-        header: "Verbal Interpretation",
-        size: 200,
-      },
-      { accessorKey: "stanine", header: "Stanine", size: 200 },
-      { accessorKey: "sa", header: "SA", size: 200 },
-      { accessorKey: "mme", header: "MME", size: 150 },
-      { accessorKey: "sm", header: "SM", size: 200 },
-      { accessorKey: "e", header: "E", size: 200 },
-      { accessorKey: "hr", header: "HR", size: 200 }, // Corrected accessorKey
     ],
     []
   );

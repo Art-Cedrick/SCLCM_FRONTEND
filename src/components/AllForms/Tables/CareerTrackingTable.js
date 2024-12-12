@@ -61,52 +61,7 @@ const CareerTrackingTable = () => {
       { accessorKey: "name", header: "Name", size: 150 },
       { accessorKey: "grade", header: "Grade", size: 150 },
       { accessorKey: "section", header: "Section", size: 150 },
-      { accessorKey: "cle", header: "CLE", size: 150 },
-      { accessorKey: "english", header: "English", size: 150 },
-      { accessorKey: "filipino", header: "Filipino", size: 150 },
-      { accessorKey: "ap", header: "AP", size: 150 },
-      { accessorKey: "science", header: "Science", size: 150 },
-      { accessorKey: "math", header: "Math", size: 150 },
-      { accessorKey: "mapeh", header: "MAPEH", size: 150 },
-      { accessorKey: "tle", header: "TLE", size: 150 },
-      { accessorKey: "computer", header: "Computer", size: 150 },
-      { accessorKey: "fl", header: "Foreign Language", size: 150 },
-      {
-        accessorKey: "academic_track",
-        header: "Academic Track",
-        size: 150,
-      },
-      {
-        accessorKey: "other_track",
-        header: "Other Track",
-        size: 150,
-      },
-      {
-        accessorKey: "tech_voc",
-        header: "Technical Vocation",
-        size: 150,
-      },
-      { accessorKey: "other_techvoc", header: "Other Technical Vocation", size: 150 },
-      {
-        accessorKey: "preferredCourse",
-        header: "Preferred Course",
-        size: 150,
-      },
-      {
-        accessorKey: "medical_records",
-        header: "Medical Records",
-        size: 150,
-      },
-      {
-        accessorKey: "specify",
-        header: "Specify",
-        size: 150,
-      },
-      { accessorKey: "academic_status", header: "Academic Status", size: 150 },
-      { accessorKey: "psych_results", header: "Psychological Test Results", size: 150 },
-      { accessorKey: "top_one", header: "Career Recommendation 1", size: 150 },
-      { accessorKey: "top_two", header: "Career Recommendation 2", size: 150 },
-      { accessorKey: "top_three", header: "Career Recommendation 3", size: 150 },
+     
     ],
     []
   );

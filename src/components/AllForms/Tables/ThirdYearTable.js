@@ -64,44 +64,10 @@ const ThirdYearTable = () => {
     () => [
       { accessorKey: "name", header: "Student Name", size: 150 },
       { accessorKey: "age", header: "Age", size: 150 },
-      { accessorKey: "sex", header: "Sex", size: 200 },
+      { accessorKey: "sex", header: "Sex", size: 150 },
       { accessorKey: "yearLevel", header: "Year Level", size: 150 },
       { accessorKey: "course", header: "Course", size: 150 },
-      { accessorKey: "hypochondriasis", header: "Hypchondriasis", size: 150 },
-      { accessorKey: "denial", header: "Denial", size: 200 },
-      {
-        accessorKey: "interpersonal_problems",
-        header: "Interpersonal Problems",
-        size: 200,
-      },
-      { accessorKey: "alienation", header: "Alienation", size: 200 },
-      {
-        accessorKey: "persecutory_ideas",
-        header: "Persecutory Ideas",
-        size: 200,
-      },
-      { accessorKey: "anxiety", header: "Anxiety", size: 200 },
-      {
-        accessorKey: "thinking_disorder",
-        header: "Thinking Disorder",
-        size: 200,
-      },
-      {
-        accessorKey: "impulse_expression",
-        header: "Impress Expression",
-        size: 200,
-      },
-      {
-        accessorKey: "social_isolation",
-        header: "Social  Isolation",
-        size: 200,
-      },
-      {
-        accessorKey: "self_depreciation",
-        header: "Self Depreciation",
-        size: 200,
-      },
-      { accessorKey: "deviation", header: "Deviation", size: 200 },
+      
     ],
     []
   );

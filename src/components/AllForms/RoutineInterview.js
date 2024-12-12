@@ -178,8 +178,8 @@ const PageTwo = ({ control }) => (
               label="Problems Encountered"
               options={[
                 "incompatibilities",
-                "adjustment Difficulties",
-                "lack of Communication",
+                "adjustment difficulties",
+                "lack of communication",
                 "boy-girl relationships",
                 "mistrust",
                 "bullying",
@@ -300,14 +300,14 @@ const PageThree = ({ control }) => (
               options={[
                 "failing marks",
                 "misbehavior",
-                "transition to School Life",
-                "learning Difficulties",
-                "low Motivation",
+                "transition to school sife",
+                "learning sifficulties",
+                "low motivation",
                 "teachers",
                 "laziness",
-                "difficult Subjects",
-                "frequent D.O. Client",
-                "failed to Comply Requirements",
+                "difficult subjects",
+                "frequent D.O. client",
+                "failed to comply requirements",
                 "others",
               ]}
               sx={{ width: "50%" }}

@@ -64,22 +64,9 @@ const FirstYearTable = () => {
     () => [
       { accessorKey: "name", header: "Student Name", size: 150 },
       { accessorKey: "age", header: "Age", size: 150 },
-      { accessorKey: "sex", header: "Sex", size: 200 },
+      { accessorKey: "sex", header: "Sex", size: 150 },
       { accessorKey: "gradeLevel", header: "Grade Level", size: 150 },
       { accessorKey: "course", header: "Course", size: 150 },
-      { accessorKey: "vi_gstm", header: "(VI)GSTM", size: 150 },
-      { accessorKey: "vi_nt", header: "(VI)NT", size: 200 },
-      { accessorKey: "vi_epp", header: "(VI)EPP", size: 200 },
-      { accessorKey: "vi_w", header: "(VI)W", size: 200 },
-      { accessorKey: "vi_mc", header: "(VI)MC", size: 200 },
-      { accessorKey: "vi_cuca", header: "(VI)CU/CA", size: 200 },
-      { accessorKey: "vi_asm", header: "(VI)ASM", size: 200 },
-      { accessorKey: "nt", header: "NT", size: 200 },
-      { accessorKey: "epp", header: "EPP", size: 200 },
-      { accessorKey: "w", header: "W", size: 200 },
-      { accessorKey: "mc", header: "MC", size: 200 },
-      { accessorKey: "cu_ca", header: "CU/CA", size: 200 },
-      { accessorKey: "asm", header: "ASM", size: 200 },
     ],
     []
   );

@@ -64,19 +64,9 @@ const Grade12Table = () => {
     () => [
       { accessorKey: "name", header: "Student Name", size: 150 },
       { accessorKey: "age", header: "Age", size: 150 },
-      { accessorKey: "sex", header: "Sex", size: 200 },
+      { accessorKey: "sex", header: "Sex", size: 150 },
       { accessorKey: "gradeLevel", header: "Grade Level", size: 150 },
       { accessorKey: "section", header: "Section", size: 150 },
-      { accessorKey: "top1", header: "Top 1", size: 150 },
-      { accessorKey: "top2", header: "Top 2", size: 200 },
-      { accessorKey: "top3", header: "Top 3", size: 200 },
-      { accessorKey: "ad", header: "AD", size: 200 },
-      { accessorKey: "sc", header: "SC", size: 200 },
-      { accessorKey: "ass", header: "ASS", size: 200 },
-      { accessorKey: "so", header: "SO", size: 200 },
-      { accessorKey: "s", header: "S", size: 200 },
-      { accessorKey: "f", header: "F", size: 200 },
-      { accessorKey: "c", header: "C", size: 200 },
     ],
     []
   );

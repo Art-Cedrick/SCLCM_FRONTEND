@@ -66,28 +66,6 @@ const Example = () => {
       { accessorKey: "age", header: "Age", size: 150 },
       { accessorKey: "sex", header: "Sex", size: 200 },
       { accessorKey: "section", header: "Section", size: 150 },
-      { accessorKey: "tot", header: "Total Score", size: 150 },
-      { accessorKey: "beh", header: "Behavioral Adjustment", size: 200 },
-      {
-        accessorKey: "inte",
-        header: "Intellectual and School Status",
-        size: 200,
-      },
-      {
-        accessorKey: "phy",
-        header: "Pysical Apperance and Attribute",
-        size: 200,
-      },
-      { accessorKey: "fre", header: "Freedom from Anxiety", size: 200 },
-      { accessorKey: "popularity", header: "Popularity", size: 200 },
-      { accessorKey: "hap", header: "Happiness and Satisfaction", size: 200 },
-      { accessorKey: "py_num", header: "PY (Numerical)", size: 200 },
-      { accessorKey: "beh_num", header: "BEH (Numerical)", size: 200 },
-      { accessorKey: "int_num", header: "INT (Numerical)", size: 200 },
-      { accessorKey: "phy_num", header: "PHY (Numerical)", size: 200 },
-      { accessorKey: "fre_num", header: "FRE (Numerical)", size: 200 },
-      { accessorKey: "popularity_num", header: "POP (Numerical)", size: 200 },
-      { accessorKey: "hap_num", header: "HAP (Numerical)", size: 200 },
     ],
     []
   );
@@ -98,74 +76,73 @@ const Example = () => {
 
   return (
     <>
-      
-        <MaterialReactTable
-          columns={columns}
-          data={myData}
-          enableRowActions
-          renderRowActionMenuItems={({ row, table }) => [
-            <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
-              icon={
-                <IconButton>
-                  <Edit />
-                </IconButton>
-              }
-              key="edit"
-              label="Edit"
-              onClick={() => handleEdit(row)}
-              table={table}
-            />,
-            <MRT_ActionMenuItem
-              icon={
-                <IconButton>
-                  <Delete />
-                </IconButton>
-              }
-              key="delete"
-              label="Delete"
-              onClick={() => setConfirmDelete({ open: true, row })}
-              table={table}
-            />,
-          ]}
-        />
-        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-          <DialogTitle>Edit Grade Seven Form</DialogTitle>
-          <DialogContent>
-            <Grade7 initialData={editData} onClose={handleClose} />
-          </DialogContent>
-        </Dialog>
+      <MaterialReactTable
+        columns={columns}
+        data={myData}
+        enableRowActions
+        renderRowActionMenuItems={({ row, table }) => [
+          <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
+            icon={
+              <IconButton>
+                <Edit />
+              </IconButton>
+            }
+            key="edit"
+            label="Edit"
+            onClick={() => handleEdit(row)}
+            table={table}
+          />,
+          <MRT_ActionMenuItem
+            icon={
+              <IconButton>
+                <Delete />
+              </IconButton>
+            }
+            key="delete"
+            label="Delete"
+            onClick={() => setConfirmDelete({ open: true, row })}
+            table={table}
+          />,
+        ]}
+      />
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+        <DialogTitle>Edit Grade Seven Form</DialogTitle>
+        <DialogContent>
+          <Grade7 initialData={editData} onClose={handleClose} />
+        </DialogContent>
+      </Dialog>
 
-        <Dialog
-          open={confirmDelete.open}
-          onClose={() => setConfirmDelete({ open: false, row: null })}
-        >
-          <DialogTitle>Confirm Delete</DialogTitle>
-          <DialogContent>
-            <p>Are you sure you want to delete this record?</p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "10px",
-              }}
+      <Dialog
+        open={confirmDelete.open}
+        onClose={() => setConfirmDelete({ open: false, row: null })}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <p>Are you sure you want to delete this record?</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "10px",
+            }}
+          >
+            <Button
+              variant="outlined"
+              onClick={() => setConfirmDelete({ open: false, row: null })}
             >
-              <Button
-                variant="outlined"
-                onClick={() => setConfirmDelete({ open: false, row: null })}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => handleDelete(confirmDelete.row)}
-              >
-                Delete
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => handleDelete(confirmDelete.row)}
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

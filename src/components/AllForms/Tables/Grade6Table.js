@@ -51,20 +51,9 @@ const Grade6Table = () => {
     () => [
       { accessorKey: "name", header: "Student Name", size: 150 },
       { accessorKey: "age", header: " Age", size: 150 },
-      { accessorKey: "sex", header: "Sex", size: 200 },
+      { accessorKey: "sex", header: "Sex", size: 150 },
       { accessorKey: "gradeLevel", header: "Grade Level", size: 150 },
       { accessorKey: "section", header: "Section", size: 150 },
-      { accessorKey: "raw_score", header: "Raw Score", size: 150 },
-      {
-        accessorKey: "percentile",
-        header: "Percentile",
-        size: 200,
-      },
-      {
-        accessorKey: "verbal_interpretation",
-        header: "Verbal Interpretation",
-        size: 200,
-      },
     ],
     []
   );

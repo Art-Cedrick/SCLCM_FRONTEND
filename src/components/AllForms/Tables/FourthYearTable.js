@@ -63,49 +63,10 @@ const FourthYearTable = () => {
   const columns = useMemo(
     () => [
       { accessorKey: "name", header: "Student Name", size: 150 },
-      { accessorKey: "age", header: "Age", size: 200 },
+      { accessorKey: "age", header: "Age", size: 150 },
       { accessorKey: "sex", header: "Sex", size: 150 },
       { accessorKey: "gradeLevel", header: "Grade Level", size: 150 },
       { accessorKey: "course_program", header: "Course/Program", size: 150 },
-      { accessorKey: "l_raw", header: "L-Raw", size: 200 },
-      { accessorKey: "l_s", header: "L-S", size: 200 },
-      { accessorKey: "l_vi", header: "L-VI", size: 200 },
-      { accessorKey: "q_raw", header: "Q-Raw", size: 200 },
-      { accessorKey: "q_percent", header: "Q-%", size: 200 },
-      { accessorKey: "q_s", header: "Q-S", size: 200 },
-      { accessorKey: "sq_vi", header: "SQ-VI", size: 200 },
-      { accessorKey: "t_raw", header: "T-Raw", size: 200 },
-      { accessorKey: "t_percent", header: "T-%", size: 200 },
-      { accessorKey: "t_s", header: "T-S", size: 200 },
-      { accessorKey: "t_vi", header: "T-VI", size: 200 },
-      {
-        accessorKey: "kiersey",
-        header: "Kiersy Temperent Sorter",
-        size: 200,
-      },
-      {
-        accessorKey: "negotiating_persuading",
-        header: "Negotiating Persuading",
-        size: 200,
-      },
-      {
-        accessorKey: "verbal_communication",
-        header: "Verbal Communication",
-        size: 200,
-      },
-      { accessorKey: "co_op", header: "Co-op", size: 200 },
-      {
-        accessorKey: "investigating_analyzing",
-        header: "Investigating Analyzing",
-        size: 200,
-      },
-      { accessorKey: "leadership", header: "Leadership", size: 200 },
-      {
-        accessorKey: "planning_organizing",
-        header: "Planning Organizing",
-        size: 200,
-      },
-      { accessorKey: "numeracy", header: "Numeracy", size: 200 },
     ],
     []
   );
