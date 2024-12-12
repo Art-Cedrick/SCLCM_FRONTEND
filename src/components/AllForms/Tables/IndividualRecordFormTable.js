@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { MaterialReactTable, MRT_ActionMenuItem } from "material-react-table";
-import { Edit, Delete } from "@mui/icons-material";
+import { Visibility, Delete } from "@mui/icons-material";
 import {
   IconButton,
   Dialog,
@@ -102,7 +102,6 @@ const IndividualRecordFormTable = () => {
       }}>
         <Button variant="contained"  color="primary" size="small" type="submit" onClick={handleOpenForm}> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
       </div>
-
 
       <MaterialReactTable
         columns={columns}

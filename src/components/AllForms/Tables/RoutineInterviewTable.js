@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, MRT_ActionMenuItem } from "material-react-table";
 import Dayjs from "dayjs";
-import { Edit, Delete } from "@mui/icons-material";
+import { Visibility, Delete } from "@mui/icons-material";
 import {
   IconButton,
   Dialog,
@@ -99,47 +99,47 @@ const RoutineInterviewTable = () => {
         top: 8,
         zIndex: 2,
         display: "flex",
-      }}>
-        <Button variant="contained" color="primary" size="small" onClick={handleOpenForm} type="submit"> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
-      </div>
-
-      <MaterialReactTable
-        columns={columns}
-        data={myData}
-        enableRowActions
-        renderRowActionMenuItems={({ row, table }) => [
-          <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
-            icon={
-              <IconButton>
-                <Edit />
-              </IconButton>
-            }
-            key="edit"
-            label="Edit"
-            onClick={() => handleEdit(row)}
-            table={table}
-          />,
-          <MRT_ActionMenuItem
-            icon={
-              <IconButton>
-                <Delete />
-              </IconButton>
-            }
-            key="delete"
-            label="Delete"
-            onClick={() => setConfirmDelete({ open: true, row })}
-            table={table}
-          />,
-        ]}
-      />
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-        <DialogTitle style={{
-          fontWeight: "bold",
-        }}>{editData ? "Edit Routine Interview" : "New Routine Interview"}</DialogTitle>
-        <DialogContent>
-          <RoutineInterview initialData={editData} onClose={handleClose} />
-        </DialogContent>
-      </Dialog>
+        justifyContent: "center",
+        width: "100%",
+        overflowX: "auto",
+      }}
+    >
+      <div style={{ width: "1200px", height: "600px" }}>
+        <MaterialReactTable
+          columns={columns}
+          data={myData}
+          enableRowActions
+          renderRowActionMenuItems={({ row, table }) => [
+            <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
+              icon={
+                <IconButton>
+                  <Visibility />
+                </IconButton>
+              }
+              key="view"
+              label="View"
+              onClick={() => handleEdit(row)}
+              table={table}
+            />,
+            <MRT_ActionMenuItem
+              icon={
+                <IconButton>
+                  <Delete />
+                </IconButton>
+              }
+              key="delete"
+              label="Delete"
+              onClick={() => setConfirmDelete({ open: true, row })}
+              table={table}
+            />,
+          ]}
+        />
+        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+          <DialogTitle>Routine Interview Form</DialogTitle>
+          <DialogContent>
+            <RoutineInterview initialData={editData} onClose={handleClose} />
+          </DialogContent>
+        </Dialog>
 
       <Dialog
         open={confirmDelete.open}

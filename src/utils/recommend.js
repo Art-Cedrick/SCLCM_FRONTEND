@@ -150,18 +150,88 @@ const MEDICAL_RECORDS_INDUSTRIES = {
     },
 };
 
+const HOBBY_CRITERIA = {
+    CREATIVE: {
+        BUSINESS_PROCESS_OUTSOURCING: 60,
+        AGRICULTURE: 50,
+        HEALTHCARE: 40,
+        MANUFACTURING: 50,
+        CONSTRUCTION: 40,
+        FINANCIAL_SERVICES: 55,
+        TECHNOLOGY: 70,
+        TOURISM: 90,
+    },
+    INTELLECTUAL: {
+        BUSINESS_PROCESS_OUTSOURCING: 90,
+        AGRICULTURE: 70,
+        HEALTHCARE: 80,
+        MANUFACTURING: 70,
+        CONSTRUCTION: 60,
+        FINANCIAL_SERVICES: 85,
+        TECHNOLOGY: 100,
+        TOURISM: 60,
+    },
+    PHYSICAL: {
+        BUSINESS_PROCESS_OUTSOURCING: 50,
+        AGRICULTURE: 80,
+        HEALTHCARE: 60,
+        MANUFACTURING: 70,
+        CONSTRUCTION: 90,
+        FINANCIAL_SERVICES: 40,
+        TECHNOLOGY: 50,
+        TOURISM: 80,
+    },
+};
+
+const PSYCHOLOGICAL_ASSESSMENT = {
+    COGNITIVE_ABILITIES: {
+        BUSINESS_PROCESS_OUTSOURCING: 80,
+        AGRICULTURE: 70,
+        HEALTHCARE: 90,
+        MANUFACTURING: 75,
+        CONSTRUCTION: 80,
+        FINANCIAL_SERVICES: 85,
+        TECHNOLOGY: 95,
+        TOURISM: 60,
+    },
+    EMOTIONAL_INTELLIGENCE: {
+        BUSINESS_PROCESS_OUTSOURCING: 70,
+        AGRICULTURE: 65,
+        HEALTHCARE: 100,
+        MANUFACTURING: 60,
+        CONSTRUCTION: 75,
+        FINANCIAL_SERVICES: 80,
+        TECHNOLOGY: 85,
+        TOURISM: 50,
+    },
+    PERSONALITY_TRAITS: {
+        BUSINESS_PROCESS_OUTSOURCING: 85,
+        AGRICULTURE: 80,
+        HEALTHCARE: 70,
+        MANUFACTURING: 65,
+        CONSTRUCTION: 70,
+        FINANCIAL_SERVICES: 90,
+        TECHNOLOGY: 80,
+        TOURISM: 95,
+    },
+};
+
+
+
 // Edit this object to change the weight of each criteria this must be equal to 100
 const recommendationPercentageBasis = {
-    grades: 30, 
-    track: 40, 
-    academicStatus: 20,
+    grades: 25, 
+    track: 20, 
+    academicStatus: 15,
     medicalRecord: 10, 
+    hobbies: 10,
+    psych_results: 20,
 }
 
 
 // Grade classification functions
-const isAbove = (grade) => grade >= 85;
-const isAverage = (grade) => grade >= 70 && grade < 85;
+const isAbove = (grade) => grade >= 88;
+const isAverage = (grade) => grade >= 75 && grade < 88;
 
 // Helper function to calculate industry score
 const calculateIndustryScore = async (grades, criteria) => {
@@ -254,9 +324,56 @@ async function recommendIndustriesByMedicalRecord(recordStatus) {
     return industryPercentages;
 }
 
+async function recommendIndustriesByHobbies(hobbies) {
+    const hobbyScores = {
+        CREATIVE: 0,
+        INTELLECTUAL: 0,
+        PHYSICAL: 0,
+    };
+
+    // Calculate scores for each hobby classification
+    for (const hobby of hobbies) {
+        if (HOBBY_CRITERIA[hobby]) {
+            const industries = HOBBY_CRITERIA[hobby];
+            for (const [industry, percentage] of Object.entries(industries)) {
+                hobbyScores[hobby] += percentage;
+            }
+        }
+    }
+
+    return hobbyScores;
+}
+
+async function recommendIndustriesByPsychologicalAssessment(assessmentData) {
+    const industryPercentages = {};
+
+    // Iterate through each psychological category and calculate its score for each industry
+    for (const [category, values] of Object.entries(PSYCHOLOGICAL_ASSESSMENT)) {
+        const assessmentValue = assessmentData[category];  // e.g., COGNITIVE_ABILITIES, EMOTIONAL_INTELLIGENCE, etc.
+        
+        if (assessmentValue !== undefined && values[assessmentValue] !== undefined) {
+            const categoryScore = values[assessmentValue];
+
+            // Apply score to each industry, weighted by the psych_results percentage
+            for (const [industry, percentage] of Object.entries(values)) {
+                const industryScore = (recommendationPercentageBasis.psych_results * categoryScore * percentage / 10000).toFixed(2);
+                if (!industryPercentages[industry]) {
+                    industryPercentages[industry] = parseFloat(industryScore);
+                } else {
+                    industryPercentages[industry] += parseFloat(industryScore);
+                }
+            }
+        }
+    }
+
+    return industryPercentages;
+}
+
+
+
 async function recommend(studentData) {
     const resultScore = {};
-    const { grades, academicTrack, vocationalTrack, academicStatus, medicalRecord } = studentData;
+    const { grades, academicTrack, vocationalTrack, academicStatus, medicalRecord, hobbies, psych_results } = studentData;
 
     const track = academicTrack || vocationalTrack;
 
@@ -264,12 +381,16 @@ async function recommend(studentData) {
     const trackScore = await recommendIndustriesByTrack(track);
     const academicStatusScore = await recommendIndustriesByAcademicStatus(academicStatus);
     const medicalRecordScore = await recommendIndustriesByMedicalRecord(medicalRecord);
+    const hobbyScore = await recommendIndustriesByHobbies(hobbies);
+    const psychResultsScore = await recommendIndustriesByPsychologicalAssessment(psych_results);
 
     Object.keys(subjectScore).forEach((industry) => {
         resultScore[industry] = (subjectScore[industry] ?? 0) +
             (trackScore[industry] ?? 0) +
             (academicStatusScore[industry] ?? 0) +
-            (medicalRecordScore[industry] ?? 0);
+            (medicalRecordScore[industry] ?? 0) +
+            (hobbyScore[industry] ?? 0) +
+            (psychResultsScore[industry] ?? 0);
     });
 
     const highestIndustry = Object.entries(resultScore).reduce(
