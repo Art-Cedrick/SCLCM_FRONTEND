@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { MaterialReactTable, MRT_ActionMenuItem } from "material-react-table";
 import Dayjs from "dayjs";
-import { Edit, Delete } from "@mui/icons-material";
+import { Visibility, Delete } from "@mui/icons-material";
 import {
   IconButton,
   Dialog,
@@ -100,11 +100,11 @@ const RoutineInterviewTable = () => {
             <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
               icon={
                 <IconButton>
-                  <Edit />
+                  <Visibility />
                 </IconButton>
               }
-              key="edit"
-              label="Edit"
+              key="view"
+              label="View"
               onClick={() => handleEdit(row)}
               table={table}
             />,
@@ -122,7 +122,7 @@ const RoutineInterviewTable = () => {
           ]}
         />
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-          <DialogTitle>Edit Routine Interview Form</DialogTitle>
+          <DialogTitle>Routine Interview Form</DialogTitle>
           <DialogContent>
             <RoutineInterview initialData={editData} onClose={handleClose} />
           </DialogContent>

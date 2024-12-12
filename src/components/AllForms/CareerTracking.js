@@ -342,6 +342,43 @@ const PageThree = ({ control }) => (
         variant="h7"
         sx={{
           color: "#3f3f3f",
+          marginTop: 2,
+          fontWeight: "bold",
+          textAlign: "left",
+        }}
+      >
+        HOBBIES:
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 2,
+          alignItems: "center",
+        }}
+      >
+        <Controller
+          name="hobbies"
+          control={control}
+          render={({ field }) => (
+            <SingleSelect
+              label="Hobbies"
+              {...field}
+              options={[
+                "Creative",
+                "Intellectual",
+                "Physical",
+              ]}
+            />
+          )}
+        />
+      </Box>
+
+      <Typography
+        variant="h7"
+        sx={{
+          color: "#3f3f3f",
           marginTop: 4,
           fontWeight: "bold",
           textAlign: "left",
@@ -350,17 +387,52 @@ const PageThree = ({ control }) => (
         PSYCHOLOGICAL TEST TAKEN WITH RESULT:
       </Typography>
       <Controller
-        name="psych_results"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Psychological Test Results"
-            {...field}
-            sx={{ mt: 1 }} // Optional margin for spacing
-          />
-        )}
-      />
+          name="cognitive"
+          control={control}
+          render={({ field }) => (
+            <SingleSelect
+              label="Cognitive Abilities"
+              {...field}
+              options={[
+                "High",
+                "Average",
+                "Low",
+              ]}
+            />
+          )}
+        />
 
+        <Controller
+          name="emotional"
+          control={control}
+          render={({ field }) => (
+            <SingleSelect
+              label="Emotional Intelligence"
+              {...field}
+              options={[
+                "High",
+                "Average",
+                "Low",
+              ]}
+            />
+          )}
+        />
+
+        <Controller
+          name="personality"
+          control={control}
+          render={({ field }) => (
+            <SingleSelect
+              label="Personality Traits"
+              {...field}
+              options={[
+                "High",
+                "Average",
+                "Low",
+              ]}
+            />
+          )}
+        />
       <Box
         sx={{
           display: "flex",
@@ -405,7 +477,10 @@ const CareerTracking = ({ initialData, onClose }) => {
     medical_records: "",
     specify: "",
     academic_status: "",
-    psych_results: "",
+    hobbies: "",
+    cognitive: "",
+    emotional: "",
+    personality: "",
   };
 
   const { control, handleSubmit, reset, watch } = useForm({
@@ -430,6 +505,12 @@ const CareerTracking = ({ initialData, onClose }) => {
     vocationalTrack: stdnt.tech_voc, // Home Economic, ICT
     academicStatus: stdnt.academic_status, // "Above Average", "Average", "Low Average"
     medicalRecord: stdnt.medical_records, // "No History of Illness" or "Has History of Illness"
+    hobbies: stdnt.hobbies,
+    psych_results: {
+      COGNITIVE_ABILITIES: stdnt.cognitive,
+      EMOTIONAL_INTELLIGENCE: stdnt.emotional,
+      PERSONALITY_TRAITS: stdnt.personality,
+    }
   };
 
   useEffect(() => {
@@ -466,7 +547,10 @@ const CareerTracking = ({ initialData, onClose }) => {
             medical_records: data.medical_records,
             specify: data.specify,
             academic_status: data.academic_status,
-            psych_results: data.psych_results,
+            hobbies: data.hobbies,
+            cognitive: data.cognitive,
+            emotional: data.emotional,
+            personality: data.personality,
             top_one: res[0].industry,
             top_two: res[1].industry,
             top_three: res[2].industry,
@@ -496,7 +580,10 @@ const CareerTracking = ({ initialData, onClose }) => {
             medical_records: data.medical_records,
             specify: data.specify,
             academic_status: data.academic_status,
-            psych_results: data.psych_results,
+            hobbies: data.hobbies,
+            cognitive: data.cognitive,
+            emotional: data.emotional,
+            personality: data.personality,
             top_one: res[0].industry,
             top_two: res[1].industry,
             top_three: res[2].industry,

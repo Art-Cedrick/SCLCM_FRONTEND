@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { MaterialReactTable, MRT_ActionMenuItem } from "material-react-table";
-import { Edit, Delete } from "@mui/icons-material";
+import { Visibility, Delete } from "@mui/icons-material";
 import {
   IconButton,
   Dialog,
@@ -115,11 +115,11 @@ const IndividualRecordFormTable = () => {
             <MRT_ActionMenuItem
               icon={
                 <IconButton>
-                  <Edit />
+                  <Visibility />
                 </IconButton>
               }
-              key="edit"
-              label="Edit"
+              key="view"
+              label="View"
               onClick={() => handleEdit(row)}
               table={table}
             />,
@@ -138,7 +138,7 @@ const IndividualRecordFormTable = () => {
         />
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
           <DialogTitle>
-            {editData ? "Edit Individual Record Form" : "Add New Reord"}
+            {editData ? "Individual Record Form" : "Add New Reord"}
           </DialogTitle>
           <DialogContent>
             <IndividualRecordForm
