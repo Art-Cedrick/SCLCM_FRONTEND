@@ -114,7 +114,7 @@ const IndividualRecordFormTable = () => {
           <MRT_ActionMenuItem
             icon={
               <IconButton>
-                <Edit />
+                <Visibility />
               </IconButton>
             }
             key="edit"
