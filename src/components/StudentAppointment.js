@@ -1,67 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import AxiosInstance from "./AllForms/Axios";
-// import { Box, Card, CardContent, Typography, Grid } from "@mui/material";
-
-// function StudentAppointment() {
-//   const [schedules, setSchedules] = useState([]);
-
-//   useEffect(() => {
-//     const fetchSchedules = async () => {
-//       try {
-//         const response = await AxiosInstance.get("/appointment/", {
-//           headers: { Authorization: `Token ${localStorage.getItem("token")}` }
-//         });
-//         setSchedules(response.data);
-//       } catch (error) {
-//         console.error("Error fetching schedules:", error);
-//       }
-//     };
-//     fetchSchedules();
-//   }, []);
-
-//   return (
-//     <Box sx={{ padding: "20px" }}>
-//       <Typography variant="h5" align="center" gutterBottom>
-//         Your Schedules
-//       </Typography>
-//       <Grid container spacing={2}>
-//         {schedules.length === 0 ? (
-//           <Grid item xs={12}>
-//             <Card sx={{ padding: 2, textAlign: "center" }}>
-//               <Typography variant="h6" color="textSecondary">
-//                 No schedules yet.
-//               </Typography>
-//             </Card>
-//           </Grid>
-//         ) : (
-//           schedules.map((schedule) => (
-//             <Grid item xs={12} sm={6} md={4} key={schedule.id}>
-//               <Card elevation={3}>
-//                 <CardContent>
-//                   <Typography variant="h6">{schedule.purpose}</Typography>
-//                   <Typography variant="subtitle1" color="textSecondary">
-//                     Date: {schedule.date}
-//                   </Typography>
-//                   <Typography variant="subtitle1" color="textSecondary">
-//                     Time: {schedule.time}
-//                   </Typography>
-//                   <Typography variant="body2">
-//                     Counselor: {schedule.counselor_user ? schedule.counselor_user : "N/A"}
-//                   </Typography>
-//                   <Typography variant="body2">
-//                     Grade: {schedule.grade} | Section: {schedule.section}
-//                   </Typography>
-//                 </CardContent>
-//               </Card>
-//             </Grid>
-//           ))
-//         )}
-//       </Grid>
-//     </Box>
-//   );
-// }
-
-// export default StudentAppointment;
 import React, { useState, useEffect } from "react";
 import AxiosInstance from "./AllForms/Axios";
 import {
@@ -72,10 +8,14 @@ import {
   Grid,
   Paper,
   Stack,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
 function StudentAppointment() {
   const [schedules, setSchedules] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);  // State to control Snackbar visibility
+  const [notificationMessage, setNotificationMessage] = useState(""); // State for message
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -85,16 +25,30 @@ function StudentAppointment() {
             Authorization: `Token ${localStorage.getItem("token")}`,
           },
         });
+        
+        // Check if the new appointments are received
+        if (response.data.length > 0 && response.data.length !== schedules.length) {
+          // Trigger notification when new appointments are received
+          setNotificationMessage("You have a new appointment scheduled!");
+          setOpenSnackbar(true); // Show the Snackbar
+        }
+        
         setSchedules(response.data);
       } catch (error) {
         console.error("Error fetching schedules:", error);
       }
     };
+
     fetchSchedules();
-  }, []);
+  }, [schedules]);  // Re-run fetchSchedules whenever schedules change
+
+  // Handle Snackbar close
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   return (
-    <Box sx={{ padding: "20px", backgroundColor: "#f5f5f5", height: "auto" }}>
+    <Box sx={{ padding: "20px", backgroundColor: "white", height: "auto" }}>
       <Typography variant="h5" align="center" gutterBottom sx={{ color: "#003366" }}>
         Your Schedules
       </Typography>
@@ -116,7 +70,7 @@ function StudentAppointment() {
               sx={{
                 padding: 2,
                 textAlign: "center",
-                backgroundColor: "#ffffff",
+                backgroundColor: "#E7FBE6",
                 width: "50%",  // Adjust width for a balanced look
                 margin: "0 auto", // Ensures equal space on both sides
               }}
@@ -130,7 +84,7 @@ function StudentAppointment() {
           <Grid container spacing={3} justifyContent="center">
             {schedules.map((schedule) => (
               <Grid item xs={12} sm={6} md={4} key={schedule.id}>
-                <Card elevation={3} sx={{ backgroundColor: "#ffffff", marginBottom: 2 }}>
+                <Card elevation={3} sx={{ backgroundColor: "#E7FBE6", marginBottom: 2 }}>
                   <CardContent>
                     <Typography variant="h6" sx={{ color: "#003366" }}>
                       {schedule.purpose}
@@ -152,6 +106,18 @@ function StudentAppointment() {
           </Grid>
         )}
       </Stack>
+
+      {/* Snackbar Notification positioned on the right */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000} // Hide the notification after 6 seconds
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} // Position it at the top-right
+      >
+        <Alert onClose={handleCloseSnackbar} severity="info" sx={{ width: "100%" }}>
+          {notificationMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
