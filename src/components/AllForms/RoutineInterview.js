@@ -300,10 +300,10 @@ const PageThree = ({ control }) => (
               options={[
                 "failing marks",
                 "misbehavior",
-                "transition to school sife",
+                "transition to school life",
                 "learning sifficulties",
                 "low motivation",
-                "teachers",
+                "teacher/s",
                 "laziness",
                 "difficult subjects",
                 "frequent D.O. client",
@@ -369,7 +369,7 @@ const PageFour = ({ control }) => (
               label="Problems Encountered"
               options={[
                 "undecided",
-                "no identified",
+                "no identified career",
                 "confusion",
                 "parent's choice",
                 "change of interest",
