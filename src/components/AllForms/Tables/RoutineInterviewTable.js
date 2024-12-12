@@ -91,8 +91,7 @@ const RoutineInterviewTable = () => {
 
   return (
     <div style={{
-      position: "relative",
-    }}>
+      position: "relative",}}>
       <div style={{
         position: "absolute",
         left: 8,
