@@ -91,30 +91,30 @@ const RoutineInterviewTable = () => {
 
   return (
     <div style={{
-      position: "relative",}}>
+      position: "relative",
+    }}>
       <div style={{
         position: "absolute",
         left: 8,
         top: 8,
         zIndex: 2,
         display: "flex",
-        justifyContent: "center",
-        width: "100%",
-        overflowX: "auto",
-      }}
-    >
-      <div style={{ width: "1200px", height: "600px" }}>
-        <MaterialReactTable
-          columns={columns}
-          data={myData}
+      }}>
+        <Button variant="contained" color="primary" size="small" onClick={handleOpenForm} type="submit"> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
+      </div>
+
+        <MaterialReactTable 
+          columns={columns} 
+          data={myData} 
+          
           enableRowActions
           renderRowActionMenuItems={({ row, table }) => [
-            <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
+            <MRT_ActionMenuItem 
               icon={
-                <IconButton>
-                  <Visibility />
-                </IconButton>
-              }
+              <IconButton>
+              <Visibility />
+              </IconButton>
+            }
               key="view"
               label="View"
               onClick={() => handleEdit(row)}
@@ -123,54 +123,38 @@ const RoutineInterviewTable = () => {
             <MRT_ActionMenuItem
               icon={
                 <IconButton>
-                  <Delete />
+                <Delete />
                 </IconButton>
               }
               key="delete"
               label="Delete"
-              onClick={() => setConfirmDelete({ open: true, row })}
+              onClick={() => setConfirmDelete({open: true, row})}
               table={table}
             />,
           ]}
-        />
-        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-          <DialogTitle>Routine Interview Form</DialogTitle>
-          <DialogContent>
-            <RoutineInterview initialData={editData} onClose={handleClose} />
-          </DialogContent>
-        </Dialog>
+            />
+          <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+              <DialogTitle>Edit Career Tracking Form</DialogTitle>
+              <DialogContent>
+                <CareerTracking initialData={editData} onClose={handleClose}/>
+              </DialogContent>
+            </Dialog>
 
-      <Dialog
-        open={confirmDelete.open}
-        onClose={() => setConfirmDelete({ open: false, row: null })}
-      >
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <p>Are you sure you want to delete this record?</p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: "10px",
-            }}
-          >
-            <Button
-              variant="outlined"
-              onClick={() => setConfirmDelete({ open: false, row: null })}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => handleDelete(confirmDelete.row)}
-            >
-              Delete
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+            <Dialog open={confirmDelete.open} onClose={() => setConfirmDelete({open: false, row: null})}>
+              <DialogTitle>Confirm Delete</DialogTitle>
+              <DialogContent>
+                <p>Are you sure you want to delete this record?</p>
+                <div style={{display: "flex", justifyContent: "flex-end", gap: "10px"}}>
+                  <Button variant="outlined" onClick={() => setConfirmDelete({open: false, row: null})}>
+                    Cancel
+                  </Button>
+                  <Button variant="contained" color="error" onClick={() => handleDelete(confirmDelete.row)}>
+                    Delete
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+      </div>
   );
 };
 
