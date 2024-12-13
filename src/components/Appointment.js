@@ -23,6 +23,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import AxiosInstance from "./AllForms/Axios";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Autocomplete from "@mui/material/Autocomplete";
 
 const Appointment = () => {
   const defaultValues = {
@@ -47,6 +48,26 @@ const Appointment = () => {
   // Snackbar state to control visibility
   const [openSnackbar, setOpenSnackbar] = useState(false); // Notification state
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Message to display in Snackbar
+  // Add this to fetch student numbers
+  const [studentNumbers, setStudentNumbers] = useState([]);
+
+  useEffect(() => {
+    const fetchStudentNumbers = async () => {
+      try {
+        const response = await AxiosInstance.get("/students/", {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("token")}`,
+          },
+        });
+        // Assuming the API returns an array of student numbers
+        setStudentNumbers(response.data.map((student) => student.sr_code));
+      } catch (error) {
+        console.error("Error fetching student numbers:", error);
+      }
+    };
+
+    fetchStudentNumbers();
+  }, []);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -204,20 +225,29 @@ const Appointment = () => {
         <DialogContent sx={{ backgroundColor: "#f5f5f5" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2}>
-              <Controller
-                name="sr_code"
-                control={control}
-                rules={{ required: "Student Number is required" }}
-                render={({ field, fieldState: { error } }) => (
-                  <TextField
-                    {...field}
-                    label="Student Number"
-                    error={!!error}
-                    helperText={error ? error.message : ""}
-                    sx={{ backgroundColor: "#ffffff" }}
-                  />
-                )}
-              />
+            <Controller
+              name="sr_code"
+              control={control}
+              rules={{ required: "Student Number is required" }}
+              render={({ field, fieldState: { error } }) => (
+                <Autocomplete
+                  {...field}
+                  options={studentNumbers}
+                  freeSolo // Allow typing a new value if not in the list
+                  onInputChange={(event, value) => field.onChange(value)} // Update the field value
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Student Number"
+                      error={!!error}
+                      helperText={error ? error.message : ""}
+                      sx={{ backgroundColor: "#ffffff" }}
+                    />
+                  )}
+                />
+              )}
+            />
+
               <Controller
                 name="name"
                 control={control}

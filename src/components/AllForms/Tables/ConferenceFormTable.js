@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { MaterialReactTable, MRT_ActionMenuItem } from "material-react-table";
 import AxiosInstance from "../Axios";
-import { Edit, Delete } from '@mui/icons-material';
+import { Visibility, Delete } from '@mui/icons-material';
 import { IconButton, Dialog, DialogContent, DialogTitle, Button } from "@mui/material";
 import Dayjs from "dayjs";
 import { useQuery, useQueryClient } from "react-query";
@@ -64,11 +64,6 @@ const ConferenceTable = () => {
       { accessorFn: (row) => Dayjs(row.date).format('MM-DD-YYYY'), header: "Date", size: 150 },
       { accessorKey: "grade", header: "Grade", size: 150 },
       { accessorKey: "section", header: "Section", size: 150 },
-      { accessorKey: "teachers", header: "Name of Teacher/s or Parent/s", size: 150 },
-      { accessorKey: "purpose", header: "Purpose of Conference", size: 150 },
-      { accessorKey: "others", header: "Others", size: 150 },
-      { accessorKey: "note", header: "Counselor's Note", size: 150 },
-      { accessorKey: "recommendations", header: "Recommendations", size: 150 },
     ],
     []
   );
@@ -99,11 +94,11 @@ const ConferenceTable = () => {
           <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
             icon={
               <IconButton>
-                <Edit />
+                <Visibility />
               </IconButton>
             }
-            key="edit"
-            label="Edit"
+            key="view"
+            label="View"
             table={table}
             onClick={() => handleEdit(row)}
           />,
@@ -124,7 +119,7 @@ const ConferenceTable = () => {
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle style={{
           fontWeight: "bold",
-        }}>{editData ? "Edit Conference" : "New Conference"}</DialogTitle>
+        }}>{editData ? "Conference" : "New Conference"}</DialogTitle>
         <DialogContent>
           <ConferenceForm initialData={editData} onClose={handleClose} />
         </DialogContent>

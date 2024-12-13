@@ -117,8 +117,8 @@ const IndividualRecordFormTable = () => {
                 <Visibility />
               </IconButton>
             }
-            key="edit"
-            label="Edit"
+            key="view"
+            label="View"
             onClick={() => handleEdit(row)}
             table={table}
           />,
@@ -139,7 +139,7 @@ const IndividualRecordFormTable = () => {
         <DialogTitle style={{
           fontWeight: "bold",
         }}>
-          {editData ? "Edit Individual Record" : "New Individual Record"}
+          {editData ? "Individual Record" : "New Individual Record"}
         </DialogTitle>
         <DialogContent>
           <IndividualRecordForm

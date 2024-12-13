@@ -134,7 +134,11 @@ const RoutineInterviewTable = () => {
           ]}
             />
           <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-              <DialogTitle>Edit Career Tracking Form</DialogTitle>
+          <DialogTitle style={{
+          fontWeight: "bold",
+        }}>
+          {editData ? "Routine Interview" : "New Routine Interview"}
+        </DialogTitle>
               <DialogContent>
                 <RoutineInterview initialData={editData} onClose={handleClose}/>
               </DialogContent>

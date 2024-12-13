@@ -61,10 +61,13 @@ const CareerTrackingTable = () => {
       { accessorKey: "name", header: "Name", size: 150 },
       { accessorKey: "grade", header: "Grade", size: 150 },
       { accessorKey: "section", header: "Section", size: 150 },
+      { accessorKey: "top_one", header: "Career Recommendation 1", size: 150 },
+      { accessorKey: "top_two", header: "Career Recommendation 2", size: 150 },
+      { accessorKey: "top_three", header: "Career Recommendation 3", size: 150 },
     ],
     []
   );
-
+  
   if (isLoading) return <p>Loading...</p>;
   if (isFetching) return <p>Fetching data...</p>;
   if (error) return <p>Error loading data</p>;
