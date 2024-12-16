@@ -20,7 +20,10 @@ export default (form) => {
         routine_interview: 'Routine Interview ',
         careertracking: 'Career Tracking ',
         conferenceform: 'Conference',
+        guidanceclassevaluation: 'Guidance Class Evaluation',
+        impactevaluation: 'Impact Evaluation',
+        counselingserviceevaluation: 'Counseling Service Evaluation',
     };
 
-    return titles[form] || 'New Form';
+    return titles[form] || '';
 };

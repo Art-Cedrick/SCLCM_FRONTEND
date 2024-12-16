@@ -86,7 +86,6 @@ const MSCounselingServiceTable = () => {
         width: "100%",
         height: "60vh",
         overflow: "auto",
-        marginTop: "1in",
         marginBottom: "16px",
       }}
     >

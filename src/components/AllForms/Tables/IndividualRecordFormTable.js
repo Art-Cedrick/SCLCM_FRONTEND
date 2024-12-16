@@ -26,7 +26,7 @@ const fetchData = async () => {
 const IndividualRecordFormTable = () => {
 
   const queryClient = useQueryClient();
-
+  
   const { data, isLoading, error, isFetching } = useQuery(
     "IRFData",
     fetchData
@@ -43,11 +43,6 @@ const IndividualRecordFormTable = () => {
     setEdit(row.original);
     setOpen(true);
   };
-
-  const handleOpenForm = () => {
-    setEdit(null);
-    setOpen(true);
-  }
 
   const handleClose = () => {
     setEdit(null);
@@ -93,16 +88,6 @@ const IndividualRecordFormTable = () => {
     <div style={{
       position: "relative",
     }}>
-      <div style={{
-        position: "absolute",
-        left: 8,
-        top: 8,
-        zIndex: 2,
-        display: "flex",
-      }}>
-        <Button variant="contained"  color="primary" size="small" type="submit" onClick={handleOpenForm}> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
-      </div>
-
       <MaterialReactTable
         columns={columns}
         data={data}

@@ -181,7 +181,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
                 render={({field}) => (
               <TextField
                 {...field}
-                label="Year"
+                label="Grade Level"
                 placeholder=""
                 sx={{ flex: 1 }}
               />

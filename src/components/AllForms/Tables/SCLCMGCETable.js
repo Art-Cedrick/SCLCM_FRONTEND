@@ -12,7 +12,7 @@ const fetchData = async () => {
   return response.data;
 };
 
-const MSCounselingServiceTable = () => {
+const SCLCMGCETable = () => {
 
     const queryClient = useQueryClient();
 
@@ -87,7 +87,6 @@ const MSCounselingServiceTable = () => {
         width: "100%",
         height: "60vh",
         overflow: "auto",
-        marginTop: "1in",
         marginBottom: "16px",
       }}
     >
@@ -148,4 +147,4 @@ const MSCounselingServiceTable = () => {
   );
 };
 
-export default MSCounselingServiceTable;
+export default SCLCMGCETable;

@@ -1,5 +1,5 @@
 import { Breadcrumbs, Button, Dialog, DialogContent, DialogTitle, Link, Typography } from '@mui/material';
-import { FilePlus2} from 'lucide-react';
+import { FilePlus2 } from 'lucide-react';
 import { React, useContext, useEffect, useState } from 'react';
 import { ActiveFormContext } from '../context/SelectedFormProvider';
 import Grade7 from './AllForms/Grade7';
@@ -40,6 +40,12 @@ import FirstYear from './AllForms/FirstYear';
 import FourthYear from './AllForms/FourthYear';
 import ThirdYear from './AllForms/ThirdYear';
 import getTitle from '../utils/getTitle';
+import SCLCMGCETable from './AllForms/Tables/SCLCMGCETable';
+import MS_ImpactEvaluationTable from './AllForms/Tables/MS_ImpactEvaluationTable';
+import MSCounselingServiceTable from './AllForms/Tables/MSCounselingServiceTable';
+import SCLCMGUIDANCECLASSEVALUATION from './AllForms/SCLCMGUIDANCECLASSEVALUATION';
+import MS_ImpactEvaluation from './AllForms/MS_ ImpactEvaluation';
+import MSCounselingServiceEvaluation from './AllForms/MSCounselingServiceEvaluation';
 
 const Psychometrician_Table = () => {
 
@@ -71,7 +77,7 @@ const Psychometrician_Table = () => {
 
   return (
     <div>
-      <Breadcrumbs aria-label="breadcrumb" style={{paddingBottom: '16px'}}>
+      <Breadcrumbs aria-label="breadcrumb" style={{ paddingBottom: '16px' }}>
         <Link underline="hover" color="inherit" href="/psychometrician/dashboard">
           Home
         </Link>
@@ -120,6 +126,9 @@ const Psychometrician_Table = () => {
         {activeForm === 'routine_interview' && <RoutineInterviewTable />}
         {activeForm === 'careertracking' && <CareerTrackingTable />}
         {activeForm === 'conferenceform' && <ConferenceFormTable />}
+        {activeForm === 'guidanceclassevaluation' && <SCLCMGCETable />}
+        {activeForm === 'impactevaluation' && <MS_ImpactEvaluationTable />}
+        {activeForm === 'counselingserviceevaluation' && <MSCounselingServiceTable />}
 
 
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -143,9 +152,10 @@ const Psychometrician_Table = () => {
             {activeForm === 'second_year' && <SecondYear />}
             {activeForm === 'third_year' && <ThirdYear />}
             {activeForm === 'fourth_year' && <FourthYear />}
-            {activeForm === 'routine_interview' && <RoutineInterviewTable />}
-            {activeForm === 'careertracking' && <CareerTrackingTable />}
-            {activeForm === 'conferenceform' && <ConferenceFormTable />}
+            {activeForm === 'guidanceclassevaluation' && <SCLCMGUIDANCECLASSEVALUATION />}
+            {activeForm === 'impactevaluation' && <MS_ImpactEvaluation />}
+            {activeForm === 'counselingserviceevaluation' && <MSCounselingServiceEvaluation />}
+
           </DialogContent>
         </Dialog>
       </div>

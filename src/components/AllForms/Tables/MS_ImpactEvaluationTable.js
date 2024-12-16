@@ -12,7 +12,7 @@ const fetchData = async () => {
   return response.data;
 };
 
-const MS_impactevaluationTable = () => {
+const MS_ImpactEvaluationTable = () => {
 
   const queryClient = useQueryClient();
 
@@ -111,7 +111,6 @@ const MS_impactevaluationTable = () => {
         width: "100%",
         height: "60vh",
         overflow: "auto",
-        marginTop: "1in",
         marginBottom: "16px",
       }}
     >
@@ -173,4 +172,4 @@ const MS_impactevaluationTable = () => {
 };
 
 
-export default MS_impactevaluationTable;
+export default MS_ImpactEvaluationTable;

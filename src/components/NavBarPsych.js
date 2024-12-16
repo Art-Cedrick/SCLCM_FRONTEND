@@ -1,26 +1,22 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import MenuIcon from "@mui/icons-material/Menu";
+import NotesIcon from '@mui/icons-material/Notes';
+import { IconButton, Menu, MenuItem, useMediaQuery } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import Toolbar from "@mui/material/Toolbar";
+import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
-import { Link, useLocation } from "react-router-dom";
-import Typography from "@mui/material/Typography";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import NotesIcon from '@mui/icons-material/Notes';
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import { IconButton, Menu, MenuItem, useMediaQuery } from "@mui/material";
-import file from "./images/file.png";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import DropdownMenu from "./FormDropdown";
+import Toolbar from "@mui/material/Toolbar";
+import * as React from "react";
+import { Link, useLocation } from "react-router-dom";
 import ActiveRecordDropdown from "./ActiveRecordDropdown";
+import file from "./images/file.png";
 
 const NavBarPsych = (props) => {
   const { drawerWidth = 260, content } = props;
@@ -112,9 +108,6 @@ const NavBarPsych = (props) => {
             </ListItemButton>
           </ListItem>
         ))}
-         <ListItem disablePadding>
-          <DropdownMenu pathname={path} />
-        </ListItem>
          <ListItem disablePadding>
           <ActiveRecordDropdown pathname={path} />
         </ListItem>

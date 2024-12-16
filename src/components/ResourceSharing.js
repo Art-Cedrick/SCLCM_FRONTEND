@@ -248,7 +248,7 @@ const ResourceSharing = () => {
         </Stack>
 
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-          <DialogTitle sx={{ backgroundColor: "#004C8C", color: "white" }}>
+          <DialogTitle>
             {editingResource ? "Edit Resource" : "Add Resource"}
           </DialogTitle>
           <DialogContent>
@@ -296,7 +296,7 @@ const ResourceSharing = () => {
               />
             </form>
           </DialogContent>
-          <DialogActions sx={{ backgroundColor: "#004C8C" }}>
+          <DialogActions>
             <IconButton size="small" sx={{ color: "white" }}>
               <AttachFileIcon fontSize="small" />
             </IconButton>
@@ -318,12 +318,11 @@ const ResourceSharing = () => {
           onClose={handleDeleteDialogClose}
           sx={{
             "& .MuiDialog-paper": {
-              backgroundColor: "#004C8C",
-              color: "white",
+              color: "#000000",
             },
           }}
         >
-          <DialogTitle sx={{ color: "white" }}>
+          <DialogTitle sx={{ color: "black", fontSize: '1rem' }}>
             Are you sure you want to delete this resource?
           </DialogTitle>
           <DialogActions>
@@ -332,7 +331,7 @@ const ResourceSharing = () => {
             </Button>
             <Button
               onClick={handleDelete}
-              color="secondary"
+              color="error"
               variant="contained"
             >
               Confirm
