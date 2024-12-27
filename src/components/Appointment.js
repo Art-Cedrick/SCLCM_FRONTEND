@@ -1,90 +1,88 @@
 import React, { useState, useEffect } from "react";
 import {
-  Typography,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  Paper,
-  TextField,
-  Card,
-  CardContent,
-  Stack,
+  DialogContent,
+  DialogTitle,
   Button,
-  Select,
-  MenuItem,
+  TextField,
+  Autocomplete,
+  Snackbar,
+  Alert,
   FormControl,
   InputLabel,
-  Box,
-  Grid,
-  Snackbar, // Import Snackbar
-  Alert, // Import Alert for custom Snackbar style
+  Select,
+  MenuItem,
 } from "@mui/material";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm, Controller } from "react-hook-form";
 import AxiosInstance from "./AllForms/Axios";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import Autocomplete from "@mui/material/Autocomplete";
 
-const Appointment = () => {
-  const defaultValues = {
-    sr_code: "",
-    name: "",
-    grade: "",
-    section: "",
-    date: "",
-    time: "",
-    purpose: "",
-    other_purpose: "",
-  };
+const localizer = momentLocalizer(moment);
 
-  const { control, handleSubmit, reset, watch } = useForm({ defaultValues });
-  const purpose = watch("purpose");
-
+const ScheduleAppointment = () => {
+  const { control, handleSubmit, reset, setValue, getValues } = useForm();
   const [appointments, setAppointments] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [appointmentToDelete, setAppointmentToDelete] = useState(null);
-  
-  // Snackbar state to control visibility
-  const [openSnackbar, setOpenSnackbar] = useState(false); // Notification state
-  const [snackbarMessage, setSnackbarMessage] = useState(""); // Message to display in Snackbar
-  // Add this to fetch student numbers
-  const [studentNumbers, setStudentNumbers] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState({
+    message: "",
+    severity: "success",
+  });
 
-  useEffect(() => {
-    const fetchStudentNumbers = async () => {
+  const handleSlotSelect = (slotInfo) => {
+    const { start, end } = slotInfo;
+    const isOverlap = appointments.some(
+      (appointment) =>
+        (start >= appointment.start && start < appointment.end) ||
+        (end > appointment.start && end <= appointment.end)
+    );
+
+    if (isOverlap) {
+      alert("This time slot is already booked.");
+      return;
+    }
+
+    setSelectedSlot(slotInfo);
+    setOpenDialog(true);
+  };
+
+  const handleSearch = async (query) => {
+    if (query.length > 1) {
+      setLoading(true);
       try {
-        const response = await AxiosInstance.get("/students/", {
-          headers: {
-            Authorization: `Token ${localStorage.getItem("token")}`,
-          },
-        });
-        // Assuming the API returns an array of student numbers
-        setStudentNumbers(response.data.map((student) => student.sr_code));
+        const response = await AxiosInstance.get(
+          `/search-student/?query=${query}`,
+          {
+            headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+          }
+        );
+        setOptions(response.data.results || []);
       } catch (error) {
-        console.error("Error fetching student numbers:", error);
+        console.error("Error fetching students:", error);
+        setOptions([]);
       }
-    };
+      setLoading(false);
+    }
+  };
 
-    fetchStudentNumbers();
-  }, []);
-
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const response = await AxiosInstance.get("/appointment/", {
-          headers: {
-            Authorization: `Token ${localStorage.getItem("token")}`,
-          },
-        });
-        setAppointments(response.data);
-      } catch (error) {
-        console.error("Error fetching appointments:", error);
-      }
-    };
-
-    fetchAppointments();
-  }, []);
+  const handleOptionSelect = (selectedOption) => {
+    if (selectedOption) {
+      // Update all fields based on the selected student
+      setValue("sr_code", selectedOption.sr_code || "");
+      setValue(
+        "name",
+        `${selectedOption.first_name || ""} ${selectedOption.last_name || ""}`
+      );
+      setValue("grade", selectedOption.year || "");
+      setValue("section", selectedOption.section || "");
+    }
+  };
 
   const onSubmit = async (data) => {
     if (!data.sr_code) {
@@ -92,252 +90,223 @@ const Appointment = () => {
       return;
     }
 
+    if (data.purpose === "Others" && !data.other_purpose.trim()) {
+      alert("Please specify the purpose.");
+      return;
+    }
+
     try {
-      const response = await AxiosInstance.post("/appointment/", data, {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("token")}`,
+      const response = await AxiosInstance.post(
+        "/appointment/",
+        {
+          ...data,
+          start: selectedSlot.start,
+          end: selectedSlot.end,
         },
-      });
-      setAppointments((prev) => [...prev, response.data]);
-      reset();
+        {
+          headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+        }
+      );
+
+      setAppointments((prev) => [
+        ...prev,
+        {
+          ...response.data,
+          start: new Date(response.data.start),
+          end: new Date(response.data.end),
+        },
+      ]);
+      showSnackbar("Appointment added successfully!", "success");
+      reset(); // Reset the form after submission
       setOpenDialog(false);
-
-      // Show success notification
-      setSnackbarMessage("Schedule successfully added!");
-      setOpenSnackbar(true); // Open the Snackbar
-
     } catch (error) {
-      console.error("Error creating appointment:", error.response?.data || error.message);
-      alert("Error creating appointment.");
+      console.error(
+        "Error creating appointment:",
+        error.response?.data || error.message
+      );
+      showSnackbar("Error creating appointment. Please try again.", "error");
     }
   };
 
-  const confirmDelete = (id) => {
-    setAppointmentToDelete(id);
-    setOpenDeleteDialog(true);
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbarMessage({ message, severity });
+    setOpenSnackbar(true);
   };
 
-  const handleDelete = async () => {
-    if (appointmentToDelete === null) return;
-
-    const updatedAppointments = appointments.filter(
-      (appointment) => appointment.id !== appointmentToDelete
-    );
-    setAppointments(updatedAppointments);
-
+  const fetchAppointments = async () => {
     try {
-      await AxiosInstance.delete(`/appointment/${appointmentToDelete}/`, {
-        headers: {
-          Authorization: `Token ${localStorage.getItem("token")}`,
-        },
+      const response = await AxiosInstance.get("/appointment/", {
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
       });
-      setOpenDeleteDialog(false);
+      const formattedAppointments = response.data.map((appointment) => ({
+        ...appointment,
+        start: new Date(appointment.start),
+        end: new Date(appointment.end),
+      }));
+      setAppointments(formattedAppointments);
     } catch (error) {
-      console.error("Error deleting appointment:", error.response?.data || error.message);
-      alert("Error deleting appointment.");
-      setAppointments(appointments);
-      setOpenDeleteDialog(false);
+      console.error("Error fetching appointments:", error);
     }
   };
 
-  // Close the Snackbar after it is displayed
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   return (
-    <Box sx={{ padding: "20px", backgroundColor: "white", height:"80vh", marginTop:"-20px" }}>
-      <Typography variant="h5" align="center" gutterBottom sx={{ color: "#003366", fontFamily: "'Rozha One'" }}>
-        SCHEDULES
-      </Typography>
-
-      {/* Add Appointment Button */}
-      <Box sx={{ display: "flex", justifyContent: "flex-start", marginBottom: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setOpenDialog(true)}
-          sx={{ 
-            backgroundColor: "#003366", 
-            "&:hover": { backgroundColor: "#004c8c" },
-            fontFamily: "'Rozha One'", 
-            display: "flex", 
-            alignItems: "center" 
-          }}
-        >
-          <AddCircleIcon sx={{ marginRight: 1 }} />
-          Add Schedule
-        </Button>
-      </Box>
-
-      {/* Appointment Cards using Grid layout */}
-      <Grid container spacing={3} justifyContent="center">
-        {appointments.length === 0 ? (
-          <Paper elevation={3} sx={{ padding: 2, textAlign: "center", backgroundColor: "#E7FBE6", width: '50%', marginTop:"20px" }}>
-            <Typography variant="h6" color="#004c8c" sx={{ fontFamily: "'Rozha One'" }}>
-              No scheduled yet.
-            </Typography>
-          </Paper>
-        ) : (
-          appointments.map((appointment, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card
-                elevation={3}
-                sx={{
-                  backgroundColor: "#E7FBE6",
-                  marginBottom: 2,
-                }}
-              >
-                <CardContent>
-                  <Typography variant="h6" sx={{ color: "black", fontWeight:"bold" }}>
-                    {appointment.name}
-                  </Typography>
-                  <Typography>Student Number: {appointment.sr_code} </Typography>
-                  <Typography>Grade: {appointment.grade}</Typography>
-                  <Typography>Section: {appointment.section}</Typography>
-                  <Typography>Date: {appointment.date}</Typography>
-                  <Typography>Time: {appointment.time}</Typography>
-                  <Typography>Purpose: {appointment.purpose}</Typography>
-                  <Typography>Counselor: {appointment.counselor_user}</Typography>
-                  {appointment.purpose === "Others" && (
-                    <Typography>Other Purpose: {appointment.other_purpose}</Typography>
-                  )}
-                  <Box sx={{ textAlign: "center", marginTop: 2 }}>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={() => confirmDelete(appointment.id)}
-                      sx={{ backgroundColor: "#004c8c", "&:hover": { backgroundColor: "#004c8c" } }}
-                    >
-                      Done
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))
-        )}
-      </Grid>
-
-      {/* Dialog for Adding Appointment */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ backgroundColor: "#003366", color: "#ffffff", marginBottom:"10px", fontFamily: "'Rozha One'" }}>Add New Appointment</DialogTitle>
-        <DialogContent sx={{ backgroundColor: "#f5f5f5" }}>
+    <div>
+      <h1>Schedule an Appointment</h1>
+      <Calendar
+        localizer={localizer}
+        events={appointments}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: 500 }}
+        selectable
+        onSelectSlot={handleSlotSelect}
+      />
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Schedule Appointment</DialogTitle>
+        <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={2}>
+            {/* SR Code Field */}
             <Controller
               name="sr_code"
               control={control}
-              rules={{ required: "Student Number is required" }}
-              render={({ field, fieldState: { error } }) => (
+              defaultValue=""
+              render={({ field }) => (
                 <Autocomplete
                   {...field}
-                  options={studentNumbers}
-                  freeSolo // Allow typing a new value if not in the list
-                  onInputChange={(event, value) => field.onChange(value)} // Update the field value
+                  value={getValues("sr_code")}
+                  options={options}
+                  loading={loading}
+                  getOptionLabel={(option) => option.sr_code || ""}
+                  noOptionsText="No results found"
+                  onInputChange={(e, value) => handleSearch(value)}
+                  onChange={(_, selectedOption) => handleOptionSelect(selectedOption)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Student Number"
-                      error={!!error}
-                      helperText={error ? error.message : ""}
-                      sx={{ backgroundColor: "#ffffff" }}
+                      label="Search SR Code"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
                     />
                   )}
                 />
               )}
             />
 
-              <Controller
-                name="name"
-                control={control}
-                render={({ field }) => <TextField {...field} label="Name" sx={{ backgroundColor: "#ffffff" }} />}
-              />
-              <Controller
-                name="grade"
-                control={control}
-                render={({ field }) => <TextField {...field} label="Grade" sx={{ backgroundColor: "#ffffff" }} />}
-              />
-              <Controller
-                name="section"
-                control={control}
-                render={({ field }) => <TextField {...field} label="Section" sx={{ backgroundColor: "#ffffff" }} />}
-              />
-              <Controller
-                name="date"
-                control={control}
-                render={({ field }) => <TextField {...field} type="date" sx={{ backgroundColor: "#ffffff" }} />}
-              />
-              <Controller
-                name="time"
-                control={control}
-                render={({ field }) => <TextField {...field} type="time" sx={{ backgroundColor: "#ffffff" }} />}
-              />
-              <FormControl fullWidth>
-                <InputLabel sx={{ color: "#003366", fontFamily: "'Rozha One'" }}>Purpose</InputLabel>
-                <Controller
-                  name="purpose"
-                  control={control}
-                  render={({ field }) => (
-                    <Select {...field} label="Purpose" sx={{ backgroundColor: "#ffffff", fontFamily: "'Rozha One'" }}>
-                      <MenuItem value="Routine Interview">Routine Interview</MenuItem>
-                      <MenuItem value="Referral">Referral</MenuItem>
-                      <MenuItem value="Individual Planning">Individual Planning</MenuItem>
-                      <MenuItem value="Counseling">Counseling</MenuItem>
-                      <MenuItem value="Others">Others</MenuItem>
-                    </Select>
+            {/* Name Field */}
+            <Controller
+              name="name"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  value={getValues("name")}
+                  options={options}
+                  loading={loading}
+                  getOptionLabel={(option) =>
+                    `${option.first_name || ""} ${option.last_name || ""}`
+                  }
+                  noOptionsText="No results found"
+                  onInputChange={(e, value) => handleSearch(value)}
+                  onChange={(_, selectedOption) => handleOptionSelect(selectedOption)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Search Student Name"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                    />
                   )}
                 />
-              </FormControl>
-              {purpose === "Others" && (
-                <Controller
-                  name="other_purpose"
-                  control={control}
-                  render={({ field }) => <TextField {...field} placeholder="Specify if others" sx={{ backgroundColor: "#ffffff" }} />}
+              )}
+            />
+
+            {/* Grade Field */}
+            <Controller
+              name="grade"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Grade"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               )}
-            </Stack>
+            />
+
+            {/* Section Field */}
+            <Controller
+              name="section"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Section"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              )}
+            />
+
+            {/* Purpose Field */}
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Purpose</InputLabel>
+              <Controller
+                name="purpose"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <Select {...field}>
+                    <MenuItem value="Academic">Academic</MenuItem>
+                    <MenuItem value="Personal">Personal</MenuItem>
+                    <MenuItem value="Career">Career</MenuItem>
+                    <MenuItem value="Others">Others</MenuItem>
+                  </Select>
+                )}
+              />
+            </FormControl>
           </form>
         </DialogContent>
-        <DialogActions sx={{ backgroundColor: "#003366" }}>
-          <Button onClick={() => setOpenDialog(false)} color="secondary" sx={{ color: "#ffffff" }}>Cancel</Button>
-          <Button onClick={handleSubmit(onSubmit)} color="primary" sx={{ color: "#ffffff" }}>Submit</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar for success notification */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }} // Position at the bottom
-      >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: "100%" }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-
-      {/* Dialog for Deleting Appointment */}
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-        <DialogTitle sx={{ backgroundColor: "#003366", color: "#ffffff", fontFamily: "'Rozha One'" }}>
-          Confirm Deletion
-        </DialogTitle>
-        <DialogContent sx={{ backgroundColor: "#f5f5f5" }}>
-          <Typography sx={{ color: "#003366", marginTop:"10px", fontFamily: "'Rozha One'" }}>
-            Are you sure you want to mark this scheduled as done?
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ backgroundColor: "#003366" }}>
-          <Button onClick={() => setOpenDeleteDialog(false)} color="secondary" sx={{ color: "#ffffff" }}>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="secondary">
             Cancel
           </Button>
-          <Button onClick={handleDelete} color="primary" sx={{ color: "#ffffff" }}>
-            Confirm
+          <Button onClick={handleSubmit(onSubmit)} color="primary">
+            Save
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert
+          severity={snackbarMessage.severity}
+          onClose={() => setOpenSnackbar(false)}
+        >
+          {snackbarMessage.message}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 };
 
-export default Appointment;
+export default ScheduleAppointment;

@@ -211,6 +211,19 @@ const ResourceSharing = () => {
     return <Typography variant="body2">Loading resources...</Typography>;
   }
 
+  const editorConfig = {
+    toolbar: ['bold', 'italic', 'link', 'uploadImage', 'uploadFile'],
+    simpleUpload: {
+      uploadUrl: 'https://sclcm-backend.onrender.com/upload/',
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`, // Optional, for secure endpoints
+      },
+    },
+    file: {
+      allowedExtensions: ['pdf', 'doc', 'docx', 'xls', 'xlsx'],
+    },
+  };
+
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <style>{tableStyles}</style>
@@ -279,13 +292,14 @@ const ResourceSharing = () => {
                   <CKEditor
                     {...field}
                     editor={ClassicEditor}
+                    
                     data={field.value}
                     onChange={(event, editor) => {
                       const data = editor.getData();
                       field.onChange(data);
                     }}
                     config={{
-                      height: 400,
+                      editorConfig
                     }}
                     style={{
                       height: "400px",

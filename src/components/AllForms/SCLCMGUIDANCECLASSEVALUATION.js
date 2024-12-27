@@ -318,7 +318,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
   });
 
   const submission = (data) => {
-    AxiosInstance.post(`/sclcm_guidance_class/`, {
+    AxiosInstance.post(`/guidance_class_evaluation/`, {
       name: data.name,
       grade: data.grade,
       section: data.section,

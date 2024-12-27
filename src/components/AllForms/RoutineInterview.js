@@ -300,10 +300,10 @@ const PageThree = ({ control }) => (
               options={[
                 "failing marks",
                 "misbehavior",
-                "transition to school life",
+                "transition to school sife",
                 "learning sifficulties",
                 "low motivation",
-                "teacher/s",
+                "teachers",
                 "laziness",
                 "difficult subjects",
                 "frequent D.O. client",
@@ -369,7 +369,7 @@ const PageFour = ({ control }) => (
               label="Problems Encountered"
               options={[
                 "undecided",
-                "no identified career",
+                "no identified",
                 "confusion",
                 "parent's choice",
                 "change of interest",
@@ -551,7 +551,7 @@ const RoutineInterview = ({ initialData, onClose }) => {
             recommendation: data.recommendation,
             other_recommendation: data.other_recommendation,
           })
-        : AxiosInstance.post(`/routine_interview/`, {
+        : AxiosInstance.post(/routine_interview/, {
             name: data.name,
             section: data.section,
             grade: data.grade,
