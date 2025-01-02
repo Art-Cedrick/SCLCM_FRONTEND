@@ -17,13 +17,15 @@ import {
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import AxiosInstance from "./AllForms/Axios";
+import { format } from "date-fns";
+import { TimePicker } from "@mui/x-date-pickers";
 
 const localizer = momentLocalizer(moment);
 
 const ScheduleAppointment = () => {
-  const { control, handleSubmit, reset, setValue, getValues } = useForm();
+  const { control, handleSubmit, reset, setValue, getValues, watch } = useForm();
   const [appointments, setAppointments] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -34,6 +36,11 @@ const ScheduleAppointment = () => {
     message: "",
     severity: "success",
   });
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  const selectedTime = watch("time");
 
   const handleSlotSelect = (slotInfo) => {
     const { start, end } = slotInfo;
@@ -48,9 +55,34 @@ const ScheduleAppointment = () => {
       return;
     }
 
+
     setSelectedSlot(slotInfo);
+
     setOpenDialog(true);
   };
+
+  useEffect(() => {
+    if (selectedSlot) {
+      const { start, end } = selectedSlot;
+      if (selectedTime) {
+        const selectedTime = new Date(watch("time"));
+        const startTime = new Date(start);
+        startTime.setHours(selectedTime.getHours());
+        startTime.setMinutes(selectedTime.getMinutes());
+
+        const endTime = new Date(start);
+        endTime.setHours(selectedTime.getHours());
+        endTime.setMinutes(selectedTime.getMinutes());
+
+        setSelectedSlot({ start: startTime, end: endTime });
+        setStartDate(startTime);
+        setEndDate(endTime);
+      } else {
+        setStartDate(start);
+        setEndDate(end);
+      }
+    }
+  }, [selectedTime]);
 
   const handleSearch = async (query) => {
     if (query.length > 1) {
@@ -77,7 +109,7 @@ const ScheduleAppointment = () => {
       setValue("sr_code", selectedOption.sr_code || "");
       setValue(
         "name",
-        `${selectedOption.first_name || ""} ${selectedOption.last_name || ""}`
+        `${selectedOption.firstname || ""} ${selectedOption.lastname || ""}`
       );
       setValue("grade", selectedOption.year || "");
       setValue("section", selectedOption.section || "");
@@ -100,8 +132,12 @@ const ScheduleAppointment = () => {
         "/appointment/",
         {
           ...data,
-          start: selectedSlot.start,
-          end: selectedSlot.end,
+          start: startDate.toLocaleString(),
+          end: endDate.toLocaleString(),
+          date:
+            format(new Date(selectedSlot.start), "yyyy-MM-dd"),
+          title: data.purpose,
+          time: format(new Date(data.time), "HH:mm:ss"),
         },
         {
           headers: { Authorization: `Token ${localStorage.getItem("token")}` },
@@ -113,7 +149,7 @@ const ScheduleAppointment = () => {
         {
           ...response.data,
           start: new Date(response.data.start),
-          end: new Date(response.data.end),
+          end: new Date(response.data.end)
         },
       ]);
       showSnackbar("Appointment added successfully!", "success");
@@ -140,6 +176,7 @@ const ScheduleAppointment = () => {
       });
       const formattedAppointments = response.data.map((appointment) => ({
         ...appointment,
+        title: appointment.title,
         start: new Date(appointment.start),
         end: new Date(appointment.end),
       }));
@@ -227,6 +264,24 @@ const ScheduleAppointment = () => {
               )}
             />
 
+
+            {/* Time */}
+            <Controller
+              name="time"
+              control={control}
+              defaultValue={null}
+              render={({ field: { onChange, value } }) => (
+                <TimePicker
+                  value={value}
+                  onChange={onChange}
+                  fullWidth
+                  label="Time"
+                  margin="normal"
+                  sx={{ width: '100%' }}
+                />
+              )}
+            />
+
             {/* Grade Field */}
             <Controller
               name="grade"
@@ -274,9 +329,10 @@ const ScheduleAppointment = () => {
                 defaultValue=""
                 render={({ field }) => (
                   <Select {...field}>
-                    <MenuItem value="Academic">Academic</MenuItem>
-                    <MenuItem value="Personal">Personal</MenuItem>
-                    <MenuItem value="Career">Career</MenuItem>
+                    <MenuItem value="Routine Interview">Routine Interview</MenuItem>
+                    <MenuItem value="Referral">Referral</MenuItem>
+                    <MenuItem value="Individual Planning">Individual Planning</MenuItem>
+                    <MenuItem value="Counseling">Counseling</MenuItem>
                     <MenuItem value="Others">Others</MenuItem>
                   </Select>
                 )}

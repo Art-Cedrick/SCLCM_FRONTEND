@@ -7,6 +7,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ActiveFormProvider } from "./context/SelectedFormProvider";
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -14,9 +17,11 @@ root.render(
   <Router>
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <ActiveFormProvider>
-          <App />
-        </ActiveFormProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <ActiveFormProvider>
+            <App />
+          </ActiveFormProvider>
+        </LocalizationProvider>
       </QueryClientProvider>
     </React.StrictMode>
   </Router>
