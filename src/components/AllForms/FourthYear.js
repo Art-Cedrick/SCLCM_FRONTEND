@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Paper,
   Box,
   Card,
   CardContent,
+  Autocomplete,
   Stack,
   Button,
   TextField,
@@ -43,7 +44,7 @@ const FourthYear = ({initialData, onClose}) => {
     numeracy: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
+  const { control, handleSubmit, reset, setValue, getValues} = useForm({ defaultValues: defaultValues });
 
   useEffect(() => {
     if (initialData) reset(initialData);
@@ -67,6 +68,41 @@ const FourthYear = ({initialData, onClose}) => {
       },
     }
   )
+  
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleOptionSelect = (selectedOption) => {
+    if (selectedOption) {
+      // Update all fields based on the selected student
+      setValue("sr_code", selectedOption.sr_code || "");
+      setValue(
+        "name",
+        `${selectedOption.firstname || ""} ${selectedOption.lastname || ""}`
+      );
+      setValue("gradeLevel", selectedOption.year.replace("Grade", "Grade ") || "");
+      setValue("course_program", selectedOption.section || "");
+    }
+  };
+
+  const handleSearch = async (query) => {
+    if (query.length > 1) {
+      setLoading(true);
+      try {
+        const response = await AxiosInstance.get(
+          `/search-student/?query=${query}`,
+          {
+            headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+          }
+        );
+        setOptions(response.data.results || []);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        setOptions([]);
+      }
+      setLoading(false);
+    }
+  };
 
   const submission = (data) => mutation.mutate(data);
   return (
@@ -81,7 +117,32 @@ const FourthYear = ({initialData, onClose}) => {
           paddingY: "20px",
           borderRadius: "8px",
         }}
-      >
+      >  <Controller
+                        name="sr_code"
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Autocomplete
+                            {...field}
+                            value={getValues("sr_code")}
+                            options={options}
+                            loading={loading}
+                            getOptionLabel={(option) => option.sr_code || ""}
+                            noOptionsText="No results found"
+                            onInputChange={(e, value) => handleSearch(value)}
+                            onChange={(_, selectedOption) => handleOptionSelect(selectedOption)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Search SR Code"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                              />
+                            )}
+                          />
+                        )}
+                      />
         <Stack spacing={2}>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Controller
@@ -93,6 +154,11 @@ const FourthYear = ({initialData, onClose}) => {
                   label="Student Name:"
                   variant="outlined"
                   fullWidth
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
                 />
               )}
             />
@@ -133,6 +199,11 @@ const FourthYear = ({initialData, onClose}) => {
                   label="Grade Level:"
                   variant="outlined"
                   fullWidth
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
                 />
               )}
             />
@@ -140,11 +211,14 @@ const FourthYear = ({initialData, onClose}) => {
               name="course_program"
               control={control}
               render={({ field }) => (
-                <SingleSelect
+                <TextField
                   label="Course/Program:"
-                  value={field.value}
-                  onChange={(value) => field.onChange(value)}
-                  options={["Course 1", "Course 2", "Course 3"]}
+                  {...field}
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
                 />
               )}
             />

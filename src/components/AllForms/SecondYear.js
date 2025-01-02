@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Paper,
   Box,
   Card,
   CardContent,
+  Autocomplete,
   Stack,
   Button,
   TextField,
@@ -14,7 +15,7 @@ import SingleSelect from "./Forms/SingleSelect"; // Ensure this path is correct
 import AxiosInstance from "./Axios";
 import { useMutation, useQueryClient } from "react-query";
 
-const SecondYear = ({initialData, onClose}) => {
+const SecondYear = ({ initialData, onClose }) => {
   const queryClient = useQueryClient();
   const defaultValues = {
     name: "",
@@ -38,30 +39,66 @@ const SecondYear = ({initialData, onClose}) => {
     g_vi: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues: defaultValues });
+  const { control, handleSubmit, reset, setValue, getValues } = useForm({ defaultValues: defaultValues });
 
   useEffect(() => {
     if (initialData) reset(initialData);
   }, [initialData, reset]);
 
   const mutation = useMutation(
-    (data) => 
+    (data) =>
       initialData
-      ? AxiosInstance.put(`/second_year/${initialData.id}/`, data)
-      : AxiosInstance.post(`/second_year/`, data), {
-      onSuccess: () => {
-        queryClient.invalidateQueries('secondyearData');
-        console.log("Data invalidated");
-        queryClient.refetchQueries('secondyearData');
-        console.log("Data refetched");
-        reset();
-        onClose();
-        console.log("Data submitted and table refreshed");
-      }, onError: (error) => {
-        console.error("Error submitting data", error);
-      },
-    }
+        ? AxiosInstance.put(`/second_year/${initialData.id}/`, data)
+        : AxiosInstance.post(`/second_year/`, data), {
+    onSuccess: () => {
+      queryClient.invalidateQueries('secondyearData');
+      console.log("Data invalidated");
+      queryClient.refetchQueries('secondyearData');
+      console.log("Data refetched");
+      reset();
+      onClose();
+      console.log("Data submitted and table refreshed");
+    }, onError: (error) => {
+      console.error("Error submitting data", error);
+    },
+  }
   )
+
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleOptionSelect = (selectedOption) => {
+    if (selectedOption) {
+      // Update all fields based on the selected student
+      setValue("sr_code", selectedOption.sr_code || "");
+      setValue(
+        "name",
+        `${selectedOption.firstname || ""} ${selectedOption.lastname || ""}`
+      );
+      setValue("yearLevel", selectedOption.year.replace("Grade", "Grade ") || "");
+      setValue("course", selectedOption.section || "");
+    }
+  };
+
+  const handleSearch = async (query) => {
+    if (query.length > 1) {
+      setLoading(true);
+      try {
+        const response = await AxiosInstance.get(
+          `/search-student/?query=${query}`,
+          {
+            headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+          }
+        );
+        setOptions(response.data.results || []);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        setOptions([]);
+      }
+      setLoading(false);
+    }
+  };
+
 
   const submission = (data) => mutation.mutate(data);
 
@@ -78,6 +115,32 @@ const SecondYear = ({initialData, onClose}) => {
           borderRadius: "8px",
         }}
       >
+        <Controller
+          name="sr_code"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              value={getValues("sr_code")}
+              options={options}
+              loading={loading}
+              getOptionLabel={(option) => option.sr_code || ""}
+              noOptionsText="No results found"
+              onInputChange={(e, value) => handleSearch(value)}
+              onChange={(_, selectedOption) => handleOptionSelect(selectedOption)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search SR Code"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                />
+              )}
+            />
+          )}
+        />
         <Stack spacing={2}>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Controller
@@ -89,6 +152,11 @@ const SecondYear = ({initialData, onClose}) => {
                   {...field}
                   fullWidth
                   variant="outlined"
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
                 />
               )}
             />
@@ -131,6 +199,11 @@ const SecondYear = ({initialData, onClose}) => {
                   {...field}
                   fullWidth
                   variant="outlined"
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
                 />
               )}
             />
@@ -139,12 +212,14 @@ const SecondYear = ({initialData, onClose}) => {
               control={control}
               render={({ field }) => (
 
-                <SingleSelect
+                <TextField
                   {...field}
                   label="Course:"
-
-
-                  options={["Course1", "Course2"]}
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
                 />
               )}
             />
