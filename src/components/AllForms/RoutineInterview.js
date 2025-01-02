@@ -7,7 +7,7 @@ import {
   IconButton,
   TextField,
   Button,
-  Card, // Import Card from Material UI
+  Autocomplete,
 } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import SingleSelect from "./Forms/SingleSelect";
@@ -15,87 +15,149 @@ import { useForm, Controller } from "react-hook-form";
 import AxiosInstance from "./Axios";
 import { useMutation, useQueryClient } from "react-query";
 
-const PageOne = ({ control }) => (
-  <Box>
-    <Stack spacing={6}>
-      <Stack direction="row" spacing={3}>
-        <Stack spacing={6} sx={{ flex: 1 }}>
-          <Controller
-            name="name"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Name"
-                variant="outlined"
-                sx={{ width: "100%" }}
-              />
-            )}
-          />
-          <Controller
-            name="grade"
-            control={control}
-            render={({ field }) => (
-              <SingleSelect
-                label="Grade"
-                {...field}
-                options={[
-                  "Grade 1",
-                  "Grade 2",
-                  "Grade 3",
-                  "Grade 4",
-                  "Grade 5",
-                  "Grade 6",
-                  "Grade 7",
-                  "Grade 8",
-                  "Grade 9",
-                  "Grade 10",
-                  "Grade 11",
-                  "Grade 12",
-                  "1st Year",
-                  "2nd Year",
-                  "3rd Year",
-                  "4th Year",
-                ]}
-                sx={{ width: "100%" }}
-              />
-            )}
-          />
-        </Stack>
-        <Stack spacing={6} sx={{ flex: 1 }}>
-          <Controller
-            name="section"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                label="Section"
-                {...field}
-                variant="outlined"
-                sx={{ width: "100%" }}
-              />
-            )}
-          />
-          <Controller
-            name="date"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                label="Date"
-                {...field}
-                type="date"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                sx={{ width: "100%" }}
-              />
-            )}
-          />
+const PageOne = ({ control, setValue, getValues }) => {
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleOptionSelect = (selectedOption) => {
+    if (selectedOption) {
+      // Update all fields based on the selected student
+      setValue("sr_code", selectedOption.sr_code || "");
+      setValue(
+        "name",
+        `${selectedOption.firstname || ""} ${selectedOption.lastname || ""}`
+      );
+      setValue("grade", selectedOption.year.replace("Grade", "Grade ") || "");
+      setValue("section", selectedOption.section || "");
+    }
+  };
+
+  const handleSearch = async (query) => {
+    if (query.length > 1) {
+      setLoading(true);
+      try {
+        const response = await AxiosInstance.get(
+          `/search-student/?query=${query}`,
+          {
+            headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+          }
+        );
+        setOptions(response.data.results || []);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        setOptions([]);
+      }
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Box>
+      <Stack spacing={6}>
+        <Controller
+          name="sr_code"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              value={getValues("sr_code")}
+              options={options}
+              loading={loading}
+              getOptionLabel={(option) => option.sr_code || ""}
+              noOptionsText="No results found"
+              onInputChange={(e, value) => handleSearch(value)}
+              onChange={(_, selectedOption) => handleOptionSelect(selectedOption)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search SR Code"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                />
+              )}
+            />
+          )}
+        />
+        <Stack direction="row" spacing={3}>
+
+          <Stack spacing={6} sx={{ flex: 1 }}>
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Name"
+                  variant="outlined"
+                  sx={{ width: "100%" }}
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
+                />
+              )}
+            />
+            <Controller
+              name="grade"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="Grade"
+                  {...field}
+                  variant="outlined"
+                  sx={{ width: "100%" }}
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
+                />
+              )}
+            />
+          </Stack>
+          <Stack spacing={6} sx={{ flex: 1 }}>
+            <Controller
+              name="section"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="Section"
+                  {...field}
+                  variant="outlined"
+                  sx={{ width: "100%" }}
+                  slotProps={{
+                    input: {
+                      readOnly: true,
+                    },
+                  }}
+                />
+              )}
+            />
+            <Controller
+              name="date"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="Date"
+                  {...field}
+                  type="date"
+                  variant="outlined"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  sx={{ width: "100%" }}
+                />
+              )}
+            />
+          </Stack>
         </Stack>
       </Stack>
-    </Stack>
-  </Box>
-);
+    </Box>
+  )
+};
 
 const PageTwo = ({ control }) => (
   <Box>
@@ -502,6 +564,7 @@ const RoutineInterview = ({ initialData, onClose }) => {
   const queryClient = useQueryClient();
 
   const defaultValues = {
+    sr_code: "",
     name: "",
     section: "",
     grade: "",
@@ -521,7 +584,7 @@ const RoutineInterview = ({ initialData, onClose }) => {
     other_recommendation: "",
   };
 
-  const { handleSubmit, reset, control } = useForm({
+  const { handleSubmit, reset, control, setValue, getValues } = useForm({
     defaultValues: initialData || defaultValues,
   });
 
@@ -532,44 +595,8 @@ const RoutineInterview = ({ initialData, onClose }) => {
   const mutation = useMutation(
     (data) =>
       initialData
-        ? AxiosInstance.put(`/routine_interview/${initialData.id}/`, {
-            name: data.name,
-            section: data.section,
-            grade: data.grade,
-            date: data.date,
-            family_problem: data.family_problem,
-            family_details: data.family_details,
-            friends_problem: data.friends_problem,
-            friends_details: data.friends_details,
-            health_problem: data.health_problem,
-            health_details: data.health_details,
-            academic_problem: data.academic_problem,
-            academic_details: data.academic_details,
-            career_problem: data.career_problem,
-            career_details: data.career_details,
-            remarks: data.remarks,
-            recommendation: data.recommendation,
-            other_recommendation: data.other_recommendation,
-          })
-        : AxiosInstance.post(/routine_interview/, {
-            name: data.name,
-            section: data.section,
-            grade: data.grade,
-            date: data.date,
-            family_problem: data.family_problem,
-            family_details: data.family_details,
-            friends_problem: data.friends_problem,
-            friends_details: data.friends_details,
-            health_problem: data.health_problem,
-            health_details: data.health_details,
-            academic_problem: data.academic_problem,
-            academic_details: data.academic_details,
-            career_problem: data.career_problem,
-            career_details: data.career_details,
-            remarks: data.remarks,
-            recommendation: data.recommendation,
-            other_recommendation: data.other_recommendation,
-          }),
+        ? AxiosInstance.put(`/routine_interview/${initialData.id}/`, data)
+        : AxiosInstance.post(/routine_interview/, data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("routineData");
@@ -607,7 +634,7 @@ const RoutineInterview = ({ initialData, onClose }) => {
           borderRadius: "8px",
         }}
       >
-        {page === 1 && <PageOne control={control} />}
+        {page === 1 && <PageOne control={control} setValue={setValue} getValues={getValues} />}
         {page === 2 && <PageTwo control={control} />}
         {page === 3 && <PageThree control={control} />}
         {page === 4 && <PageFour control={control} />}

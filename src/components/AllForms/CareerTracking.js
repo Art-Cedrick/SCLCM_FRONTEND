@@ -8,7 +8,8 @@ import {
   Paper,
   Stack,
   TextField,
-  Typography
+  Typography,
+  Autocomplete,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -17,7 +18,7 @@ import AxiosInstance from "./Axios";
 import SingleSelect from "./Forms/SingleSelect";
 import recommend from "../../utils/recommend";
 
-const PageOne = ({ control }) => {
+const PageOne = ({ control, setValue, getValues }) => {
   const subjects = [
     { label: "CLE", name: "cle" },
     { label: "ENGLISH", name: "english" },
@@ -31,13 +32,72 @@ const PageOne = ({ control }) => {
     { label: "FL", name: "fl" },
   ];
 
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleOptionSelect = (selectedOption) => {
+    if (selectedOption) {
+      // Update all fields based on the selected student
+      setValue("sr_code", selectedOption.sr_code || "");
+      setValue(
+        "name",
+        `${selectedOption.firstname || ""} ${selectedOption.lastname || ""}`
+      );
+      setValue("grade", selectedOption.year.replace("Grade", "Grade ") || "");
+      setValue("section", selectedOption.section || "");
+    }
+  };
+
+  const handleSearch = async (query) => {
+    if (query.length > 1) {
+      setLoading(true);
+      try {
+        const response = await AxiosInstance.get(
+          `/search-student/?query=${query}`,
+          {
+            headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+          }
+        );
+        setOptions(response.data.results || []);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        setOptions([]);
+      }
+      setLoading(false);
+    }
+  };
+
+
   return (
     <Box>
       <Stack spacing={6}>
-        <Typography variant="h6" sx={{ mb: 3 }}>
-          Final Grade Summary
-        </Typography>
 
+        <Controller
+          name="sr_code"
+          control={control}
+          defaultValue=""
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              value={getValues("sr_code")}
+              options={options}
+              loading={loading}
+              getOptionLabel={(option) => option.sr_code || ""}
+              noOptionsText="No results found"
+              onInputChange={(e, value) => handleSearch(value)}
+              onChange={(_, selectedOption) => handleOptionSelect(selectedOption)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search SR Code"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                />
+              )}
+            />
+          )}
+        />
         <Box
           sx={{
             display: "grid",
@@ -50,7 +110,11 @@ const PageOne = ({ control }) => {
             name="name"
             control={control}
             render={({ field }) => (
-              <TextField label="Name" {...field} sx={{ width: "100%" }} />
+              <TextField label="Name" {...field} sx={{ width: "100%" }} slotProps={{
+                input: {
+                  readOnly: true,
+                },
+              }} />
             )}
           />
 
@@ -59,7 +123,11 @@ const PageOne = ({ control }) => {
             name="grade"
             control={control}
             render={({ field }) => (
-              <TextField label="Grade" {...field} sx={{ width: "100%" }} />
+              <TextField label="Grade" {...field} sx={{ width: "100%" }} slotProps={{
+                input: {
+                  readOnly: true,
+                },
+              }} />
             )}
           />
 
@@ -68,11 +136,17 @@ const PageOne = ({ control }) => {
             name="section"
             control={control}
             render={({ field }) => (
-              <TextField label="Section" {...field} sx={{ width: "100%" }} />
+              <TextField label="Section" {...field} sx={{ width: "100%" }} slotProps={{
+                input: {
+                  readOnly: true,
+                },
+              }} />
             )}
           />
         </Box>
-
+        <Typography variant="h6" sx={{ mb: 3 }}>
+          Final Grade Summary
+        </Typography>
         <Box
           sx={{
             display: "grid",
@@ -387,52 +461,52 @@ const PageThree = ({ control }) => (
         PSYCHOLOGICAL TEST TAKEN WITH RESULT:
       </Typography>
       <Controller
-          name="cognitive"
-          control={control}
-          render={({ field }) => (
-            <SingleSelect
-              label="Cognitive Abilities"
-              {...field}
-              options={[
-                "High",
-                "Average",
-                "Low",
-              ]}
-            />
-          )}
-        />
+        name="cognitive"
+        control={control}
+        render={({ field }) => (
+          <SingleSelect
+            label="Cognitive Abilities"
+            {...field}
+            options={[
+              "High",
+              "Average",
+              "Low",
+            ]}
+          />
+        )}
+      />
 
-        <Controller
-          name="emotional"
-          control={control}
-          render={({ field }) => (
-            <SingleSelect
-              label="Emotional Intelligence"
-              {...field}
-              options={[
-                "High",
-                "Average",
-                "Low",
-              ]}
-            />
-          )}
-        />
+      <Controller
+        name="emotional"
+        control={control}
+        render={({ field }) => (
+          <SingleSelect
+            label="Emotional Intelligence"
+            {...field}
+            options={[
+              "High",
+              "Average",
+              "Low",
+            ]}
+          />
+        )}
+      />
 
-        <Controller
-          name="personality"
-          control={control}
-          render={({ field }) => (
-            <SingleSelect
-              label="Personality Traits"
-              {...field}
-              options={[
-                "High",
-                "Average",
-                "Low",
-              ]}
-            />
-          )}
-        />
+      <Controller
+        name="personality"
+        control={control}
+        render={({ field }) => (
+          <SingleSelect
+            label="Personality Traits"
+            {...field}
+            options={[
+              "High",
+              "Average",
+              "Low",
+            ]}
+          />
+        )}
+      />
       <Box
         sx={{
           display: "flex",
@@ -480,7 +554,7 @@ const CareerTracking = ({ initialData, onClose }) => {
     personality: "",
   };
 
-  const { control, handleSubmit, reset, watch } = useForm({
+  const { control, handleSubmit, reset, watch, setValue, getValues } = useForm({
     defaultValues: defaultValues,
   });
 
@@ -520,71 +594,17 @@ const CareerTracking = ({ initialData, onClose }) => {
 
       initialData
         ? AxiosInstance.put(`/careertracking/${initialData.id}/`, {
-            name: data.name,
-            grade: data.grade,
-            section: data.section,
-
-            cle: data.cle,
-            english: data.english,
-            filipino: data.filipino,
-            ap: data.ap,
-            science: data.science,
-            math: data.math,
-            mapeh: data.mapeh,
-            tle: data.tle,
-            computer: data.computer,
-            fl: data.fl,
-
-            academic_track: data.academic_track,
-            other_track: data.other_track,
-            tech_voc: data.tech_voc,
-            other_techvoc: data.other_techvoc,
-            preferredCourse: data.preferredCourse,
-
-            medical_records: data.medical_records,
-            specify: data.specify,
-            academic_status: data.academic_status,
-            hobbies: data.hobbies,
-            cognitive: data.cognitive,
-            emotional: data.emotional,
-            personality: data.personality,
-            top_one: res[0].industry,
-            top_two: res[1].industry,
-            top_three: res[2].industry,
-          })
+          ...data,
+          top_one: res[0].industry,
+          top_two: res[1].industry,
+          top_three: res[2].industry,
+        })
         : AxiosInstance.post(`/careertracking/`, {
-            name: data.name,
-            grade: data.grade,
-            section: data.section,
-
-            cle: data.cle,
-            english: data.english,
-            filipino: data.filipino,
-            ap: data.ap,
-            science: data.science,
-            math: data.math,
-            mapeh: data.mapeh,
-            tle: data.tle,
-            computer: data.computer,
-            fl: data.fl,
-
-            academic_track: data.academic_track,
-            other_track: data.other_track,
-            tech_voc: data.tech_voc,
-            other_techvoc: data.other_techvoc,
-            preferredCourse: data.preferredCourse,
-
-            medical_records: data.medical_records,
-            specify: data.specify,
-            academic_status: data.academic_status,
-            hobbies: data.hobbies,
-            cognitive: data.cognitive,
-            emotional: data.emotional,
-            personality: data.personality,
-            top_one: res[0].industry,
-            top_two: res[1].industry,
-            top_three: res[2].industry,
-          });
+          ...data,
+          top_one: res[0].industry,
+          top_two: res[1].industry,
+          top_three: res[2].industry,
+        });
     },
     {
       onSuccess: () => {
@@ -624,7 +644,7 @@ const CareerTracking = ({ initialData, onClose }) => {
           borderRadius: "8px"
         }}
       >
-        {page === 1 && <PageOne control={control} />}
+        {page === 1 && <PageOne control={control} setValue={setValue} getValues={getValues} />}
         {page === 2 && <PageTwo control={control} />}
         {page === 3 && <PageThree control={control} />}
         <Stack
