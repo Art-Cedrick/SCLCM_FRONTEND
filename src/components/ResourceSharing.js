@@ -285,7 +285,12 @@ const ResourceSharing = () => {
                       field.onChange(data);
                     }}
                     config={{
-                      height: 400,
+                      simpleUpload: {
+                        uploadUrl: "https://sclcm-backend.onrender.com/api/upload/", // Replace with your actual upload endpoint
+                        headers: {
+                          Authorization: `Token ${localStorage.getItem("token")}`,
+                        },
+                      },
                     }}
                     style={{
                       height: "400px",
