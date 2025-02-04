@@ -50,10 +50,13 @@ const ScheduleAppointment = () => {
         (end > appointment.start && end <= appointment.end)
     );
 
+    const selectedDate = slotInfo.start.toISOString().split("T")[0]; 
+    console.log(selectedDate);
     if (isOverlap) {
       alert("This time slot is already booked.");
       return;
     }
+
 
 
     setSelectedSlot(slotInfo);
@@ -106,6 +109,7 @@ const ScheduleAppointment = () => {
   const handleOptionSelect = (selectedOption) => {
     if (selectedOption) {
       // Update all fields based on the selected student
+      // console.log(selectedDate);
       setValue("sr_code", selectedOption.sr_code || "");
       setValue(
         "name",
@@ -117,51 +121,60 @@ const ScheduleAppointment = () => {
   };
 
   const onSubmit = async (data) => {
-    if (!data.sr_code) {
-      alert("Please provide a valid Student Number.");
-      return;
-    }
 
-    if (data.purpose === "Others" && !data.other_purpose.trim()) {
-      alert("Please specify the purpose.");
-      return;
-    }
+    // console.log(data.time.toLocaleString());
+    const timeIn = new Date(data["time-in-date"]);  
+    const timeOut = new Date(data["time-out-date"]);
+    console.log(timeOut.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+    console.log(timeOut.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+    
 
-    try {
-      const response = await AxiosInstance.post(
-        "/appointment/",
-        {
-          ...data,
-          start: startDate.toLocaleString(),
-          end: endDate.toLocaleString(),
-          date:
-            format(new Date(selectedSlot.start), "yyyy-MM-dd"),
-          title: data.purpose,
-          time: format(new Date(data.time), "HH:mm:ss"),
-        },
-        {
-          headers: { Authorization: `Token ${localStorage.getItem("token")}` },
-        }
-      );
 
-      setAppointments((prev) => [
-        ...prev,
-        {
-          ...response.data,
-          start: new Date(response.data.start),
-          end: new Date(response.data.end)
-        },
-      ]);
-      showSnackbar("Appointment added successfully!", "success");
-      reset(); // Reset the form after submission
-      setOpenDialog(false);
-    } catch (error) {
-      console.error(
-        "Error creating appointment:",
-        error.response?.data || error.message
-      );
-      showSnackbar("Error creating appointment. Please try again.", "error");
-    }
+    // if (!data.sr_code) {
+    //   alert("Please provide a valid Student Number.");
+    //   return;
+    // }
+
+    // if (data.purpose === "Others" && !data.other_purpose.trim()) {
+    //   alert("Please specify the purpose.");
+    //   return;
+    // }
+
+    // try {
+    //   const response = await AxiosInstance.post(
+    //     "/appointment/",
+    //     {
+    //       ...data,
+    //       start: startDate.toLocaleString(),
+    //       end: endDate.toLocaleString(),
+    //       date:
+    //         format(new Date(selectedSlot.start), "yyyy-MM-dd"),
+    //       title: data.purpose,
+    //       time: format(new Date(data.time), "HH:mm:ss"),
+    //     },
+    //     {
+    //       headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+    //     }
+    //   );
+
+    //   setAppointments((prev) => [
+    //     ...prev,
+    //     {
+    //       ...response.data,
+    //       start: new Date(response.data.start),
+    //       end: new Date(response.data.end)
+    //     },
+    //   ]);
+    //   showSnackbar("Appointment added successfully!", "success");
+    //   reset(); // Reset the form after submission
+    //   setOpenDialog(false);
+    // } catch (error) {
+    //   console.error(
+    //     "Error creating appointment:",
+    //     error.response?.data || error.message
+    //   );
+    //   showSnackbar("Error creating appointment. Please try again.", "error");
+    // }
   };
 
   const showSnackbar = (message, severity = "success") => {
@@ -189,7 +202,6 @@ const ScheduleAppointment = () => {
   useEffect(() => {
     fetchAppointments();
   }, []);
-
   return (
     <div>
       <h1>Schedule an Appointment</h1>
@@ -235,7 +247,7 @@ const ScheduleAppointment = () => {
             />
 
             {/* Name Field */}
-            <Controller
+            {/* <Controller
               name="name"
               control={control}
               defaultValue=""
@@ -262,14 +274,34 @@ const ScheduleAppointment = () => {
                   )}
                 />
               )}
+            /> */}
+            <Controller
+              name="name"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Name"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  disabled
+                />
+              )}
             />
 
 
-            {/* Time */}
+
+            {/* Time in Date Format */}
             <Controller
-              name="time"
+              name="time-in-date"
               control={control}
               defaultValue={null}
+
               render={({ field: { onChange, value } }) => (
                 <TimePicker
                   value={value}
@@ -277,13 +309,32 @@ const ScheduleAppointment = () => {
                   fullWidth
                   label="Time"
                   margin="normal"
-                  sx={{ width: '100%' }}
+                  sx={{ width: '100%', marginTop: '10px' }}
                 />
               )}
             />
 
+            {/* End Time date */}
+            <Controller
+              name="time-out-date"
+              control={control}
+              defaultValue={null}
+              render={({ field: { onChange, value } }) => (
+                <TimePicker
+                  value={value}
+                  onChange={onChange}
+                  fullWidth
+                  label="End Time"
+                  margin="normal"
+                  sx={{ width: '100%', marginTop: '10px' }}
+                />
+              )}
+            />
+
+
             {/* Grade Field */}
             <Controller
+
               name="grade"
               control={control}
               defaultValue=""
