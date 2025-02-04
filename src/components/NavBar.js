@@ -82,8 +82,10 @@ const NavBar = React.memo((props) => {
       sx={{
         backgroundColor: "rgba(5, 21, 54, 255)",
         height: "100vh",
+        width: "100%",
         color: "#ffffff",
         position: "relative",
+        padding: "0 20px",
       }}
     >
       <Toolbar>

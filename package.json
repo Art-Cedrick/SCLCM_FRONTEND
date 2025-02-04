@@ -36,7 +36,9 @@
     "react-router-dom": "^6.26.1",
     "react-scripts": "^5.0.1",
     "recharts": "^2.13.3",
-    "web-vitals": "^4.2.3"
+    "sonner": "^1.7.4",
+    "web-vitals": "^4.2.3",
+    "zustand": "^5.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -69,5 +71,4 @@
   "overrides": {
     "minimatch": "10.0.1"
   }
-  
 }

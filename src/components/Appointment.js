@@ -21,7 +21,7 @@ import { Controller, useForm } from "react-hook-form";
 import AxiosInstance from "./AllForms/Axios";
 import { format } from "date-fns";
 import { TimePicker } from "@mui/x-date-pickers";
-
+import { Toaster, toast } from "sonner";
 const localizer = momentLocalizer(moment);
 
 const ScheduleAppointment = () => {
@@ -44,15 +44,15 @@ const ScheduleAppointment = () => {
 
   const handleSlotSelect = (slotInfo) => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Normalize time to midnight
+    today.setHours(0, 0, 0, 0); 
   
     const selectedDateChecker = new Date(slotInfo.start);
-    selectedDateChecker.setHours(0, 0, 0, 0); // Normalize time to midnight
+    selectedDateChecker.setHours(0, 0, 0, 0);
   
 
     if (selectedDateChecker < today) {
-      console.warn("Cannot select past dates!");
-      return; // Prevent selection
+      toast.error("You cannot book an appointment on a past date.");
+      return; 
     }
   
 
@@ -135,12 +135,21 @@ const ScheduleAppointment = () => {
 
   const onSubmit = async (data) => {
 
-    const timeIn = new Date(data["time-in-date"]);  
-    const timeOut = new Date(data["time-out-date"]);
-    console.log(timeOut.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
-    console.log(timeOut.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+    if(!data["time-in-date"] || !data["time-out-date"] || !data.purpose || !data.sr_code){
+      toast.error("Please fill up the required fields");
+      return;
+    }
+
+    toast.success("Appointment has been scheduled successfully");
+    reset(); 
+    setOpenDialog(false);
+
+    // const timeIn = new Date(data["time-in-date"]);  
+    // const timeOut = new Date(data["time-out-date"]);
+    // console.log(timeOut.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+    // console.log(timeOut.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
     
-    console.log(data);
+    // console.log(data);
 
     // if (!data.sr_code) {
     //   alert("Please provide a valid Student Number.");
@@ -195,28 +204,29 @@ const ScheduleAppointment = () => {
   };
 
   const fetchAppointments = async () => {
-    // try {
-    //   const response = await AxiosInstance.get("/appointment/", {
-    //     headers: { Authorization: `Token ${localStorage.getItem("token")}` },
-    //   });
-    //   const formattedAppointments = response.data.map((appointment) => ({
-    //     ...appointment,
-    //     title: appointment.title,
-    //     start: new Date(appointment.start),
-    //     end: new Date(appointment.end),
-    //   }));
-    //   setAppointments(formattedAppointments);
-    // } catch (error) {
-    //   console.error("Error fetching appointments:", error);
-    // }
-    setAppointments([
-      // create a sample appointment the duration is 1 hour
-      {
-        title: "Sample Appointment",
-        start: new Date(),
-        end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
-      },
-    ]);  
+    try {
+      const response = await AxiosInstance.get("/appointment/", {
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+      });
+      console.log(response.data);
+      // const formattedAppointments = response.data.map((appointment) => ({
+      //   ...appointment,
+      //   title: appointment.title,
+      //   start: new Date(appointment.start),
+      //   end: new Date(appointment.end),
+      // }));
+      // setAppointments(formattedAppointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+    // setAppointments([
+    //   // create a sample appointment the duration is 1 hour
+    //   {
+    //     title: "Sample Appointment",
+    //     start: new Date(),
+    //     end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
+    //   },
+    // ]);  
 
   };
 
@@ -228,7 +238,7 @@ const ScheduleAppointment = () => {
       return {
         style: {
           pointerEvents: "none", // Prevent clicking
-          backgroundColor: "#f0f0f0", // Light gray background
+          backgroundColor: "#e6e6e6", // Light gray background
           color: "#aaa", // Gray text
         },
       };
@@ -242,6 +252,7 @@ const ScheduleAppointment = () => {
   }, []);
   return (
     <div>
+      <Toaster richColors position="top-right"/>
       <h1>Schedule an Appointment</h1>
       <Calendar
         localizer={localizer}
@@ -324,6 +335,7 @@ const ScheduleAppointment = () => {
                   {...field}
                   label="Name"
                   variant="outlined"
+                  sx={{ backgroundColor: '#e6e6e6' }}
                   fullWidth
                   margin="normal"
                   InputProps={{
@@ -333,8 +345,6 @@ const ScheduleAppointment = () => {
                 />
               )}
             />
-
-
 
             {/* Time in Date Format */}
             <Controller
@@ -347,7 +357,7 @@ const ScheduleAppointment = () => {
                   value={value}
                   onChange={onChange}
                   fullWidth
-                  label="Time"
+                  label="Start Time"
                   margin="normal"
                   sx={{ width: '100%', marginTop: '10px' }}
                 />
@@ -371,6 +381,28 @@ const ScheduleAppointment = () => {
               )}
             />
 
+            {/* Purpose Field */}
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Purpose</InputLabel>
+              {/* i want to add border in this control */}
+
+              <Controller
+                name="purpose"
+                control={control}
+                defaultValue=""
+                // rules={{ required: "Purpose is required" }}
+                render={({ field }) => (
+                  <Select {...field}>
+                    <MenuItem value="Routine Interview">Routine Interview</MenuItem>
+                    <MenuItem value="Referral">Referral</MenuItem>
+                    <MenuItem value="Individual Planning">Individual Planning</MenuItem>
+                    <MenuItem value="Counseling">Counseling</MenuItem>
+                    <MenuItem value="Others">Others</MenuItem>
+                  </Select>
+                )}
+              />
+            </FormControl>
+
 
             {/* Grade Field */}
             <Controller
@@ -378,10 +410,12 @@ const ScheduleAppointment = () => {
               name="grade"
               control={control}
               defaultValue=""
+
               render={({ field }) => (
                 <TextField
                   {...field}
                   label="Grade"
+                  sx={{ backgroundColor: '#e6e6e6' }}
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -401,6 +435,7 @@ const ScheduleAppointment = () => {
                 <TextField
                   {...field}
                   label="Section"
+                  sx={{ backgroundColor: '#e6e6e6' }}
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -410,25 +445,6 @@ const ScheduleAppointment = () => {
                 />
               )}
             />
-
-            {/* Purpose Field */}
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Purpose</InputLabel>
-              <Controller
-                name="purpose"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <Select {...field}>
-                    <MenuItem value="Routine Interview">Routine Interview</MenuItem>
-                    <MenuItem value="Referral">Referral</MenuItem>
-                    <MenuItem value="Individual Planning">Individual Planning</MenuItem>
-                    <MenuItem value="Counseling">Counseling</MenuItem>
-                    <MenuItem value="Others">Others</MenuItem>
-                  </Select>
-                )}
-              />
-            </FormControl>
           </form>
         </DialogContent>
         <DialogActions>
