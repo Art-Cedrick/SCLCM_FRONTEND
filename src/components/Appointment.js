@@ -43,6 +43,19 @@ const ScheduleAppointment = () => {
   const selectedTime = watch("time");
 
   const handleSlotSelect = (slotInfo) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize time to midnight
+  
+    const selectedDateChecker = new Date(slotInfo.start);
+    selectedDateChecker.setHours(0, 0, 0, 0); // Normalize time to midnight
+  
+
+    if (selectedDateChecker < today) {
+      console.warn("Cannot select past dates!");
+      return; // Prevent selection
+    }
+  
+
     const { start, end } = slotInfo;
     const isOverlap = appointments.some(
       (appointment) =>
@@ -122,13 +135,12 @@ const ScheduleAppointment = () => {
 
   const onSubmit = async (data) => {
 
-    // console.log(data.time.toLocaleString());
     const timeIn = new Date(data["time-in-date"]);  
     const timeOut = new Date(data["time-out-date"]);
     console.log(timeOut.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
     console.log(timeOut.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
     
-
+    console.log(data);
 
     // if (!data.sr_code) {
     //   alert("Please provide a valid Student Number.");
@@ -183,21 +195,47 @@ const ScheduleAppointment = () => {
   };
 
   const fetchAppointments = async () => {
-    try {
-      const response = await AxiosInstance.get("/appointment/", {
-        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
-      });
-      const formattedAppointments = response.data.map((appointment) => ({
-        ...appointment,
-        title: appointment.title,
-        start: new Date(appointment.start),
-        end: new Date(appointment.end),
-      }));
-      setAppointments(formattedAppointments);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-    }
+    // try {
+    //   const response = await AxiosInstance.get("/appointment/", {
+    //     headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+    //   });
+    //   const formattedAppointments = response.data.map((appointment) => ({
+    //     ...appointment,
+    //     title: appointment.title,
+    //     start: new Date(appointment.start),
+    //     end: new Date(appointment.end),
+    //   }));
+    //   setAppointments(formattedAppointments);
+    // } catch (error) {
+    //   console.error("Error fetching appointments:", error);
+    // }
+    setAppointments([
+      // create a sample appointment the duration is 1 hour
+      {
+        title: "Sample Appointment",
+        start: new Date(),
+        end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
+      },
+    ]);  
+
   };
+
+  const dayPropGetter = (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+  
+    if (date < today) {
+      return {
+        style: {
+          pointerEvents: "none", // Prevent clicking
+          backgroundColor: "#f0f0f0", // Light gray background
+          color: "#aaa", // Gray text
+        },
+      };
+    }
+    return {};
+  };
+  
 
   useEffect(() => {
     fetchAppointments();
@@ -213,7 +251,9 @@ const ScheduleAppointment = () => {
         style={{ height: 500 }}
         selectable
         onSelectSlot={handleSlotSelect}
+        dayPropGetter={dayPropGetter} // Apply past date styling
       />
+
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Schedule Appointment</DialogTitle>
         <DialogContent>
