@@ -214,7 +214,7 @@ const ResourceSharing = () => {
   const editorConfig = {
     toolbar: ['bold', 'italic', 'link', 'uploadImage', 'uploadFile'],
     simpleUpload: {
-      uploadUrl: 'https://sclcm-backend.onrender.com/upload/',
+      uploadUrl: 'https://sclcm-backend.onrender.com/ckeditor5/',
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`, // Optional, for secure endpoints
       },
