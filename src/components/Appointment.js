@@ -144,6 +144,8 @@ const ScheduleAppointment = () => {
     reset(); 
     setOpenDialog(false);
 
+    console.log(data);
+    
     // const timeIn = new Date(data["time-in-date"]);  
     // const timeOut = new Date(data["time-out-date"]);
     // console.log(timeOut.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
