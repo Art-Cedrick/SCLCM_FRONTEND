@@ -32,7 +32,6 @@ const ScheduleAppointment = () => {
   const { appointments, status, messagePrompt, addAppointment, handleDelete, selectedAppointment, setSelectedAppointment, fetchAppointments } = useAppointmentStore();
 
   const handleSlotSelect = (slotInfo) => {
-
     const today = new Date();
     today.setHours(0, 0, 0, 0); 
   
@@ -59,6 +58,8 @@ const ScheduleAppointment = () => {
       toast.error("This time slot is already booked.");
       return;
     }
+
+    
 
     setOpenDialog(true);
   };
@@ -158,37 +159,37 @@ const ScheduleAppointment = () => {
     // }
   };
 
-  const showSnackbar = (message, severity = "success") => {
-    setSnackbarMessage({ message, severity });
-    setOpenSnackbar(true);
-  };
+  // const showSnackbar = (message, severity = "success") => {
+  //   setSnackbarMessage({ message, severity });
+  //   setOpenSnackbar(true);
+  // };
 
-  const fetchAppointments = async () => {
-    try {
-      const response = await AxiosInstance.get("/appointment/", {
-        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
-      });
-      console.log(response.data);
-      // const formattedAppointments = response.data.map((appointment) => ({
-      //   ...appointment,
-      //   title: appointment.title,
-      //   start: new Date(appointment.start),
-      //   end: new Date(appointment.end),
-      // }));
-      // setAppointments(formattedAppointments);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-    }
-    // setAppointments([
-    //   // create a sample appointment the duration is 1 hour
-    //   {
-    //     title: "Sample Appointment",
-    //     start: new Date(),
-    //     end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
-    //   },
-    // ]);  
+  // const fetchAppointments = async () => {
+  //   try {
+  //     const response = await AxiosInstance.get("/appointment/", {
+  //       headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+  //     });
+  //     console.log(response.data);
+  //     // const formattedAppointments = response.data.map((appointment) => ({
+  //     //   ...appointment,
+  //     //   title: appointment.title,
+  //     //   start: new Date(appointment.start),
+  //     //   end: new Date(appointment.end),
+  //     // }));
+  //     // setAppointments(formattedAppointments);
+  //   } catch (error) {
+  //     console.error("Error fetching appointments:", error);
+  //   }
+  //   // setAppointments([
+  //   //   // create a sample appointment the duration is 1 hour
+  //   //   {
+  //   //     title: "Sample Appointment",
+  //   //     start: new Date(),
+  //   //     end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
+  //   //   },
+  //   // ]);  
 
-  };
+  // };
 
   const dayPropGetter = (date) => {
     const today = new Date();
