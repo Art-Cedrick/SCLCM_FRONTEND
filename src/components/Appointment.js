@@ -7,8 +7,6 @@ import {
   Button,
   TextField,
   Autocomplete,
-  Snackbar,
-  Alert,
   FormControl,
   InputLabel,
   Select,
@@ -19,30 +17,22 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Controller, useForm } from "react-hook-form";
 import AxiosInstance from "./AllForms/Axios";
-import { format } from "date-fns";
 import { TimePicker } from "@mui/x-date-pickers";
 import { Toaster, toast } from "sonner";
+import { useAppointmentStore } from "../store/useAppointmentStore";
 const localizer = momentLocalizer(moment);
 
 const ScheduleAppointment = () => {
   const { control, handleSubmit, reset, setValue, getValues, watch } = useForm();
-  const [appointments, setAppointments] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState(null);
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState({
-    message: "",
-    severity: "success",
-  });
+  const [isSelectedAppOpen, setIsSelectedAppOpen] = useState(false);
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-
-  const selectedTime = watch("time");
+  const { appointments, status, messagePrompt, addAppointment, handleDelete, selectedAppointment, setSelectedAppointment, fetchAppointments } = useAppointmentStore();
 
   const handleSlotSelect = (slotInfo) => {
+
     const today = new Date();
     today.setHours(0, 0, 0, 0); 
   
@@ -54,51 +44,24 @@ const ScheduleAppointment = () => {
       toast.error("You cannot book an appointment on a past date.");
       return; 
     }
-  
 
     const { start, end } = slotInfo;
+  
+    // Check if the selected slot overlaps with any existing appointment
     const isOverlap = appointments.some(
       (appointment) =>
-        (start >= appointment.start && start < appointment.end) ||
-        (end > appointment.start && end <= appointment.end)
+        (start >= appointment.start && start < appointment.end) || // Starts inside an existing event
+        (end > appointment.start && end <= appointment.end) || // Ends inside an existing event
+        (start <= appointment.start && end >= appointment.end) // Completely overlaps an existing event
     );
-
-    const selectedDate = slotInfo.start.toISOString().split("T")[0]; 
-    console.log(selectedDate);
+  
     if (isOverlap) {
-      alert("This time slot is already booked.");
+      toast.error("This time slot is already booked.");
       return;
     }
 
-
-
-    setSelectedSlot(slotInfo);
-
     setOpenDialog(true);
   };
-
-  useEffect(() => {
-    if (selectedSlot) {
-      const { start, end } = selectedSlot;
-      if (selectedTime) {
-        const selectedTime = new Date(watch("time"));
-        const startTime = new Date(start);
-        startTime.setHours(selectedTime.getHours());
-        startTime.setMinutes(selectedTime.getMinutes());
-
-        const endTime = new Date(start);
-        endTime.setHours(selectedTime.getHours());
-        endTime.setMinutes(selectedTime.getMinutes());
-
-        setSelectedSlot({ start: startTime, end: endTime });
-        setStartDate(startTime);
-        setEndDate(endTime);
-      } else {
-        setStartDate(start);
-        setEndDate(end);
-      }
-    }
-  }, [selectedTime]);
 
   const handleSearch = async (query) => {
     if (query.length > 1) {
@@ -121,8 +84,6 @@ const ScheduleAppointment = () => {
 
   const handleOptionSelect = (selectedOption) => {
     if (selectedOption) {
-      // Update all fields based on the selected student
-      // console.log(selectedDate);
       setValue("sr_code", selectedOption.sr_code || "");
       setValue(
         "name",
@@ -139,13 +100,10 @@ const ScheduleAppointment = () => {
       toast.error("Please fill up the required fields");
       return;
     }
-
-    toast.success("Appointment has been scheduled successfully");
+    addAppointment(data);
     reset(); 
     setOpenDialog(false);
 
-    console.log(data);
-    
     // const timeIn = new Date(data["time-in-date"]);  
     // const timeOut = new Date(data["time-out-date"]);
     // console.log(timeOut.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
@@ -248,24 +206,42 @@ const ScheduleAppointment = () => {
     return {};
   };
   
+  const handleEventSelect = (event) => {
+    setSelectedAppointment({
+      id: event.id,
+      title: event.title,
+      name: event.name || "John Doe",
+      grade: event.grade || "12",
+      section: event.section || "A",
+      start: event.start,
+      end: event.end,
+    });
+
+    setIsSelectedAppOpen(true);
+  };
+
 
   useEffect(() => {
     fetchAppointments();
-  }, []);
+}, []); 
+
+
   return (
     <div>
       <Toaster richColors position="top-right"/>
       <h1>Schedule an Appointment</h1>
-      <Calendar
-        localizer={localizer}
-        events={appointments}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500 }}
-        selectable
-        onSelectSlot={handleSlotSelect}
-        dayPropGetter={dayPropGetter} // Apply past date styling
-      />
+
+        <Calendar
+          localizer={localizer}
+          events={appointments}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: 500 }}
+          selectable
+          onSelectSlot={handleSlotSelect}
+          dayPropGetter={dayPropGetter}
+          onSelectEvent={handleEventSelect}
+        />
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Schedule Appointment</DialogTitle>
@@ -299,35 +275,6 @@ const ScheduleAppointment = () => {
               )}
             />
 
-            {/* Name Field */}
-            {/* <Controller
-              name="name"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <Autocomplete
-                  {...field}
-                  value={getValues("name")}
-                  options={options}
-                  loading={loading}
-                  getOptionLabel={(option) =>
-                    `${option.first_name || ""} ${option.last_name || ""}`
-                  }
-                  noOptionsText="No results found"
-                  onInputChange={(e, value) => handleSearch(value)}
-                  onChange={(_, selectedOption) => handleOptionSelect(selectedOption)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Search Student Name"
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                    />
-                  )}
-                />
-              )}
-            /> */}
             <Controller
               name="name"
               control={control}
@@ -458,18 +405,56 @@ const ScheduleAppointment = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert
-          severity={snackbarMessage.severity}
-          onClose={() => setOpenSnackbar(false)}
-        >
-          {snackbarMessage.message}
-        </Alert>
-      </Snackbar>
+
+      {isSelectedAppOpen && (
+        <Dialog open={isSelectedAppOpen} onClose={() => setIsSelectedAppOpen(false)}>
+          <DialogTitle>Appointment Details</DialogTitle>
+          <DialogContent>
+            <div>
+              <TextField
+                label="Name"
+                value={selectedAppointment.name}
+                fullWidth
+                margin="normal"
+                InputProps={{readOnly: true}}
+              />
+              <TextField 
+                label="Grade & Section"
+                value={`${selectedAppointment.grade}-${selectedAppointment.section}`}
+                fullWidth
+                margin="normal"
+                InputProps={{readOnly: true}}
+              />
+              <TextField
+                label="Start Time"
+                value={moment(selectedAppointment.start).format('MMMM Do YYYY, h:mm a')}
+                fullWidth
+                margin="normal"
+                InputProps={{readOnly: true}}
+              />
+              <TextField
+                label="End Time" 
+                value={moment(selectedAppointment.end).format('MMMM Do YYYY, h:mm a')}
+                fullWidth
+                margin="normal"
+                InputProps={{readOnly: true}}
+              />
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setIsSelectedAppOpen(false)} color="primary">
+              Close
+            </Button>
+            {/* delete button */}
+            <Button onClick={() => {
+              handleDelete(selectedAppointment.id)
+            }} color="secondary">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+      )}
     </div>
   );
 };
