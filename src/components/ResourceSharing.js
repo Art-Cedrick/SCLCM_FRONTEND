@@ -212,16 +212,13 @@ const ResourceSharing = () => {
   }
 
   const editorConfig = {
-    toolbar: ['bold', 'italic', 'link', 'uploadImage', 'uploadFile'],
-    simpleUpload: {
-      uploadUrl: 'https://sclcm-backend.onrender.com/upload/',
+    ckfinder: {
+      uploadUrl: 'https://sclcm-backend.onrender.com/api/storage/upload/', 
       headers: {
-        Authorization: `Token ${localStorage.getItem("token")}`, // Optional, for secure endpoints
+        Authorization: `Token ${localStorage.getItem("token")}`, 
       },
     },
-    file: {
-      allowedExtensions: ['pdf', 'doc', 'docx', 'xls', 'xlsx'],
-    },
+    toolbar: ['bold', 'italic', 'link', 'uploadImage', 'uploadFile'], 
   };
 
   return (
@@ -292,22 +289,12 @@ const ResourceSharing = () => {
                   <CKEditor
                     {...field}
                     editor={ClassicEditor}
-                    
                     data={field.value}
                     onChange={(event, editor) => {
                       const data = editor.getData();
                       field.onChange(data);
                     }}
-                    config={{
-                      editorConfig,
-                      simpleUpload: {
-                        uploadUrl: "https://sclcm-backend.onrender.com/api/upload/", // Replace with your actual upload endpoint
-                        headers: {
-                          Authorization: `Token ${localStorage.getItem("token")}`,
-                        },
-                      },
-
-                    }}
+                    config={editorConfig}
                     style={{
                       height: "400px",
                       borderColor: "#004C8C",
