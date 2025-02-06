@@ -22,8 +22,8 @@ export const useAppointmentStore = create((set, get) => ({
     },    
     fetchAppointments: async () => {
 
-        set({ isLoading: true, status: "idle" });
-        // const response = await AxiosInstance.get("/appointment/", {
+        // set({ isLoading: true, status: "idle" });
+        // const response = await AxiosInstance.get("api/appointment/", {
         //     headers: { Authorization: `Token ${localStorage.getItem("token")}` },
         //   });
 
