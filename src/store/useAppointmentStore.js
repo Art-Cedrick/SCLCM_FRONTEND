@@ -1,5 +1,5 @@
 import { create } from "zustand";
-
+import AxiosInstance from "../components/AllForms/Axios";
 export const useAppointmentStore = create((set, get) => ({
     appointments: [],
     setAppointments: (appointments) => set({ appointments }),
@@ -22,41 +22,42 @@ export const useAppointmentStore = create((set, get) => ({
     },    
     fetchAppointments: async () => {
 
-        // set({ isLoading: true, status: "idle" });
-        // const response = await AxiosInstance.get("api/appointment/", {
-        //     headers: { Authorization: `Token ${localStorage.getItem("token")}` },
-        //   });
-
-
+        set({ isLoading: true, status: "idle" });
+        
         // Dummy Data
         try{ 
-            
-        setTimeout(() => {
-            set({
-                appointments: [
-                    {
-                        id: 1,
-                        title: "Appointment 1",
-                        sr_code: "SR-001",
-                        name: "John Doe",
-                        grade: "Grade 12",
-                        section: "A",
-                        start: new Date(),
-                        end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
-                    },
-                    {
-                        id: 2,
-                        title: "Appointment 2",
-                        sr_code: "SR-002",
-                        name: "Jane Doe",
-                        grade: "Grade 11",
-                        section: "B",
-                        start: new Date(),
-                        end: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
-                    }
-                ]
-            })
-        }, 1000)
+            const response = await AxiosInstance.get("counselor/appointment/", {
+                headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+              });
+              console.log(response.data);
+
+            // set({ appointments: response.data, isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointments fetched successfully" } });
+        // setTimeout(() => {
+        //     set({
+        //         appointments: [
+        //             {
+        //                 id: 1,
+        //                 title: "Appointment 1",
+        //                 sr_code: "SR-001",
+        //                 name: "John Doe",
+        //                 grade: "Grade 12",
+        //                 section: "A",
+        //                 start: new Date(),
+        //                 end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
+        //             },
+        //             {
+        //                 id: 2,
+        //                 title: "Appointment 2",
+        //                 sr_code: "SR-002",
+        //                 name: "Jane Doe",
+        //                 grade: "Grade 11",
+        //                 section: "B",
+        //                 start: new Date(),
+        //                 end: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
+        //             }
+        //         ]
+        //     })
+        // }, 1000)
         set({ isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointments fetched successfully" } });
 
         }catch(error){
@@ -86,20 +87,22 @@ export const useAppointmentStore = create((set, get) => ({
 
         
         const formattedAppointment = {
-            id: Math.floor(Math.random() * 1000)+1,
             sr_code: appointment.sr_code,
             name: appointment.name,
-            title: appointment.title,
+            purpose: appointment.title,
             grade: appointment.grade,
             section: appointment.section,
-            start: appointment.start,
-            end: appointment.end
-        }
+            time_in_date: new Date(appointment.start).toISOString(),  
+            time_out_date: new Date(appointment.end).toISOString()
+        };
+        
 
         try{
-            console.log(formattedAppointment);
-            const updatedAppointments = [...get().appointments, formattedAppointment];
-            set({ appointments: updatedAppointments, isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointment added successfully" } });
+            await AxiosInstance.post("counselor/appointment/", formattedAppointment, {
+                headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+            });
+
+            set({ appointments: [...get().appointments, formattedAppointment], isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointment added successfully" } });
             return;
         }catch(error){
             set({ isLoading: false, status: "error", messagePrompt: { title: "Error", message: error.response.data.message } });
