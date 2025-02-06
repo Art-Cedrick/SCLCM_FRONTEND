@@ -32,7 +32,6 @@ const ScheduleAppointment = () => {
   const { appointments, status, messagePrompt, addAppointment, handleDelete, selectedAppointment, setSelectedAppointment, fetchAppointments } = useAppointmentStore();
 
   const handleSlotSelect = (slotInfo) => {
-
     const today = new Date();
     today.setHours(0, 0, 0, 0); 
   
@@ -59,6 +58,8 @@ const ScheduleAppointment = () => {
       toast.error("This time slot is already booked.");
       return;
     }
+
+    
 
     setOpenDialog(true);
   };
@@ -104,7 +105,91 @@ const ScheduleAppointment = () => {
     reset(); 
     setOpenDialog(false);
 
+    // const timeIn = new Date(data["time-in-date"]);  
+    // const timeOut = new Date(data["time-out-date"]);
+    // console.log(timeOut.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+    // console.log(timeOut.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+    
+    // console.log(data);
+
+    // if (!data.sr_code) {
+    //   alert("Please provide a valid Student Number.");
+    //   return;
+    // }
+
+    // if (data.purpose === "Others" && !data.other_purpose.trim()) {
+    //   alert("Please specify the purpose.");
+    //   return;
+    // }
+
+    // try {
+    //   const response = await AxiosInstance.post(
+    //     "/appointment/",
+    //     {
+    //       ...data,
+    //       start: startDate.toLocaleString(),
+    //       end: endDate.toLocaleString(),
+    //       date:
+    //         format(new Date(selectedSlot.start), "yyyy-MM-dd"),
+    //       title: data.purpose,
+    //       time: format(new Date(data.time), "HH:mm:ss"),
+    //     },
+    //     {
+    //       headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+    //     }
+    //   );
+
+    //   setAppointments((prev) => [
+    //     ...prev,
+    //     {
+    //       ...response.data,
+    //       start: new Date(response.data.start),
+    //       end: new Date(response.data.end)
+    //     },
+    //   ]);
+    //   showSnackbar("Appointment added successfully!", "success");
+    //   reset(); // Reset the form after submission
+    //   setOpenDialog(false);
+    // } catch (error) {
+    //   console.error(
+    //     "Error creating appointment:",
+    //     error.response?.data || error.message
+    //   );
+    //   showSnackbar("Error creating appointment. Please try again.", "error");
+    // }
   };
+
+  // const showSnackbar = (message, severity = "success") => {
+  //   setSnackbarMessage({ message, severity });
+  //   setOpenSnackbar(true);
+  // };
+
+  // const fetchAppointments = async () => {
+  //   try {
+  //     const response = await AxiosInstance.get("/appointment/", {
+  //       headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+  //     });
+  //     console.log(response.data);
+  //     // const formattedAppointments = response.data.map((appointment) => ({
+  //     //   ...appointment,
+  //     //   title: appointment.title,
+  //     //   start: new Date(appointment.start),
+  //     //   end: new Date(appointment.end),
+  //     // }));
+  //     // setAppointments(formattedAppointments);
+  //   } catch (error) {
+  //     console.error("Error fetching appointments:", error);
+  //   }
+  //   // setAppointments([
+  //   //   // create a sample appointment the duration is 1 hour
+  //   //   {
+  //   //     title: "Sample Appointment",
+  //   //     start: new Date(),
+  //   //     end: new Date(new Date().getTime() + 1 * 60 * 60 * 1000),
+  //   //   },
+  //   // ]);  
+
+  // };
 
   const dayPropGetter = (date) => {
     const today = new Date();
