@@ -28,8 +28,36 @@ const ScheduleAppointment = () => {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isSelectedAppOpen, setIsSelectedAppOpen] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const { appointments, status, messagePrompt, addAppointment, handleDelete, selectedAppointment, setSelectedAppointment, fetchAppointments } = useAppointmentStore();
+  const selectedTime = watch("time");
+
+  useEffect(() => {
+    if (selectedSlot) {
+      const { start, end } = selectedSlot;
+      if (selectedTime) {
+        const selectedTime = new Date(watch("time"));
+        const startTime = new Date(start);
+        startTime.setHours(selectedTime.getHours());
+        startTime.setMinutes(selectedTime.getMinutes());
+
+        const endTime = new Date(start);
+        endTime.setHours(selectedTime.getHours());
+        endTime.setMinutes(selectedTime.getMinutes());
+
+        setSelectedSlot({ start: startTime, end: endTime });
+        setStartDate(startTime);
+        setEndDate(endTime);
+      } else {
+        setStartDate(start);
+        setEndDate(end);
+      }
+    }
+  }, [selectedTime]);
+
 
   const handleSlotSelect = (slotInfo) => {
     const today = new Date();
@@ -53,13 +81,15 @@ const ScheduleAppointment = () => {
         (end > appointment.start && end <= appointment.end) || // Ends inside an existing event
         (start <= appointment.start && end >= appointment.end) // Completely overlaps an existing event
     );
+
   
     if (isOverlap) {
       toast.error("This time slot is already booked.");
       return;
+      
     }
 
-    
+    setSelectedSlot(slotInfo);
 
     setOpenDialog(true);
   };
@@ -97,11 +127,29 @@ const ScheduleAppointment = () => {
 
   const onSubmit = async (data) => {
 
-    if(!data["time-in-date"] || !data["time-out-date"] || !data.purpose || !data.sr_code){
-      toast.error("Please fill up the required fields");
-      return;
-    }
-    addAppointment(data);
+    // if(!data["time-in-date"] || !data["time-out-date"] || !data.purpose || !data.sr_code){
+    //   toast.error("Please fill up the required fields");
+    //   return;
+    // }
+    const startDate = data["time-in-date"];
+    // const endDate = data["time-out-date"].$d;
+    console.log(startDate);
+
+    // console.log(selectedSlot.slots);
+
+
+    // console.log({
+    //   sr_code: data.sr_code,
+    //   name: data.name,
+    //   title: data.purpose,
+    //   grade: data.grade,
+    //   section: data.section,
+    //   start: startDate,
+    //   end: endDate
+    // })
+
+    // addAppointment(data);
+
     reset(); 
     setOpenDialog(false);
 
