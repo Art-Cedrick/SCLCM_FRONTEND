@@ -19,6 +19,7 @@ import { Controller, useForm } from "react-hook-form";
 import AxiosInstance from "./AllForms/Axios";
 import { TimePicker } from "@mui/x-date-pickers";
 import { Toaster, toast } from "sonner";
+import dayjs from "dayjs";
 import { useAppointmentStore } from "../store/useAppointmentStore";
 const localizer = momentLocalizer(moment);
 
@@ -132,23 +133,27 @@ const ScheduleAppointment = () => {
     //   return;
     // }
     const startDate = data["time-in-date"];
-    // const endDate = data["time-out-date"].$d;
-    console.log(startDate);
+    const endDate = data["time-out-date"];
 
-    // console.log(selectedSlot.slots);
+    const selectedDate = dayjs(selectedSlot.slots[0]); 
+    const fullStartDate = selectedDate
+      .hour(startDate.hour())
+      .minute(startDate.minute());
+    
+    const fullEndDate = selectedDate
+      .hour(endDate.hour()) 
+      .minute(endDate.minute()); 
+    
 
-
-    // console.log({
-    //   sr_code: data.sr_code,
-    //   name: data.name,
-    //   title: data.purpose,
-    //   grade: data.grade,
-    //   section: data.section,
-    //   start: startDate,
-    //   end: endDate
-    // })
-
-    // addAppointment(data);
+    addAppointment({
+      sr_code: data.sr_code,
+      name: data.name,
+      title: data.purpose,
+      grade: data.grade,
+      section: data.section,
+      start: fullStartDate.toString(),
+      end: fullEndDate.toString()
+    });
 
     reset(); 
     setOpenDialog(false);

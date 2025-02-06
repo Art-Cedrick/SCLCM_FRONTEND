@@ -80,26 +80,26 @@ export const useAppointmentStore = create((set, get) => ({
     addAppointment: async (appointment) => {
     
         set({ isLoading: true, status: "idle" });
-        const appointmentDate = new Date(appointment["time-in-date"].$d); 
-        const start = appointmentDate.toISOString(); 
-        const end = new Date(appointment["time-out-date"].$d).toISOString();
+        // const appointmentDate = new Date(appointment["time-in-date"].$d); 
+        // const start = appointmentDate.toISOString(); 
+        // const end = new Date(appointment["time-out-date"].$d).toISOString();
 
         
         const formattedAppointment = {
             id: Math.floor(Math.random() * 1000)+1,
             sr_code: appointment.sr_code,
             name: appointment.name,
-            title: appointment.purpose,
+            title: appointment.title,
             grade: appointment.grade,
             section: appointment.section,
-            start: appointment["time-in-date"].$d,
-            end: appointment["time-out-date"].$d,    
-        };
+            start: appointment.start,
+            end: appointment.end
+        }
 
         try{
             console.log(formattedAppointment);
-            // const updatedAppointments = [...get().appointments, formattedAppointment];
-            // set({ appointments: updatedAppointments, isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointment added successfully" } });
+            const updatedAppointments = [...get().appointments, formattedAppointment];
+            set({ appointments: updatedAppointments, isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointment added successfully" } });
             return;
         }catch(error){
             set({ isLoading: false, status: "error", messagePrompt: { title: "Error", message: error.response.data.message } });
