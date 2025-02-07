@@ -464,4 +464,3 @@ const ResourceSharing = () => {
 };
 
 export default ResourceSharing;
-
