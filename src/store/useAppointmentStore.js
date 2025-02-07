@@ -26,12 +26,21 @@ export const useAppointmentStore = create((set, get) => ({
         
         // Dummy Data
         try{ 
-            const response = await AxiosInstance.get("counselor/appointment/", {
+            const response = await AxiosInstance.get("list-counselor/appointment/", {
                 headers: { Authorization: `Token ${localStorage.getItem("token")}` },
               });
-              console.log(response.data);
-
-            // set({ appointments: response.data, isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointments fetched successfully" } });
+            //   console.log(response.data);
+            const formattedDataResponse = response.data.map(appointment => ({
+                id: appointment.id,
+                title: appointment.purpose,
+                name: appointment.name, 
+                grade: appointment.grade,
+                section: appointment.section,
+                start: new Date(appointment.time_in_date),
+                end: new Date(appointment.time_out_date)
+            }));
+            // console.log(formattedDataResponse);
+            set({ appointments: formattedDataResponse, isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointments fetched successfully" } });
         // setTimeout(() => {
         //     set({
         //         appointments: [
@@ -103,6 +112,7 @@ export const useAppointmentStore = create((set, get) => ({
             });
 
             set({ appointments: [...get().appointments, formattedAppointment], isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointment added successfully" } });
+            console.log(get().appointments);
             return;
         }catch(error){
             set({ isLoading: false, status: "error", messagePrompt: { title: "Error", message: error.response.data.message } });

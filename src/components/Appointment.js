@@ -61,6 +61,7 @@ const ScheduleAppointment = () => {
 
 
   const handleSlotSelect = (slotInfo) => {
+    console.log(slotInfo);
     const today = new Date();
     today.setHours(0, 0, 0, 0); 
   
