@@ -39,6 +39,13 @@ const NavBarStudent = React.memo((props) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("sr_code");
+    localStorage.removeItem("firstname");
+    localStorage.removeItem("lastname");
+    localStorage.removeItem("middlename");
+    localStorage.removeItem("section");
+    localStorage.removeItem("year");
+    
     window.location.href = "/";
     handleProfileMenuClose();
   };

@@ -296,7 +296,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect";
 import AxiosInstance from "./Axios";
-
+import { Toaster, toast } from "sonner";
 const SCLCMGUIDANCECLASSEVALUATION = () => {
   const defaultValues = {
     name: "",
@@ -318,10 +318,18 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
   });
 
   const submission = (data) => {
-    AxiosInstance.post(`/guidance_class_evaluation/`, {
-      name: data.name,
-      grade: data.grade,
-      section: data.section,
+    const name = localStorage.getItem("lastname") + ", " + localStorage.getItem("firstname") + ", " + localStorage.getItem("middlename");
+    const grade = localStorage.getItem("year");
+    const section = localStorage.getItem("section");
+
+    if(name === null || grade === null || section === null){
+      toast.error("Please fill out your profile first");
+      return;
+    }
+    const formattedInsertData = {
+      name: name,
+      grade: grade,
+      section: section,
       question_1: data.question_1,
       question_2: data.question_2,
       question_3: data.question_3,
@@ -331,13 +339,25 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
       question_7: data.question_7,
       question_8: data.question_8,
       question_9: data.question_9,
-    })
+
+    };
+
+    const hasEmptyFields = Object.values(formattedInsertData)
+      .slice(3) // Skip name, grade, section
+      .some(value => value === "");
+      
+    if (hasEmptyFields) {
+      toast.error("Please fill out all fields");
+      return;
+    }
+
+    AxiosInstance.post(`/guidance_class_evaluation/`, formattedInsertData)
       .then((response) => {
-        console.log("Data submitted successfully:", response.data);
-        reset(); // Reset form after successful submission
+        toast.success("Data submitted successfully");
+        reset(); 
       })
       .catch((error) => {
-        console.error("Error submitting data:", error);
+        toast.error("Error submitting data");
       });
   };
 
@@ -359,7 +379,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
           >
             <Stack spacing={2}>
               {/* First Row: Name, Grade, Section */}
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              {/* <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                 <Controller
                   name="name"
                   control={control}
@@ -413,10 +433,10 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                     />
                   )}
                 />
-              </Stack>
+              </Stack> */}
 
               <Divider sx={{ marginY: 2 }} />
-
+                <Toaster richColors position="top-right"/>
               {/* Question Section */}
               <Typography variant="h7" gutterBottom align="left">
                 1. How much of the Guidance Class content was new to you?

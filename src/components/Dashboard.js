@@ -15,6 +15,7 @@ import { Controller, useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import dayjs from "dayjs";
+import { Box } from "@mui/material";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -25,7 +26,7 @@ const Dashboard = () => {
   const [healthchartData, setHealthChartData] = useState(null);
   const [academicchartData, setAcademicChartData] = useState(null);
   const [careerchartData, setCareerChartData] = useState(null);
-  const [selectedChart, setSelectedChart] = useState(0);
+  const [selectedChart, setSelectedChart] = useState(null); // Changed initial value to null
   const [grade, setGrade] = useState("All");
   const [loading, setLoading] = useState(true);
   const {
@@ -50,7 +51,7 @@ const Dashboard = () => {
         const data = response.data;
         const labels = [
           "Family Problems",
-          "Friends Problems",
+          "Friends Problems", 
           "Health Problems",
           "Academic Problems",
           "Career Problems",
@@ -70,7 +71,7 @@ const Dashboard = () => {
               data: counts,
               backgroundColor: [
                 "rgba(255,99,132,0.6)",
-                "rgba(54,162,235,0.6)",
+                "rgba(54,162,235,0.6)", 
                 "rgba(255,206,86,0.6)",
                 "rgba(75,192,192,0.6)",
                 "rgba(153,102,255,0.6)",
@@ -78,13 +79,14 @@ const Dashboard = () => {
               hoverBackgroundColor: [
                 "rgba(255,99,132,0.8)",
                 "rgba(54,162,235,0.8)",
-                "rgba(255,206,86,0.8)",
+                "rgba(255,206,86,0.8)", 
                 "rgba(75,192,192,0.8)",
                 "rgba(153,102,255,0.8)",
               ],
             },
           ],
         });
+        setSelectedChart(0); // Set initial selected chart
         setLoading(false);
       })
       .catch((error) => {
@@ -117,7 +119,7 @@ const Dashboard = () => {
                 "rgba(0,255,0,0.6)",
                 "rgba(75,0,130,0.6)",
                 "rgba(255,20,147,0.6)",
-              ], // Different colors for each bar
+              ],
             },
           ],
         });
@@ -139,6 +141,7 @@ const Dashboard = () => {
     if (elements.length > 0) {
       const index = elements[0].index;
       setSelectedChart(index);
+      console.log(`Chart ${index} clicked`);
     }
   };
 
@@ -161,9 +164,6 @@ const Dashboard = () => {
   ];
 
   const mostFrequentCategory = getMostFrequentCategory(chartMap[selectedChart]?.data);
-
-
-
 
   return (
     <div style={styles.container}>
@@ -234,10 +234,10 @@ const Dashboard = () => {
               render={({ field: { onChange, value }, fieldState: { error } }) => (
                 <DatePicker
                   label="End Date"
-                  value={value ? dayjs(value, 'MM-DD-YYYY') : null} // Convert the value to a Day.js object
+                  value={value ? dayjs(value, 'MM-DD-YYYY') : null}
                   onChange={(date) => {
-                    const formattedDate = date ? dayjs(date).format('MM-DD-YYYY') : null; // Format date as MM-DD-YYYY
-                    onChange(formattedDate); // Pass the formatted date to the form
+                    const formattedDate = date ? dayjs(date).format('MM-DD-YYYY') : null;
+                    onChange(formattedDate);
                   }}
                   slotProps={{
                     textField: {
@@ -249,8 +249,8 @@ const Dashboard = () => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      error={!!error} // Highlight the field red if there's an error
-                      helperText={error?.message} // Display error message if validation fails
+                      error={!!error}
+                      helperText={error?.message}
                       fullWidth
                     />
                   )}
@@ -264,43 +264,62 @@ const Dashboard = () => {
         </form>
       </div>
 
-
-
       {
         loading ? (
           <p>Loading...</p>
         ) : (
           <div style={styles.chartContainer}>
-            {/* Card displaying the most frequent category */}
-            <div style={styles.cardContainer}>
-              <div style={styles.card}>
-                <h4>{chartMap[selectedChart].title}</h4>
-                <p>{chartData.datasets[0].data[selectedChart]}</p>
+            <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 5,
+              mb: 2,
+              flexDirection: { xs: "column", md: "row" }
+            }}
+            >
+              <div style={styles.leftColumn}>
+                {selectedChart !== null && (
+                  <div style={styles.card}>
+                    <h4>{chartMap[selectedChart].title}</h4>
+                    <p style={{ 
+                      fontSize: '24px',
+                      fontWeight: 'bold',
+                      color: '#051535',
+                      margin: '10px 0',
+                      padding: '8px 16px',
+                      backgroundColor: '#f5f5f5',
+                      borderRadius: '8px',
+                      textAlign: 'center'
+                    }}>{chartData?.datasets[0].data[selectedChart]}</p>
+                  </div>
+                )}
+                <div style={styles.card}>
+                  <h4>Most Frequent Problem</h4>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <p style={{ backgroundColor: "#051535", padding: "3px 6px", borderRadius: "5px", margin: "auto", color: "white" }}>{mostFrequentCategory.category}</p>
+                  </div>
+                </div>
               </div>
-              <div style={styles.card}>
-                <h4>Most Frequent Problem</h4>
-                <p>{mostFrequentCategory.category}</p>
-              </div>
-            </div>
 
-            <div style={styles.mainContainer}>
-              <div style={styles.chartWrapper}>
+              <div style={styles.rightColumn}>
                 <div style={styles.pieContainer}>
                   {chartData && <Pie data={chartData} options={{ onClick: handlePieClick }} />}
                 </div>
-
-                {selectedChart !== null && chartMap[selectedChart]?.data && (
-                  <div style={styles.barContainer}>
-                    <h2>{chartMap[selectedChart].title}</h2>
-                    <Bar data={chartMap[selectedChart].data} />
-                  </div>
-                )}
               </div>
-            </div>
+            </Box>
+
+            {selectedChart !== null && chartMap[selectedChart]?.data && (
+              <div style={styles.bottomSection}>
+                <h2>{chartMap[selectedChart].title}</h2>
+                <Bar data={chartMap[selectedChart].data} />
+              </div>
+            )}
           </div>
         )
       }
-    </div >
+    </div>
   );
 };
 
@@ -310,6 +329,9 @@ const styles = {
     maxWidth: '1200px',
     margin: 'auto',
     fontFamily: '"Arial", sans-serif',
+    '@media (max-width: 480px)': {
+      padding: '10px',
+    }
   },
   selectLabel: {
     fontSize: '16px',
@@ -323,86 +345,87 @@ const styles = {
     borderRadius: '5px',
     border: '1px solid #ddd',
     backgroundColor: '#f4f4f9',
+    '@media (max-width: 480px)': {
+      width: '100%',
+    }
   },
   chartContainer: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-  },
-  cardContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
     width: '100%',
-    marginBottom: '0px',
-    flexWrap: 'wrap',
     gap: '20px',
   },
-  card: {
-    padding: '5px',
-    backgroundColor: '#f4f4f9',
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-    width: '40%',
-    margin: '10px 0',
-    textAlign: 'center',
-    minWidth: '200px',
-  },
-  mainContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
-    flexWrap: 'wrap',
-  },
-  chartWrapper: {
+  topSection: {
+    marginTop: '20px',
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: '800px',
-    flexWrap: 'wrap',
-    margin: '0 auto',
+    gap: '20px',
+    marginBottom: '20px',
+    '@media (max-width: 768px)': {
+      flexDirection: 'column'
+    }
+  },
+  leftColumn: {
+    flex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    '@media (max-width: 768px)': {
+      width: '100%'
+    }
+  },
+  rightColumn: {
+    flex: '1',
+    display: 'flex',
+    justifyContent: 'center',
+    '@media (max-width: 768px)': {
+      width: '100%'
+    }
+  },
+  card: {
+    padding: '20px',
+    borderRadius: '8px',
+    backgroundColor: 'rgb(236, 236, 236)',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    textAlign: 'center',
+    transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+    border: '1px solid rgba(0,0,0,0.05)',
+    '&:hover': {
+      transform: 'translateY(-3px)',
+      boxShadow: '0 6px 12px rgba(0,0,0,0.15)',
+    },
+    '& h2': {
+      color: '#2c3e50',
+      marginBottom: '15px',
+      fontSize: '1.5rem',
+      fontWeight: '600',
+    },
+    '& p': {
+      color: '#666',
+      fontSize: '1rem',
+      lineHeight: '1.5',
+    },
+    '@media (max-width: 768px)': {
+      padding: '15px',
+      '& h2': {
+        fontSize: '1.3rem',
+      }
+    }
   },
   pieContainer: {
-    width: '40%',
-    minWidth: '300px',
-    margin: '10px',
+    width: '100%',
+    maxWidth: '400px',
+    padding: '10px',
+    '@media (max-width: 768px)': {
+      maxWidth: '100%'
+    }
   },
-  barContainer: {
-    width: '45%',
-    minWidth: '350px',
-    margin: '20px',
-  },
-
-  '@media (max-width: 768px)': {
-    chartWrapper: {
-      flexDirection: 'column',
-    },
-    pieContainer: {
-      width: '100%',
-      margin: '10px 0',
-    },
-    barContainer: {
-      width: '100%',
-      margin: '10px 0',
-    },
-    cardContainer: {
-      flexDirection: 'column',
-      alignItems: 'stretch',
-    },
-    card: {
-      width: '100%',
-      marginBottom: '20px',
-    },
-  },
-
-  '@media (max-width: 480px)': {
-    select: {
-      width: '100%',
-    },
-    container: {
-      padding: '10px',
-    },
+  bottomSection: {
+    width: '100%',
+    padding: '20px',
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
   }
 };
 

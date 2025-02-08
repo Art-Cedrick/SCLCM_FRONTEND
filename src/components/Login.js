@@ -446,31 +446,52 @@ function CustomSignInForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axios.post(
         "https://sclcm-backend.onrender.com/login/",
         {
-          username: username, // Use the updated variable
+          username: username,
           password: password,
         }
       );
 
-      // Store the token and role in local storage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role);
+      const { token, data } = response.data;
+      const { role, firstname, lastname, section, year, middlename, sr_code } = data;
 
-      // Handle redirect based on role
-      if (response.data.role === "counselor") {
-        navigate("/counselor/dashboard"); // Redirect to counselor dashboard
-      } else if (response.data.role === "psychometrician") {
-        navigate("/psychometrician/dashboard"); // Redirect to psychometrician dashboard
-      } else if (response.data.role === "student") {
-        navigate("/student/studentappointment"); // Redirect to student forms page
-      } else {
-        console.error("Unknown role:", response.data.role);
-        alert("Role not recognized");
+      // Store common data
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+
+      // Handle different roles
+      switch (role) {
+        case "student":
+          localStorage.setItem("sr_code", sr_code);
+          localStorage.setItem("firstname", firstname);
+          localStorage.setItem("lastname", lastname); 
+          localStorage.setItem("middlename", middlename);
+          localStorage.setItem("section", section);
+          localStorage.setItem("year", year);
+          
+          if (!firstname) {
+            navigate("/student/evaluation");
+          } else {
+            navigate("/student/studentappointment");
+          }
+          break;
+
+        case "counselor":
+          navigate("/counselor/dashboard");
+          break;
+
+        case "psychometrician":
+          navigate("/psychometrician/dashboard");
+          break;
+
+        default:
+          console.error("Unknown role:", role);
+          alert("Role not recognized");
       }
+
     } catch (error) {
       console.error("Login failed:", error);
       alert("Invalid credentials");

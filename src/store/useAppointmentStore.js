@@ -30,7 +30,7 @@ export const useAppointmentStore = create((set, get) => ({
                 headers: { Authorization: `Token ${localStorage.getItem("token")}` },
               });
             //   console.log(response.data);
-            const formattedDataResponse = response.data.map(appointment => ({
+            const formattedDataResponse = response.data.data.map(appointment => ({
                 id: appointment.id,
                 title: appointment.purpose,
                 name: appointment.name, 
@@ -39,7 +39,7 @@ export const useAppointmentStore = create((set, get) => ({
                 start: new Date(appointment.time_in_date),
                 end: new Date(appointment.time_out_date)
             }));
-            // console.log(formattedDataResponse);
+
             set({ appointments: formattedDataResponse, isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointments fetched successfully" } });
         // setTimeout(() => {
         //     set({
@@ -77,6 +77,12 @@ export const useAppointmentStore = create((set, get) => ({
     handleDelete: async (id) => {
         set({ isLoading: true, status: "idle" });
         try{
+            
+            await AxiosInstance.delete(`counselor/appointment/${id}`, {
+                headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+            });
+
+            // console.log(response);
             const updatedAppointments = get().appointments.filter(apt => apt.id !== id);
             set({ appointments: updatedAppointments, isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointment deleted successfully" } });
             return;
@@ -86,14 +92,9 @@ export const useAppointmentStore = create((set, get) => ({
         }
     },
 
-
     addAppointment: async (appointment) => {
     
         set({ isLoading: true, status: "idle" });
-        // const appointmentDate = new Date(appointment["time-in-date"].$d); 
-        // const start = appointmentDate.toISOString(); 
-        // const end = new Date(appointment["time-out-date"].$d).toISOString();
-
         
         const formattedAppointment = {
             sr_code: appointment.sr_code,
@@ -105,14 +106,28 @@ export const useAppointmentStore = create((set, get) => ({
             time_out_date: new Date(appointment.end).toISOString()
         };
         
-
         try{
-            await AxiosInstance.post("counselor/appointment/", formattedAppointment, {
+            const response = await AxiosInstance.post("counselor/appointment/", formattedAppointment, {
                 headers: { Authorization: `Token ${localStorage.getItem("token")}` },
             });
 
-            set({ appointments: [...get().appointments, formattedAppointment], isLoading: false, status: "success", messagePrompt: { title: "Success", message: "Appointment added successfully" } });
-            console.log(get().appointments);
+            const newAppointment = {
+                id: response.data.id,
+                title: appointment.title,
+                sr_code: appointment.sr_code,
+                name: appointment.name,
+                grade: appointment.grade,
+                section: appointment.section,
+                start: new Date(appointment.start),
+                end: new Date(appointment.end)
+            };
+
+            set({ 
+                appointments: [...get().appointments, newAppointment],
+                isLoading: false,
+                status: "success", 
+                messagePrompt: { title: "Success", message: "Appointment added successfully" }
+            });
             return;
         }catch(error){
             set({ isLoading: false, status: "error", messagePrompt: { title: "Error", message: error.response.data.message } });
