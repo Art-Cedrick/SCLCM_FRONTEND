@@ -218,7 +218,21 @@ const ResourceSharing = () => {
         Authorization: `Token ${localStorage.getItem("token")}`, 
       },
     },
-    toolbar: ['bold', 'italic', 'link', 'uploadImage', 'uploadFile'], 
+    toolbar: ['heading', 'bold', 'italic', 'underline', 'strikethrough', '|', 'bulletedList', 'numberedList', '|', 'alignment', 'indent', 'outdent', '|', 'link', 'uploadImage', 'uploadFile', '|', 'undo', 'redo'],
+    link: {
+      defaultProtocol: 'https://',
+      decorators: {
+        openInNewTab: {
+          mode: 'manual',
+          label: 'Open in a new tab',
+          defaultValue: true,
+          attributes: {
+            target: '_blank',
+            rel: 'noopener noreferrer'
+          }
+        }
+      }
+    }
   };
 
   return (

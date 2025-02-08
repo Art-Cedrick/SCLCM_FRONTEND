@@ -13,10 +13,10 @@ import {
 } from "chart.js";
 import { Controller, useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, TextField, Button, ButtonGroup } from "@mui/material";
 import dayjs from "dayjs";
 import { Box } from "@mui/material";
-
+import { toast, Toaster } from "sonner"
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const Dashboard = () => {
@@ -26,13 +26,17 @@ const Dashboard = () => {
   const [healthchartData, setHealthChartData] = useState(null);
   const [academicchartData, setAcademicChartData] = useState(null);
   const [careerchartData, setCareerChartData] = useState(null);
-  const [selectedChart, setSelectedChart] = useState(null); // Changed initial value to null
+  const [selectedChart, setSelectedChart] = useState(null);
   const [grade, setGrade] = useState("All");
   const [loading, setLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState('custom');
+  const [hiddenCategories, setHiddenCategories] = useState(new Set());
+
   const {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -41,11 +45,58 @@ const Dashboard = () => {
     },
   });
 
-
   const { startDate, endDate } = watch();
 
-  const fetchPieChartData = (grade) => {
-    const params = grade !== "All" ? { grade } : {};
+  const handleTimeRangeChange = (range) => {
+    setTimeRange(range);
+    const now = dayjs();
+    
+    if (range === 'custom') {
+      setValue('startDate', '');
+      setValue('endDate', '');
+    } else {
+      if (startDate || endDate) {
+        setValue('startDate', '');
+        setValue('endDate', '');
+      }
+      
+      switch(range) {
+        case 'quarterly':
+          setValue('startDate', now.subtract(3, 'month').format('YYYY-MM-DD'));
+          setValue('endDate', now.format('YYYY-MM-DD'));
+          break;
+        case 'yearly':
+          setValue('startDate', now.subtract(1, 'year').format('YYYY-MM-DD'));
+          setValue('endDate', now.format('YYYY-MM-DD'));
+          break;
+      }
+    }
+  };
+
+  const filterChartData = (data) => {
+    if (!data) return data;
+    
+    const filteredLabels = data.labels.filter((_, i) => !hiddenCategories.has(i));
+    const filteredData = data.datasets[0].data.filter((_, i) => !hiddenCategories.has(i));
+    const filteredBackgroundColor = data.datasets[0].backgroundColor.filter((_, i) => !hiddenCategories.has(i));
+    
+    return {
+      labels: filteredLabels,
+      datasets: [{
+        ...data.datasets[0],
+        data: filteredData,
+        backgroundColor: filteredBackgroundColor
+      }]
+    };
+  };
+
+  const fetchPieChartData = (grade, startDate, endDate) => {
+    const params = {
+      ...(grade !== "All" && { grade: grade }),
+      ...(startDate && { start_date: dayjs(startDate).format('YYYY-MM-DD') }),
+      ...(endDate && { end_date: dayjs(endDate).format('YYYY-MM-DD') })
+    };
+    
     AxiosInstance.get(`/routineinterview_analytics/`, { params })
       .then((response) => {
         const data = response.data;
@@ -86,22 +137,26 @@ const Dashboard = () => {
             },
           ],
         });
-        setSelectedChart(0); // Set initial selected chart
+        setSelectedChart(0);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching analytics data:", error);
+        toast.error("There is no data for the selected grade and date range");
         setLoading(false);
       });
   };
 
-  const fetchBarChartData = (endpoint, setter, dataKey, label, grade) => {
-    const params = grade !== "All" ? { grade } : {};
+  const fetchBarChartData = (endpoint, setter, dataKey, label, grade, startDate, endDate) => {
+    const params = {
+      ...(grade !== "All" && { grade: grade }),
+      ...(startDate && { start_date: dayjs(startDate).format('YYYY-MM-DD') }),
+      ...(endDate && { end_date: dayjs(endDate).format('YYYY-MM-DD') })
+    };
+    
     AxiosInstance.get(endpoint, { params })
       .then((response) => {
         const labels = response.data.map((item) => item[dataKey]);
         const counts = response.data.map((item) => item.count);
-
         setter({
           labels,
           datasets: [
@@ -111,7 +166,7 @@ const Dashboard = () => {
               backgroundColor: [
                 "rgba(255,99,132,0.6)",
                 "rgba(54,162,235,0.6)",
-                "rgba(255,206,86,0.6)",
+                "rgba(255,206,86,0.6)", 
                 "rgba(75,192,192,0.6)",
                 "rgba(153,102,255,0.6)",
                 "rgba(255,159,64,0.6)",
@@ -124,15 +179,17 @@ const Dashboard = () => {
           ],
         });
       })
-      .catch((error) => console.error(`Error fetching data for ${label}:`, error));
+      .catch((error) => {
+        toast.error("There is no data for the selected grade and date range");
+      });
   };
 
   useEffect(() => {
     setLoading(true);
-    fetchPieChartData(grade);
+    fetchPieChartData(grade, startDate, endDate);
     fetchBarChartData(`/familyproblem_analytics/`, setFamilyChartData, "family_problem", "Family Problems", grade, startDate, endDate);
     fetchBarChartData(`/friendsproblem_analytics/`, setFriendsChartData, "friends_problem", "Friends Problems", grade, startDate, endDate);
-    fetchBarChartData(`/healthproblem_analytics/`, setHealthChartData, "health_problem", "Health Problems", grade);
+    fetchBarChartData(`/healthproblem_analytics/`, setHealthChartData, "health_problem", "Health Problems", grade, startDate, endDate);
     fetchBarChartData(`/academicproblem_analytics/`, setAcademicChartData, "academic_problem", "Academic Problems", grade, startDate, endDate);
     fetchBarChartData(`/careerproblem_analytics/`, setCareerChartData, "career_problem", "Career Problems", grade, startDate, endDate);
   }, [grade, startDate, endDate]);
@@ -141,7 +198,15 @@ const Dashboard = () => {
     if (elements.length > 0) {
       const index = elements[0].index;
       setSelectedChart(index);
-      console.log(`Chart ${index} clicked`);
+      setHiddenCategories(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(index)) {
+          newSet.delete(index);
+        } else {
+          newSet.add(index);
+        }
+        return newSet;
+      });
     }
   };
 
@@ -167,7 +232,8 @@ const Dashboard = () => {
 
   return (
     <div style={styles.container}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+      <Toaster richColors position="top-right" />
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
         <FormControl sx={{ minWidth: 120 }}>
           <InputLabel id="select-label" sx={{backgroundColor: 'white'}}>Grade/Year</InputLabel>
           <Select
@@ -183,6 +249,28 @@ const Dashboard = () => {
             ))}
           </Select>
         </FormControl>
+
+        <ButtonGroup variant="outlined" size="small">
+          <Button 
+            onClick={() => handleTimeRangeChange('custom')}
+            variant={timeRange === 'custom' ? 'contained' : 'outlined'}
+          >
+            Custom
+          </Button>
+          <Button 
+            onClick={() => handleTimeRangeChange('quarterly')}
+            variant={timeRange === 'quarterly' ? 'contained' : 'outlined'}
+          >
+            Quarterly
+          </Button>
+          <Button 
+            onClick={() => handleTimeRangeChange('yearly')}
+            variant={timeRange === 'yearly' ? 'contained' : 'outlined'}
+          >
+            Yearly
+          </Button>
+        </ButtonGroup>
+
         <form style={{ display: 'flex', gap: '10px' }} className="space-y-4">
           <div>
             <Controller
@@ -194,8 +282,11 @@ const Dashboard = () => {
                   label="Start Date"
                   value={value ? dayjs(value) : null}
                   onChange={(date) => {
-                    const formattedDate = date ? dayjs(date).format('MM-DD-YYYY') : null;
+                    const formattedDate = date ? dayjs(date).format('YYYY-MM-DD') : null;
                     onChange(formattedDate);
+                    if (timeRange !== 'custom') {
+                      setTimeRange('custom');
+                    }
                   }}
                   slotProps={{
                     textField: {
@@ -224,9 +315,9 @@ const Dashboard = () => {
               rules={{
                 required: 'End date is required',
                 validate: (value) => {
-                  if (!startDate) return true; // Skip validation if `startDate` is not selected
+                  if (!startDate) return true;
                   return (
-                    dayjs(value, 'MM-DD-YYYY').isAfter(dayjs(startDate, 'MM-DD-YYYY')) ||
+                    dayjs(value, 'YYYY-MM-DD').isAfter(dayjs(startDate, 'YYYY-MM-DD')) ||
                     'End date must be after Start Date'
                   );
                 },
@@ -234,10 +325,13 @@ const Dashboard = () => {
               render={({ field: { onChange, value }, fieldState: { error } }) => (
                 <DatePicker
                   label="End Date"
-                  value={value ? dayjs(value, 'MM-DD-YYYY') : null}
+                  value={value ? dayjs(value, 'YYYY-MM-DD') : null}
                   onChange={(date) => {
-                    const formattedDate = date ? dayjs(date).format('MM-DD-YYYY') : null;
+                    const formattedDate = date ? dayjs(date).format('YYYY-MM-DD') : null;
                     onChange(formattedDate);
+                    if (timeRange !== 'custom') {
+                      setTimeRange('custom');
+                    }
                   }}
                   slotProps={{
                     textField: {
@@ -305,7 +399,7 @@ const Dashboard = () => {
 
               <div style={styles.rightColumn}>
                 <div style={styles.pieContainer}>
-                  {chartData && <Pie data={chartData} options={{ onClick: handlePieClick }} />}
+                  {chartData && <Pie data={filterChartData(chartData)} options={{ onClick: handlePieClick }} />}
                 </div>
               </div>
             </Box>
@@ -313,7 +407,7 @@ const Dashboard = () => {
             {selectedChart !== null && chartMap[selectedChart]?.data && (
               <div style={styles.bottomSection}>
                 <h2>{chartMap[selectedChart].title}</h2>
-                <Bar data={chartMap[selectedChart].data} />
+                <Bar data={filterChartData(chartMap[selectedChart].data)} />
               </div>
             )}
           </div>
