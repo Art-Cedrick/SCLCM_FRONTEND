@@ -30,6 +30,7 @@ const ResourceSharing = () => {
   const defaultValues = {
     title: "",
     content: "",
+    file: null
   };
 
   const { control, handleSubmit, reset, setValue } = useForm({ defaultValues });
@@ -93,38 +94,58 @@ const ResourceSharing = () => {
     try {
       const headers = {
         Authorization: `Token ${token}`,
+        'Content-Type': 'multipart/form-data'
       };
+
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('content', data.content);
+
+      if (data.file) {
+        formData.append('file', data.file[0]);
+      }
+
+      // Log the form data before sending
+      console.log("Form Data Contents:");
+      console.log("Title:", data.title);
+      console.log("Content:", data.content);
+      console.log("File:", data.file ? data.file[0].name : "No file selected");
 
       if (editingResource) {
         const updatedResource = await AxiosInstance.put(
           `/resource/${editingResource.id}/`,
-          { title: data.title, content: data.content },
+          formData,
           { headers }
         );
-        updatedResource.data.updated = new Date(); // Set the updated date to now
+        console.log("Updated Resource Response:", updatedResource.data);
+        updatedResource.data.updated = new Date();
         setSnackbarMessage("Resource updated successfully");
         setSnackbarSeverity("success");
       } else {
-        await AxiosInstance.post(
+        const response = await AxiosInstance.post(
           `/resource/`,
-          { title: data.title, content: data.content },
+          formData,
           { headers }
         );
+        console.log("New Resource Response:", response.data);
         setSnackbarMessage("Resource added successfully");
         setSnackbarSeverity("success");
       }
 
-      const resourcesResponse = await AxiosInstance.get("/resource/", {
-        headers,
-      });
-      setResources(resourcesResponse.data);
+      // const resourcesResponse = await AxiosInstance.get("/resource/", {
+      //   headers: {
+      //     Authorization: `Token ${token}`
+      //   },
+      // });
+      // console.log("Updated Resources List:", resourcesResponse.data);
+      // setResources(resourcesResponse.data);
 
-      handleClose();
-
-      setSnackbarOpen(true);
-      setTimeout(() => setNotification(""), 1000);
+      // handleClose();
+      // setSnackbarOpen(true);
+      // setTimeout(() => setNotification(""), 1000);
     } catch (error) {
       console.error("Error saving resource:", error);
+      console.error("Error response:", error.response?.data);
       setSnackbarMessage("Error saving resource");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
@@ -312,6 +333,23 @@ const ResourceSharing = () => {
                     style={{
                       height: "400px",
                       borderColor: "#004C8C",
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="file"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <TextField
+                    {...field}
+                    type="file"
+                    onChange={(e) => onChange(e.target.files)}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    InputLabelProps={{
+                      shrink: true,
                     }}
                   />
                 )}
