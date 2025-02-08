@@ -278,7 +278,18 @@ const ScheduleAppointment = () => {
 
   useEffect(() => {
     fetchAppointments();
-}, []); 
+  }, []); 
+
+  useEffect(() => {
+    if (status === "success") {
+      setIsSelectedAppOpen(false);
+      toast.success(messagePrompt.message);
+    }
+    if (status === "error") {
+      setIsSelectedAppOpen(false); 
+      toast.error(messagePrompt.message);
+    }
+  }, [status, messagePrompt]);
 
 
   return (

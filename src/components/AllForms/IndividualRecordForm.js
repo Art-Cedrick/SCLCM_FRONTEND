@@ -22,12 +22,12 @@ const IndividualRecordForm = ({initialData, onClose}) => {
   const queryClient = useQueryClient();
 
   const defaultValues = {
-    sr_code: '',
-    lastname: '',
-    firstname: '',
-    middlename: '',
-    year: '',
-    section: '',
+    sr_code: localStorage.getItem('sr_code'),
+    lastname: localStorage.getItem('lastname'),
+    firstname: localStorage.getItem('firstname'),
+    middlename: localStorage.getItem('middlename'),
+    year: localStorage.getItem('year'),
+    section: localStorage.getItem('section'),
     completeAddress: '',
     fatherName: '',
     fatherOccupation: '',
@@ -130,6 +130,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Student Number"
+                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -142,6 +143,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Last Name"
+                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -154,6 +156,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="First Name"
+                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -166,6 +169,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Middle Name"
+                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -182,6 +186,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Year"
+                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -194,6 +199,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Section"
+                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
