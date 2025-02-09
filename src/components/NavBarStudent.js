@@ -71,10 +71,39 @@ const NavBarStudent = React.memo((props) => {
   };
 
   const myDrawer = (
-    <Box sx={{ backgroundColor: "rgba(5, 21, 54, 255)", height: "100vh", color: "#ffffff", position: "relative" }}>
+      <Box
+          sx={{
+            backgroundColor: "rgba(5, 21, 54, 255)",
+            height: "100vh",
+            width: "100%",
+            color: "#ffffff",
+            position: "relative",
+            padding: "0 20px",
+          }}
+        >
       <Toolbar>
         <img src={file} alt="logo" style={{ width: 60, height: 60, margin: "10px auto 0" }} />
       </Toolbar>
+      <Typography
+              variant="h6"
+              component="div"
+              sx={{ 
+                color: "#FFFFFF",
+                textTransform: "uppercase",
+                letterSpacing: 0.5,
+                fontFamily: "'Rozha One'",
+                marginTop: "20px",
+                marginBottom: "20px",
+                fontSize: "0.8rem",
+                "&:hover": {
+                  color: "#1E90FF",
+                  cursor: "pointer",
+                  onClick: "/counselor/dashboard"
+                },
+              }}
+            >
+              Student Center for Life and Career Management
+            </Typography>
       <List>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
@@ -84,11 +113,15 @@ const NavBarStudent = React.memo((props) => {
               selected={item.link === selectedItem}
               onClick={() => handleMenuItemClick(item.link)}
               sx={{
+                padding: "10px", // Add padding to selected item
                 "&.Mui-selected": {
                   backgroundColor: "#ffffff", // White background for selected item
                   borderTopLeftRadius: "20px", // Round only the left side
                   borderBottomLeftRadius: "20px", // Round only the left side
+                  borderTopRighttRadius: "20px", // Round only the left side
+                  borderBottomRightRadius: "20px", // Round only the left side
                   color: "#000", // Change text color to black when selected
+
                   "& .MuiListItemIcon-root": {
                     color: "#000", // Change icon color to black for selected item
                   },
@@ -112,7 +145,7 @@ const NavBarStudent = React.memo((props) => {
               <ListItemIcon sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} primaryTypographyProps={{ sx: { fontWeight: "bold", fontFamily: "'Rozha One'", fontSize: "1rem" } }} />
+              <ListItemText primary={item.text} primaryTypographyProps={{ sx: { fontWeight: "bold", fontFamily: "'Rozha One'", fontSize: ".9rem" } }} />
             </ListItemButton>
           </ListItem>
         ))}

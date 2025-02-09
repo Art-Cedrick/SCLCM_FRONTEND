@@ -16,38 +16,69 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import AxiosInstance from "./Axios";
 import { useMutation, useQueryClient } from "react-query";
+import { useStudentInfoStore } from "../../store/useStudentInfoStore";
+import { set } from "date-fns";
+import { Toaster, toast } from "sonner";
 
 const IndividualRecordForm = ({initialData, onClose}) => {
 
   const queryClient = useQueryClient();
+  const { studentInfo, setStudentInfo } = useStudentInfoStore();
 
   const defaultValues = {
-    sr_code: localStorage.getItem('sr_code'),
-    lastname: localStorage.getItem('lastname'),
-    firstname: localStorage.getItem('firstname'),
-    middlename: localStorage.getItem('middlename'),
-    year: localStorage.getItem('year'),
-    section: localStorage.getItem('section'),
-    completeAddress: '',
-    fatherName: '',
-    fatherOccupation: '',
-    fatherContactNumber: '',
-    fatherEmailAddress: '',
-    motherName: '',
-    motherOccupation: '',
-    motherContactNumber: '',
-    motherEmailAddress: '',
-    parents: '',
-    living_with: '',
-    relationship: '',
-    club: '',
+    sr_code: studentInfo.sr_code || "No information provided",
+    lastname: studentInfo.lastname || "No information provided",
+    firstname: studentInfo.firstname || "No information provided",
+    middlename: studentInfo.middlename || "No information provided",
+    year: studentInfo.year || "No information provided",
+    section: studentInfo.section || "No information provided",
+    completeAddress: studentInfo.completeAddress || "No information provided",
+    fatherName: studentInfo.fatherName || "No information provided",
+    fatherOccupation: studentInfo.fatherOccupation || "No information provided",
+    fatherContactNumber: studentInfo.fatherContactNumber || "No information provided",
+    fatherEmailAddress: studentInfo.fatherEmailAddress || "No information provided",
+    motherName:   studentInfo.motherName || "No information provided",
+    motherOccupation: studentInfo.motherOccupation || "No information provided",
+    motherContactNumber: studentInfo.motherContactNumber || "No information provided",
+    motherEmailAddress: studentInfo.motherEmailAddress || "No information provided",
+    parents: studentInfo.parents || "No information provided",
+    living_with: studentInfo.living_with || "No information provided",
+    relationship: studentInfo.relationship || "No information provided",
+    club: studentInfo.club || "No information provided",
   };
+
 
   const { control, handleSubmit, reset } = useForm({defaultValues: initialData || defaultValues});
 
   useEffect(() => {
     if (initialData) reset(initialData);
+
   }, [initialData, reset]);
+
+
+  useEffect(() => {
+
+    const fetchInfoData = async () => {
+
+      const response = await AxiosInstance.get(`/record/`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        }
+      });
+      setStudentInfo(response.data);
+      console.log(response.data);
+      return response.data;
+    }
+
+    fetchInfoData();
+    
+  }, []);
+
+  useEffect(() => {
+    if (studentInfo) {
+      reset(studentInfo);
+    }
+  }, [studentInfo, reset]);
 
   const mutation = useMutation(
     (data) => 
@@ -99,8 +130,10 @@ const IndividualRecordForm = ({initialData, onClose}) => {
           queryClient.refetchQueries('IRFData');
           reset();
           onClose();
+          toast.success("Data submitted successfully");
         }, 
         onError: (error) => {
+          toast.error("Error submitting data");
           console.error("Error submitting data", error);
         },
     }
@@ -111,7 +144,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
 
   return (
     <form onSubmit={handleSubmit(submission)} >
-   
+      <Toaster richColors position="top-right"/>
         <Paper
           elevation={0}
           sx={{
@@ -130,7 +163,6 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Student Number"
-                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -143,7 +175,6 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Last Name"
-                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -156,7 +187,6 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="First Name"
-                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -169,7 +199,6 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Middle Name"
-                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -186,7 +215,6 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Year"
-                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
@@ -199,7 +227,6 @@ const IndividualRecordForm = ({initialData, onClose}) => {
               <TextField
                 {...field}
                 label="Section"
-                disabled
                 placeholder=""
                 sx={{ flex: 1 }}
               />
