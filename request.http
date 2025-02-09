@@ -1,6 +1,4 @@
 
-GET https://sclcm-backend.onrender.com/api/get-resource/
-
+GET  https://sclcm-backend.onrender.com/api/record/
+Authorization: Token f008ebdfdce134151f6f06aa1c089c340bb5a57b
 ###
-
-

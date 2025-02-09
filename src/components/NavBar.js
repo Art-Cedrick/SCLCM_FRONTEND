@@ -104,6 +104,8 @@ const NavBar = React.memo((props) => {
                 letterSpacing: 0.5,
                 fontFamily: "'Rozha One'",
                 fontSize: "0.8rem",
+                marginTop: "20px",
+                marginBottom: "20px",
                 "&:hover": {
                   color: "#1E90FF",
                   cursor: "pointer",
@@ -122,6 +124,7 @@ const NavBar = React.memo((props) => {
               selected={item.link === path}
               onClick={() => handleMenuItemClick(item.link)}
               sx={{
+                padding: "10px", // Add padding to selected item
                 "&.Mui-selected": {
                   backgroundColor: "#ffffff", // White background for selected item
                   borderTopLeftRadius: "20px", // Round only the left side
@@ -155,9 +158,7 @@ const NavBar = React.memo((props) => {
                 primary={item.text}
                 primaryTypographyProps={{
                   sx: {
-                    fontWeight: "bold",
-                    fontFamily: "'Rozha One'",
-                    fontSize: "1rem",
+                    fontWeight: "bold", fontFamily: "'Rozha One'", fontSize: ".9rem"
                   },
                 }}
               />

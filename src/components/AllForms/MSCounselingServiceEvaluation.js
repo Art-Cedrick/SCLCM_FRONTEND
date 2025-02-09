@@ -550,9 +550,9 @@ import AxiosInstance from "./Axios";
 
 const MSCounselingServiceEvaluation = () => {
   const defaultValues = {
-    name: "",
-    gradelevel: "",
-    section: "",
+    name: localStorage.getItem("lastname") + ", " + localStorage.getItem("firstname") + ", " + localStorage.getItem("middlename"),
+    gradelevel: localStorage.getItem("section"),
+    section: localStorage.getItem("section"),
     question_one: "",
     question_two: "",
     question_three: "",
