@@ -19,6 +19,8 @@ import {
   Delete as DeleteIcon,
   AttachFile as AttachFileIcon,
   Edit as EditIcon,
+  InsertDriveFile,
+  PictureAsPdf,
 } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -30,7 +32,7 @@ const ResourceSharing = () => {
   const defaultValues = {
     title: "",
     content: "",
-    file: null
+    attatchment: null
   };
 
   const { control, handleSubmit, reset, setValue } = useForm({ defaultValues });
@@ -57,12 +59,12 @@ const ResourceSharing = () => {
       }
 
       try {
-        const response = await AxiosInstance.get("/resource/", {
+        const response = await AxiosInstance.get("new-resource/", {
           headers: {
             Authorization: `Token ${token}`,
           },
         });
-        setResources(response.data);
+        setResources(response.data.data);
       } catch (error) {
         console.error("Error fetching resources:", error);
         setNotification("Failed to fetch resources. Please log in.");
@@ -102,7 +104,7 @@ const ResourceSharing = () => {
       formData.append('content', data.content);
 
       if (data.file) {
-        formData.append('file', data.file[0]);
+        formData.append('attachment', data.file[0]);
       }
 
       // Log the form data before sending
@@ -113,7 +115,7 @@ const ResourceSharing = () => {
 
       if (editingResource) {
         const updatedResource = await AxiosInstance.put(
-          `/resource/${editingResource.id}/`,
+          `/new-resource/${editingResource.id}/`,
           formData,
           { headers }
         );
@@ -123,7 +125,7 @@ const ResourceSharing = () => {
         setSnackbarSeverity("success");
       } else {
         const response = await AxiosInstance.post(
-          `/resource/`,
+          `/new-resource/`,
           formData,
           { headers }
         );
@@ -178,7 +180,7 @@ const ResourceSharing = () => {
 
     if (resourceToDelete) {
       try {
-        await AxiosInstance.delete(`/resource/${resourceToDelete.id}/`, {
+        await AxiosInstance.delete(`/new-resource/${resourceToDelete.id}/`, {
           headers: {
             Authorization: `Token ${token}`,
           },
@@ -401,60 +403,128 @@ const ResourceSharing = () => {
         </Dialog>
 
         {filteredResources.length > 0 ? (
-          filteredResources.map((resource) => (
-            <Box
-              key={resource.id}
-              sx={{
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                p: 2,
-                backgroundColor: "#fff",
-                mb: 2,
-                cursor: "pointer",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-                "&:hover": {
-                  backgroundColor: "#f1f1f1",
-                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
-                },
-              }}
-              onClick={() => toggleContentVisibility(resource.id)}
-            >
-              <Stack
-                direction="column"
-                justifyContent="flex-start"
-                alignItems="flex-start"
+          filteredResources.map((resource) => {
+            // Extract file extension
+            const fileExtension = resource.attachment
+              ? resource.attachment.split(".").pop().toLowerCase()
+              : "";
+
+            // Check if the attachment is an image
+            const isImage = ["png", "jpg", "jpeg", "gif", "webp"].includes(fileExtension);
+            
+            return (
+              <Box
+                key={resource.id}
+                sx={{
+                  border: "1px solid #ddd",
+                  borderRadius: "10px",
+                  p: 2,
+                  backgroundColor: "#fff",
+                  mb: 2,
+                  cursor: "pointer",
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                  "&:hover": {
+                    backgroundColor: "#f1f1f1",
+                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+                  },
+                }}
+                onClick={() => toggleContentVisibility(resource.id)}
               >
-                <Typography
-                  variant="body1"
-                  sx={{ fontWeight: "bold", color: "black" }}
-                >
-                  {resource.title}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontSize: "0.700rem",
-                    fontStyle: "italic",
-                    color: "#808080",
-                  }}
-                >
-                  {resource.author}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ fontSize: "0.600rem", color: "#808080" }}
-                >
-                  {resource.modified
-                    ? `${format(parseISO(resource.modified), "Pp")}`
-                    : "Not yet updated"}
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    width: "100%",
-                  }}
-                >
+                <Stack direction="column" justifyContent="flex-start" alignItems="flex-start">
+                  <Typography variant="body1" sx={{ fontWeight: "bold", color: "black" }}>
+                    {resource.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: "0.700rem",
+                      fontStyle: "italic",
+                      color: "#808080",
+                    }}
+                  >
+                    {resource.author}
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontSize: "0.600rem", color: "#808080" }}>
+                    {resource.modified ? `${format(parseISO(resource.modified), "Pp")}` : "Not yet updated"}
+                  </Typography>
+
+                  {expandedResourceId === resource.id && (
+                    <>
+                      <Typography
+                        variant="body2"
+                        sx={{ mt: 1, textAlign: "justify" }}
+                        dangerouslySetInnerHTML={{
+                          __html: resource.content,
+                        }}
+                      />  
+                      {/* File Preview Section */}
+                      {resource.attachment && (
+                        <Box
+                          sx={{
+                            width: "100%",
+                            display: "flex",
+                          }}
+                        >
+                          {isImage ? (
+                            // If the attachment is an image, display a small preview
+                            <img
+                              src={`https://sclcm-backend.onrender.com/${resource.attachment}`}
+                              alt="Attachment"
+                              style={{
+                                maxWidth: "150px",
+                                height: "auto",
+                                borderRadius: "5px",
+                                border: "1px solid #ddd",
+                              }}
+                            />
+                          ) : (
+
+                                <a
+                                  href={`https://sclcm-backend.onrender.com/${resource.attachment}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    display: "flex",
+                                    gap: "5px",
+                                    alignItems: "center",
+                                    textDecoration: "none",
+                                    color: "#004C8C",
+                                  }}
+                                >
+                              {/* File Icon */}
+                              {fileExtension === "pdf" ? (
+                                <PictureAsPdf sx={{ fontSize: 15, color: "red", backgroundColor: '#d1d4db'}} />
+                              ) : ["xls", "xlsx", "csv"].includes(fileExtension) ? (
+                                <InsertDriveFile sx={{ fontSize: 15, color: "green" }} />
+                              ) : ["doc", "docx"].includes(fileExtension) ? (
+                                <InsertDriveFile sx={{ fontSize: 15, color: "blue" }} />
+                              ) : (
+                                <InsertDriveFile sx={{ fontSize: 15, color: "#004C8C" }} />
+                              )}
+
+                              {/* File Name */}
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  mt: 1,
+                                  maxWidth: "200px",
+                                  textAlign: "center",
+                                  paddingBottom: "3px",
+                                  wordWrap: "break-word",
+                                }}
+                              >
+                                {resource.attachment.split("/").pop()}
+                              </Typography>
+                            </a>
+
+                          )}
+                        </Box>
+                      )}
+                    </>
+                  )}
+                </Stack>
+
+                <Box sx={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
                   <IconButton
                     size="small"
                     onClick={(e) => {
@@ -476,24 +546,15 @@ const ResourceSharing = () => {
                     <DeleteIcon />
                   </IconButton>
                 </Box>
-              </Stack>
-
-              {expandedResourceId === resource.id && (
-                <Typography
-                  variant="body2"
-                  sx={{ mt: 1, textAlign: "justify" }}
-                  dangerouslySetInnerHTML={{
-                    __html: resource.content,
-                  }}
-                />
-              )}
-            </Box>
-          ))
+              </Box>
+            );
+          })
         ) : (
           <Typography variant="body2" sx={{ color: "black" }}>
             No resources found.
           </Typography>
         )}
+
       </Stack>
 
       {/* Snackbar Notification */}
