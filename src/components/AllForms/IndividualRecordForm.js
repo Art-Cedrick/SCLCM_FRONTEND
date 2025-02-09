@@ -26,25 +26,25 @@ const IndividualRecordForm = ({initialData, onClose}) => {
   const { studentInfo, setStudentInfo } = useStudentInfoStore();
 
   const defaultValues = {
-    sr_code: studentInfo.sr_code || "No information provided",
-    lastname: studentInfo.lastname || "No information provided",
-    firstname: studentInfo.firstname || "No information provided",
-    middlename: studentInfo.middlename || "No information provided",
-    year: studentInfo.year || "No information provided",
-    section: studentInfo.section || "No information provided",
-    completeAddress: studentInfo.completeAddress || "No information provided",
-    fatherName: studentInfo.fatherName || "No information provided",
-    fatherOccupation: studentInfo.fatherOccupation || "No information provided",
-    fatherContactNumber: studentInfo.fatherContactNumber || "No information provided",
-    fatherEmailAddress: studentInfo.fatherEmailAddress || "No information provided",
-    motherName:   studentInfo.motherName || "No information provided",
-    motherOccupation: studentInfo.motherOccupation || "No information provided",
-    motherContactNumber: studentInfo.motherContactNumber || "No information provided",
-    motherEmailAddress: studentInfo.motherEmailAddress || "No information provided",
-    parents: studentInfo.parents || "No information provided",
-    living_with: studentInfo.living_with || "No information provided",
-    relationship: studentInfo.relationship || "No information provided",
-    club: studentInfo.club || "No information provided",
+    sr_code: studentInfo.sr_code || "",
+    lastname: studentInfo.lastname || "",
+    firstname: studentInfo.firstname || "",
+    middlename: studentInfo.middlename || "",
+    year: studentInfo.year || "",
+    section: studentInfo.section || "",
+    completeAddress: studentInfo.completeAddress || "",
+    fatherName: studentInfo.fatherName || "",
+    fatherOccupation: studentInfo.fatherOccupation || "",
+    fatherContactNumber: studentInfo.fatherContactNumber || "",
+    fatherEmailAddress: studentInfo.fatherEmailAddress || "",
+    motherName:   studentInfo.motherName || "",
+    motherOccupation: studentInfo.motherOccupation || "",
+    motherContactNumber: studentInfo.motherContactNumber || "",
+    motherEmailAddress: studentInfo.motherEmailAddress || "",
+    parents: studentInfo.parents || "",
+    living_with: studentInfo.living_with || "",
+    relationship: studentInfo.relationship || "",
+    club: studentInfo.club || "",
   };
 
 
@@ -74,69 +74,86 @@ const IndividualRecordForm = ({initialData, onClose}) => {
     
   }, []);
 
-  useEffect(() => {
-    if (studentInfo) {
-      reset(studentInfo);
-    }
-  }, [studentInfo, reset]);
+useEffect(() => {
+  if (studentInfo) {
+    reset({
+      ...defaultValues, 
+      ...studentInfo,     
+    });
+  }
+}, [studentInfo, reset]);
 
   const mutation = useMutation(
     (data) => 
-    initialData
-    ? AxiosInstance.put(`/individual_record_form/${initialData.id}/`, {
-      sr_code: data.sr_code,
-      lastname: data.lastname,
-      firstname: data.firstname,
-      middlename: data.middlename,
-      year: data.year,
-      section: data.section,
-      completeAddress: data.completeAddress,
-      fatherName: data.fatherName,
-      fatherOccupation: data.fatherOccupation,
-      fatherContactNumber: data.fatherContactNumber,
-      fatherEmailAddress: data.fatherEmailAddress,
-      motherName: data.motherName,
-      motherOccupation: data.motherOccupation,
-      motherContactNumber: data.motherContactNumber,
-      motherEmailAddress: data.motherEmailAddress,
-      parents: data.parents,
-      living_with: data.living_with,
-      relationship: data.relationship,
-      club: data.club,
-    })  
-    : AxiosInstance.post(`/individual_record_form/`, {
-      sr_code: data.sr_code,
-      lastname: data.lastname,
-      firstname: data.firstname,
-      middlename: data.middlename,
-      year: data.year,
-      section: data.section,
-      completeAddress: data.completeAddress,
-      fatherName: data.fatherName,
-      fatherOccupation: data.fatherOccupation,
-      fatherContactNumber: data.fatherContactNumber,
-      fatherEmailAddress: data.fatherEmailAddress,
-      motherName: data.motherName,
-      motherOccupation: data.motherOccupation,
-      motherContactNumber: data.motherContactNumber,
-      motherEmailAddress: data.motherEmailAddress,
-      parents: data.parents,
-      living_with: data.living_with,
-      relationship: data.relationship,
-      club: data.club,
-    }), {
-        onSuccess: () => {
-          queryClient.invalidateQueries('IRFData');
-          queryClient.refetchQueries('IRFData');
-          reset();
-          onClose();
-          toast.success("Data submitted successfully");
-        }, 
+      studentInfo
+        ? AxiosInstance.patch(`/record/`, {
+          lastname: data.lastname,
+          firstname: data.firstname,
+          middlename: data.middlename,
+          year: data.year,
+          section: data.section,
+          completeAddress: data.completeAddress,
+          fatherName: data.fatherName,
+          fatherOccupation: data.fatherOccupation,
+          fatherContactNumber: data.fatherContactNumber,
+          fatherEmailAddress: data.fatherEmailAddress,
+          motherName: data.motherName,
+          motherOccupation: data.motherOccupation,
+          motherContactNumber: data.motherContactNumber,
+          motherEmailAddress: data.motherEmailAddress,
+          parents: data.parents,
+          living_with: data.living_with,
+          relationship: data.relationship,
+          club: data.club,
+        },
+      {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        }
+      }
+      )  
+        : AxiosInstance.post(`/individual_record_form/`, {
+          lastname: data.lastname,
+          firstname: data.firstname,
+          middlename: data.middlename,
+          year: data.year,
+          section: data.section,
+          completeAddress: data.completeAddress,
+          fatherName: data.fatherName,
+          fatherOccupation: data.fatherOccupation,
+          fatherContactNumber: data.fatherContactNumber,
+          fatherEmailAddress: data.fatherEmailAddress,
+          motherName: data.motherName,
+          motherOccupation: data.motherOccupation,
+          motherContactNumber: data.motherContactNumber,
+          motherEmailAddress: data.motherEmailAddress,
+          parents: data.parents,
+          living_with: data.living_with,
+          relationship: data.relationship,
+          sr_code: data.sr_code,
+          club: data.club,
+        },
+      {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        }
+      }), {
+        onSuccess: (response) => {
+          if (response.data && response.data.errors) {
+            toast.error("Error: " + response.data.errors);
+          } else {
+            queryClient.invalidateQueries("IRFData");
+            queryClient.refetchQueries("IRFData");
+            reset();
+            // onClose();
+            toast.success("Data submitted successfully");
+          }
+        },
         onError: (error) => {
           toast.error("Error submitting data");
           console.error("Error submitting data", error);
         },
-    }
+        }
   );
   
 
