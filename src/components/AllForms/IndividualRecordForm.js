@@ -85,8 +85,9 @@ useEffect(() => {
 
   const mutation = useMutation(
     (data) => 
-      studentInfo
-        ? AxiosInstance.patch(`/record/`, {
+      studentInfo.sr_code
+        ? 
+        AxiosInstance.patch(`/record/`, {
           lastname: data.lastname,
           firstname: data.firstname,
           middlename: data.middlename,
@@ -112,7 +113,9 @@ useEffect(() => {
         }
       }
       )  
-        : AxiosInstance.post(`/individual_record_form/`, {
+        : 
+       
+        AxiosInstance.post(`/individual_record_form/`, {
           lastname: data.lastname,
           firstname: data.firstname,
           middlename: data.middlename,
@@ -137,7 +140,8 @@ useEffect(() => {
         headers: {
           Authorization: `${localStorage.getItem("token")}`,
         }
-      }), {
+      })
+      , {
         onSuccess: (response) => {
           if (response.data && response.data.errors) {
             toast.error("Error: " + response.data.errors);
@@ -146,7 +150,15 @@ useEffect(() => {
             queryClient.refetchQueries("IRFData");
             reset();
             // onClose();
+            localStorage.setItem("firstname", response.data.firstname);
+            localStorage.setItem("lastname", response.data.lastname);
+            localStorage.setItem("middlename", response.data.middlename);
+            localStorage.setItem("year", response.data.year);
+            localStorage.setItem("section", response.data.section);
+            localStorage.setItem("completeAddress", response.data.completeAddress);
+            localStorage.setItem("sr_code", response.data.sr_code);
             toast.success("Data submitted successfully");
+            setStudentInfo(response.data);
           }
         },
         onError: (error) => {

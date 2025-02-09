@@ -135,7 +135,7 @@ const IndividualRecordFormTable = () => {
           />,
         ]}
       />
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+      {/* <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle style={{
           fontWeight: "bold",
         }}>
@@ -147,7 +147,7 @@ const IndividualRecordFormTable = () => {
             onClose={handleClose}
           />
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       <Dialog
         open={confirmDelete.open}
