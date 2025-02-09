@@ -17,9 +17,9 @@ export default (form) => {
         second_year: 'Second Year ',
         third_year: 'Third Year ',
         fourth_year: 'Fourth Year ',
-        routine_interview: 'Routine Interview ',
-        careertracking: 'Career Tracking ',
-        conferenceform: 'Conference',
+        // routine_interview: 'Routine Interview ',
+        // careertracking: 'Career Tracking ',
+        // conferenceform: 'Conference',
     };
 
     return titles[form] || 'New Form';

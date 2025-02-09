@@ -117,9 +117,9 @@ const Psychometrician_Table = () => {
         {activeForm === 'fourth_year' && <FourthYearTable />}
         {activeForm === 'grade_seven' && <Grade7Table />}
         {activeForm === 'grade_two' && <Grade2Table />}
-        {activeForm === 'routine_interview' && <RoutineInterviewTable />}
+        {/* {activeForm === 'routine_interview' && <RoutineInterviewTable />}
         {activeForm === 'careertracking' && <CareerTrackingTable />}
-        {activeForm === 'conferenceform' && <ConferenceFormTable />}
+        {activeForm === 'conferenceform' && <ConferenceFormTable />} */}
 
 
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -143,9 +143,9 @@ const Psychometrician_Table = () => {
             {activeForm === 'second_year' && <SecondYear />}
             {activeForm === 'third_year' && <ThirdYear />}
             {activeForm === 'fourth_year' && <FourthYear />}
-            {activeForm === 'routine_interview' && <RoutineInterviewTable />}
+            {/* {activeForm === 'routine_interview' && <RoutineInterviewTable />}
             {activeForm === 'careertracking' && <CareerTrackingTable />}
-            {activeForm === 'conferenceform' && <ConferenceFormTable />}
+            {activeForm === 'conferenceform' && <ConferenceFormTable />} */}
           </DialogContent>
         </Dialog>
       </div>

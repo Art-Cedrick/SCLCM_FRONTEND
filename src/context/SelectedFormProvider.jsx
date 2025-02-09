@@ -21,9 +21,9 @@ export const formOptions = [
     {value: 'fourth_year', label: 'Fourth Year'},
     {value: 'grade_seven', label: 'Grade Seven'},
     {value: 'grade_two', label: 'Grade Two'},
-    {value: 'routine_interview', label: 'Routine Interview'},
-    {value: 'careertracking', label: 'Career Tracking'},
-    {value: 'conferenceform', label: 'Conference Form'},
+    // {value: 'routine_interview', label: 'Routine Interview'},
+    // {value: 'careertracking', label: 'Career Tracking'},
+    // {value: 'conferenceform', label: 'Conference Form'},
   ]  
 
   export const councilorFormOptions = [

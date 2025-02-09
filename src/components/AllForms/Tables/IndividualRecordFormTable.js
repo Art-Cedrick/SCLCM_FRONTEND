@@ -93,7 +93,7 @@ const IndividualRecordFormTable = () => {
     <div style={{
       position: "relative",
     }}>
-      <div style={{
+      {/* <div style={{
         position: "absolute",
         left: 8,
         top: 8,
@@ -101,7 +101,7 @@ const IndividualRecordFormTable = () => {
         display: "flex",
       }}>
         <Button variant="contained"  color="primary" size="small" type="submit" onClick={handleOpenForm}> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
-      </div>
+      </div> */}
 
       <MaterialReactTable
         columns={columns}
@@ -135,7 +135,7 @@ const IndividualRecordFormTable = () => {
           />,
         ]}
       />
-      {/* <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle style={{
           fontWeight: "bold",
         }}>
@@ -147,7 +147,7 @@ const IndividualRecordFormTable = () => {
             onClose={handleClose}
           />
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
 
       <Dialog
         open={confirmDelete.open}

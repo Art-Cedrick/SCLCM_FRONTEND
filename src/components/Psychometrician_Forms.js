@@ -65,9 +65,9 @@ const Psychometrician_Forms = () => {
       {activeForm === 'grade_seven' && <Grade7 />}
       {activeForm === 'grade_two' && <Grade2 />}
       {activeForm === 'grade_eleven' && <Grade11 />}
-      {activeForm === 'routine_interview' && <RoutineInterviewTable />}
+      {/* {activeForm === 'routine_interview' && <RoutineInterviewTable />}
       {activeForm === 'careertracking' && <CareerTrackingTable />}
-      {activeForm === 'conferenceform' && <ConferenceFormTable />}
+      {activeForm === 'conferenceform' && <ConferenceFormTable />} */}
 
     </div>
   )
