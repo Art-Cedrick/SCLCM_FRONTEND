@@ -37,6 +37,33 @@ const DropdownMenu = ({ pathname }) => {
     navigate(`/psychometrician/psychometrician_forms`);
   };
 
+
+  const customOrder = [
+    "kinder",
+    "grade_one",
+    "grade_two",
+    "grade_three",
+    "grade_four",
+    "grade_five",
+    "grade_six",
+    "grade_seven",
+    "grade_eight",
+    "grade_nine",
+    "grade_ten",
+    "grade_eleven",
+    "grade_twelve",
+    "first_year",
+    "second_year",
+    "third_year",
+    "fourth_year",
+  ];
+
+  const sortedOptions = Array.isArray(formOptions)
+    ? [...formOptions].sort(
+        (a, b) => customOrder.indexOf(a.value) - customOrder.indexOf(b.value)
+      )
+    : []; // Fallback if formOptions is not an array
+
   return (
     <>
       <ListItemButton
@@ -107,8 +134,10 @@ const DropdownMenu = ({ pathname }) => {
           ml: 23,
         }}
       >
-        {formOptions.map((option) => {
-          return (
+        
+       {sortedOptions
+          .sort((a, b) => a.label.localeCompare(b.label)) // Sort by label alphabetically
+          .map((option) => (
             <MenuItem
               key={option.value}
               onClick={() => handleMenuItemClick(option.value)}
@@ -116,8 +145,7 @@ const DropdownMenu = ({ pathname }) => {
             >
               {option.label}
             </MenuItem>
-          );
-        })}
+          ))}
       </Menu>
     </>
   );

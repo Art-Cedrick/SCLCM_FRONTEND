@@ -85,7 +85,7 @@ const NavBar = React.memo((props) => {
         width: "100%",
         color: "#ffffff",
         position: "relative",
-        padding: "0 20px",
+        // padding: "0 20px",
       }}
     >
       <Toolbar>
@@ -124,13 +124,13 @@ const NavBar = React.memo((props) => {
               selected={item.link === path}
               onClick={() => handleMenuItemClick(item.link)}
               sx={{
-                padding: "10px", // Add padding to selected item
+                // padding: "10px", // Add padding to selected item
                 "&.Mui-selected": {
                   backgroundColor: "#ffffff", // White background for selected item
                   borderTopLeftRadius: "20px", // Round only the left side
                   borderBottomLeftRadius: "20px", // Round only the left side
-                  borderTopRighttRadius: "20px", // Round only the left side
-                  borderBottomRightRadius: "20px", // Round only the left side
+                  // borderTopRighttRadius: "20px", // Round only the left side
+                  // borderBottomRightRadius: "20px", // Round only the left side
                   color: "#000", // Change text color to black when selected
                   "& .MuiListItemIcon-root": {
                     color: "#000", // Change icon color to black for selected item

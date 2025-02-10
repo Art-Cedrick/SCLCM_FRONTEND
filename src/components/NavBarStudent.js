@@ -17,7 +17,7 @@ import NotesIcon from "@mui/icons-material/Notes";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { IconButton, Menu, MenuItem, useMediaQuery } from "@mui/material";
-import file from "./images/file.png";  // Assuming file.png is the logo image
+import file from "./images/file.png"; // Assuming file.png is your logo image
 
 const NavBarStudent = React.memo((props) => {
   const { drawerWidth = 260, content } = props;
@@ -39,71 +39,76 @@ const NavBarStudent = React.memo((props) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    localStorage.removeItem("sr_code");
-    localStorage.removeItem("firstname");
-    localStorage.removeItem("lastname");
-    localStorage.removeItem("middlename");
-    localStorage.removeItem("section");
-    localStorage.removeItem("year");
-    
     window.location.href = "/";
     handleProfileMenuClose();
   };
 
   const menuItems = [
-    { text: "Schedule", icon: <NotesIcon />, link: "/student/studentappointment", sx: { marginTop: "20px" } }, // Added margin-top to Appointment
-    { text: "Evaluation", icon: <DashboardIcon />, link: "/student/evaluation" }, // No extra margin needed here
-    { text: "Profile", icon: <AssignmentIcon />, link: "/student/individualrecordform" },
+    {
+      text: "Schedule",
+      icon: <NotesIcon />,
+      link: "/student/studentappointment",
+      sx: { marginTop: "20px" },
+    },
+    {
+      text: "Evaluation",
+      icon: <DashboardIcon />,
+      link: "/student/evaluation",
+    },
+    {
+      text: "Profile",
+      icon: <AssignmentIcon />,
+      link: "/student/individualrecordform",
+    },
   ];
 
   const isMobile = useMediaQuery("(max-width: 768px)"); // Check if screen width is less than 768px
 
-  // Handle menu item click to update the selected item
+  // Update the selected item and close mobile sidebar if needed
   const handleMenuItemClick = (link) => {
     setSelectedItem(link);
     if (isMobile && mobileOpen) {
-      setMobileOpen(false); // Close the sidebar on mobile when an item is clicked
+      setMobileOpen(false);
     }
   };
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen); // Toggle sidebar visibility on mobile
+    setMobileOpen(!mobileOpen);
   };
 
   const myDrawer = (
-      <Box
-          sx={{
-            backgroundColor: "rgba(5, 21, 54, 255)",
-            height: "100vh",
-            width: "100%",
-            color: "#ffffff",
-            position: "relative",
-            padding: "0 20px",
-          }}
-        >
+    <Box
+      sx={{
+        backgroundColor: "rgba(5, 21, 54, 1)",
+        height: "100vh",
+        color: "#ffffff",
+        position: "relative",
+      }}
+    >
       <Toolbar>
-        <img src={file} alt="logo" style={{ width: 60, height: 60, margin: "10px auto 0" }} />
+        <img
+          src={file}
+          alt="logo"
+          style={{ width: 60, height: 60, margin: "10px auto 0" }}
+        />
       </Toolbar>
       <Typography
-              variant="h6"
-              component="div"
-              sx={{ 
-                color: "#FFFFFF",
-                textTransform: "uppercase",
-                letterSpacing: 0.5,
-                fontFamily: "'Rozha One'",
-                marginTop: "20px",
-                marginBottom: "20px",
-                fontSize: "0.8rem",
-                "&:hover": {
-                  color: "#1E90FF",
-                  cursor: "pointer",
-                  onClick: "/counselor/dashboard"
-                },
-              }}
-            >
-              Student Center for Life and Career Management
-            </Typography>
+        variant="h6"
+        component="div"
+        sx={{
+          color: "#FFFFFF",
+          textTransform: "uppercase",
+          letterSpacing: 0.5,
+          fontFamily: "'Rozha One'",
+          fontSize: "0.8rem",
+          "&:hover": {
+            color: "#1E90FF",
+            cursor: "pointer",
+          },
+        }}
+      >
+        Student Center for Life and Career Management
+      </Typography>
       <List>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
@@ -113,20 +118,18 @@ const NavBarStudent = React.memo((props) => {
               selected={item.link === selectedItem}
               onClick={() => handleMenuItemClick(item.link)}
               sx={{
-                padding: "10px", // Add padding to selected item
                 "&.Mui-selected": {
                   backgroundColor: "#ffffff", // White background for selected item
-                  borderTopLeftRadius: "20px", // Round only the left side
-                  borderBottomLeftRadius: "20px", // Round only the left side
-                  borderTopRighttRadius: "20px", // Round only the left side
-                  borderBottomRightRadius: "20px", // Round only the left side
-                  color: "#000", // Change text color to black when selected
-
+                  borderTopLeftRadius: "20px",
+                  borderBottomLeftRadius: "20px",
+                  // borderTopRightRadius: "20px", // Fixed typo here
+                  // borderBottomRightRadius: "20px", // Fixed typo here
+                  color: "#000", // Black text when selected
                   "& .MuiListItemIcon-root": {
-                    color: "#000", // Change icon color to black for selected item
+                    color: "#000", // Black icon for selected item
                   },
                 },
-                ...(item.text === "Appointment" && { marginTop: "20px" }), // Apply marginTop only to Appointment
+                ...(item.text === "Schedule" && { marginTop: "20px" }),
               }}
             >
               <Box
@@ -145,13 +148,31 @@ const NavBarStudent = React.memo((props) => {
               <ListItemIcon sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} primaryTypographyProps={{ sx: { fontWeight: "bold", fontFamily: "'Rozha One'", fontSize: ".9rem" } }} />
+              <ListItemText
+                primary={item.text}
+                primaryTypographyProps={{
+                  sx: { fontWeight: "bold", fontFamily: "'Rozha One'", fontSize: "1rem" },
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
     </Box>
   );
+
+  const getTitle = () => {
+    switch (path) {
+      case "/student/studentappointment":
+        return "Schedule";
+      case "/student/evaluation":
+        return "Evaluation";
+      case "/student/individualrecordform":
+        return "Profile";
+      default:
+        return "Student Center for Life and Career Management";
+    }
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -164,38 +185,41 @@ const NavBarStudent = React.memo((props) => {
           backgroundColor: "#ffffff",
           boxShadow: "none",
           borderBottom: "1px solid #E0E0E0",
-          color: "rgba(5, 21, 54, 255)",
+          color: "rgba(5, 21, 54, 1)",
           zIndex: 1200,
         }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {isMobile && (
-              <IconButton color="inherit" onClick={handleDrawerToggle} sx={{ mr: 2 }}>
-                <MenuIcon sx={{ color: "rgba(5, 21, 54, 255)" }} />
+              <IconButton
+                color="inherit"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2 }}
+              >
+                <MenuIcon sx={{ color: "rgba(5, 21, 54, 1)" }} />
               </IconButton>
             )}
             <Typography
               variant="h6"
               component="div"
               sx={{
-                fontWeight: "bold",
-                color: "rgba(5, 21, 54, 255)",
+                color: "rgba(5, 21, 54, 1)",
                 textTransform: "uppercase",
                 letterSpacing: 1.5,
                 fontFamily: "'Rozha One'",
                 fontSize: "1.25rem",
-                "&:hover": {
-                  color: "#1E90FF",
-                  cursor: "pointer",
-                },
               }}
             >
-              Student Center for Life and Career Management
+              {getTitle()}
             </Typography>
           </Box>
           <Box>
-            <IconButton color="inherit" onClick={handleProfileMenuOpen} sx={{ color: "rgba(5, 21, 54, 255)" }}>
+            <IconButton
+              color="inherit"
+              onClick={handleProfileMenuOpen}
+              sx={{ color: "rgba(5, 21, 54, 1)" }}
+            >
               <AccountCircle fontSize="large" />
             </IconButton>
             <Menu
@@ -221,7 +245,7 @@ const NavBarStudent = React.memo((props) => {
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
-            backgroundColor: "rgba(5, 21, 54, 255)",
+            backgroundColor: "rgba(5, 21, 54, 1)",
             borderRight: "2px solid #ffffff",
           },
         }}
@@ -229,7 +253,17 @@ const NavBarStudent = React.memo((props) => {
         {myDrawer}
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: "#ffffff", p: 3, minHeight: "100vh", height: "100%", overflow: "auto" }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          bgcolor: "#ffffff",
+          p: 3,
+          minHeight: "100vh",
+          height: "100%",
+          overflow: "auto",
+        }}
+      >
         <Toolbar />
         {content}
       </Box>

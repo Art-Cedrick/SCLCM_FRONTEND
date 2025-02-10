@@ -95,7 +95,7 @@ const Psychometrician_Table = () => {
           zIndex: 2,
           display: "flex",
         }}>
-          <Button variant="contained" color="primary" size="small" onClick={handleOpenForm}> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
+          {/* <Button variant="contained" color="primary" size="small" onClick={handleOpenForm}> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button> */}
         </div>
 
 
