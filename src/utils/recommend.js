@@ -221,11 +221,11 @@ const PSYCHOLOGICAL_ASSESSMENT = {
 // Edit this object to change the weight of each criteria this must be equal to 100
 const recommendationPercentageBasis = {
     grades: 25, 
-    track: 20, 
-    academicStatus: 15,
-    medicalRecord: 10, 
-    hobbies: 10,
-    psych_results: 20,
+    track: 10, 
+    academicStatus: 5,
+    medicalRecord: 5, 
+    hobbies: 5,
+    psych_results: 50,
 }
 
 
