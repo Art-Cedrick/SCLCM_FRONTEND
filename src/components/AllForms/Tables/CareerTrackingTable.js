@@ -103,17 +103,17 @@ const CareerTrackingTable = () => {
               onClick={() => handleEdit(row)}
               table={table}
             />,
-            <MRT_ActionMenuItem
-              icon={
-                <IconButton>
-                <Delete />
-                </IconButton>
-              }
-              key="delete"
-              label="Delete"
-              onClick={() => setConfirmDelete({open: true, row})}
-              table={table}
-            />,
+            // <MRT_ActionMenuItem
+            //   icon={
+            //     <IconButton>
+            //     <Delete />
+            //     </IconButton>
+            //   }
+            //   key="delete"
+            //   label="Delete"
+            //   onClick={() => setConfirmDelete({open: true, row})}
+            //   table={table}
+            // />,
           ]}
             />
           <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">

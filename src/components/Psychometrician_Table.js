@@ -40,7 +40,9 @@ import FirstYear from './AllForms/FirstYear';
 import FourthYear from './AllForms/FourthYear';
 import ThirdYear from './AllForms/ThirdYear';
 import getTitle from '../utils/getTitle';
-
+import MS_impactevaluationTable from './AllForms/Tables/MS_ImpactEvaluationTable';
+import MSCounselingServiceTable from './AllForms/Tables/MSCounselingServiceTable';
+import SCLCMGuidanceClassTable from './AllForms/Tables/SCLCMGuidanceClassTable';
 const Psychometrician_Table = () => {
 
   const { activeForm, setActiveForm, pathname } = useContext(ActiveFormContext)
@@ -120,6 +122,9 @@ const Psychometrician_Table = () => {
         {activeForm === 'routine_interview' && <RoutineInterviewTable />}
         {activeForm === 'careertracking' && <CareerTrackingTable />}
         {activeForm === 'conferenceform' && <ConferenceFormTable />}
+        {activeForm === 'MS_ImpactEvaluationTable' && <MS_impactevaluationTable />}
+        {activeForm === 'MSCounselingServiceTable' && <MSCounselingServiceTable />}
+        {activeForm === 'SCLCMGCETable' && <SCLCMGuidanceClassTable />}
 
 
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -146,6 +151,11 @@ const Psychometrician_Table = () => {
             {activeForm === 'routine_interview' && <RoutineInterviewTable />}
             {activeForm === 'careertracking' && <CareerTrackingTable />}
             {activeForm === 'conferenceform' && <ConferenceFormTable />}
+            {activeForm === 'MS_ImpactEvaluationTable' && <MS_impactevaluationTable />}
+            {activeForm === 'MSCounselingServiceTable' && <MSCounselingServiceTable />}
+            {activeForm === 'SCLCMGCETable' && <SCLCMGuidanceClassTable />}
+
+
           </DialogContent>
         </Dialog>
       </div>

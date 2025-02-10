@@ -544,7 +544,7 @@ const PageFive = ({ control }) => (
           />
         </Box>
       </Box>
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           alignItems: "center",
@@ -555,7 +555,7 @@ const PageFive = ({ control }) => (
         <Button variant="contained" type="submit" color="primary">
           Submit
         </Button>
-      </Box>
+      </Box> */}
     </Stack>
   </Box>
 );
