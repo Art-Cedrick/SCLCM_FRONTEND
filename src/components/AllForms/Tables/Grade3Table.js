@@ -5,6 +5,7 @@ import { Edit, Delete } from "@mui/icons-material";
 import { IconButton, Dialog, DialogContent, DialogTitle, Button } from "@mui/material";
 import { useQuery, useQueryClient } from "react-query";
 import Grade3 from "../Grade3";
+import { View } from "lucide-react";
 
 const fetchData = async () => {
   const response = await AxiosInstance.get(`/grade_three/`);
@@ -78,25 +79,25 @@ const Grade3Table = () => {
           <MRT_ActionMenuItem
             icon={
               <IconButton>
-                <Edit />
+                <View />
               </IconButton>
             }
             key="edit"
-            label="Edit"
+            label="View"
             onClick={() => handleEdit(row)}
             table={table}
           />,
-          <MRT_ActionMenuItem
-            icon={
-              <IconButton>
-                <Delete />
-              </IconButton>
-            }
-            key="delete"
-            label="Delete"
-            onClick={() => setConfirmDelete({ open: true, row })}
-            table={table}
-          />,
+          // <MRT_ActionMenuItem
+          //   icon={
+          //     <IconButton>
+          //       <Delete />
+          //     </IconButton>
+          //   }
+          //   key="delete"
+          //   label="Delete"
+          //   onClick={() => setConfirmDelete({ open: true, row })}
+          //   table={table}
+          // />,
         ]}
       />
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">

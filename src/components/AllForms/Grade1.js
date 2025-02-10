@@ -516,7 +516,7 @@ const Grade1 = ({ initialData, onClose }) => {
           </Stack>
 
           {/* Submit Button */}
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               justifyContent: "flex-end",
@@ -531,7 +531,7 @@ const Grade1 = ({ initialData, onClose }) => {
             >
               Submit
             </Button>
-          </Box>
+          </Box> */}
         </Stack>
       </Paper>
     </form>
