@@ -596,7 +596,7 @@ const RoutineInterview = ({ initialData, onClose }) => {
     (data) =>
       initialData
         ? AxiosInstance.put(`/routine_interview/${initialData.id}/`, data)
-        : AxiosInstance.post(/routine_interview/, data),
+        : AxiosInstance.post('/routine_interview/', data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("routineData");
