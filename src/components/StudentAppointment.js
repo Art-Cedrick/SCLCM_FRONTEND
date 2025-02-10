@@ -11,6 +11,8 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { AccessTime, CalendarToday, Circle, Person } from "@mui/icons-material";
+import { School, SchoolIcon } from "lucide-react";
 
 function StudentAppointment() {
   const [schedules, setSchedules] = useState([]);
@@ -84,20 +86,112 @@ function StudentAppointment() {
           <Grid container spacing={3} justifyContent="center">
             {schedules.map((schedule) => (
               <Grid item xs={12} sm={6} md={4} key={schedule.id}>
-                <Card elevation={3} sx={{ backgroundColor: "#E7FBE6", marginBottom: 2 }}>
-                  <CardContent>
-                    <Typography variant="h6" sx={{ color: "#003366" }}>
+                <Card 
+                  elevation={3} 
+                  sx={{ 
+                    backgroundColor: "#E7FBE6",
+                    marginBottom: 2,
+                    transition: "transform 0.2s",
+                    "&:hover": {
+                      transform: "scale(1.02)",
+                    },
+                    borderRadius: "12px",
+                    border: "1px solid #c8e6c9",
+                    position: "relative",
+                    overflow: "hidden"
+                  }}
+                >
+                  <CardContent sx={{ padding: "24px" }}>
+                    {/* Purpose with enhanced typography */}
+                    <Typography 
+                      variant="h5"
+                      sx={{ 
+                        color: "#003366",
+                        fontWeight: "700",
+                        marginBottom: "20px",
+                        borderBottom: "2px solid #003366",
+                        paddingBottom: "12px",
+                        letterSpacing: "0.5px",
+                        lineHeight: 1.3
+                      }}
+                    >
                       {schedule.purpose}
                     </Typography>
-                    <Stack spacing={1}>
-                      <Typography>Grade: {schedule.grade}</Typography>
-                      <Typography>Section: {schedule.section}</Typography>
-                      <Typography>Date: {schedule.date}</Typography>
-                      <Typography>Time: {schedule.time}</Typography>
-                      <Typography>Counselor: {schedule.counselor_user ? schedule.counselor_user : "N/A"}</Typography>
-                      <Typography variant="body2">
-                        Status: {schedule.status || "Scheduled"}
-                      </Typography>
+
+                    <Stack spacing={2.5}>
+                      {/* Grade & Section with improved hierarchy */}
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <School sx={{ color: "#003366", fontSize: "1.5rem" }} />
+                        <Typography variant="subtitle1" sx={{ 
+                          fontWeight: 500,
+                          letterSpacing: "0.3px",
+                          fontSize: "1.1rem"
+                        }}>
+                          Grade {schedule.grade} - Section {schedule.section}
+                        </Typography>
+                      </Box>
+                      
+                      {/* Date with better visual hierarchy */}
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <CalendarToday sx={{ color: "#003366", fontSize: "1.5rem" }} />
+                        <Typography variant="subtitle1" sx={{ 
+                          fontWeight: 500,
+                          letterSpacing: "0.3px"
+                        }}>
+                          {schedule.date}
+                        </Typography>
+                      </Box>
+
+                      {/* Time with enhanced readability */}
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <AccessTime sx={{ color: "#003366", fontSize: "1.5rem" }} />
+                        <Typography variant="subtitle1" sx={{ 
+                          fontWeight: 500,
+                          letterSpacing: "0.3px"
+                        }}>
+                          {new Date(schedule.time_in_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {new Date(schedule.time_out_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </Typography>
+                      </Box>
+
+                      {/* Counselor with improved spacing */}
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <Person sx={{ color: "#003366", fontSize: "1.5rem" }} />
+                        <Typography variant="subtitle1" sx={{ 
+                          fontWeight: 500,
+                          letterSpacing: "0.3px"
+                        }}>
+                          {schedule.counselor_user ? schedule.counselor_user : "N/A"}
+                        </Typography>
+                      </Box>
+
+                      {/* Status with enhanced visual appeal */}
+                      <Box 
+                        sx={{ 
+                          display: "flex", 
+                          alignItems: "center", 
+                          gap: 1.5,
+                          backgroundColor: new Date(schedule.time_out_date) < new Date() ? "#4caf50" : "#2196f3",
+                          color: "white",
+                          padding: "10px 20px",
+                          borderRadius: "25px",
+                          width: "fit-content",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          marginTop: "8px"
+                        }}
+                      >
+                        <Circle sx={{ fontSize: "10px" }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            fontWeight: 600,
+                            letterSpacing: "0.5px",
+                            textTransform: "uppercase",
+                            fontSize: "0.875rem"
+                          }}
+                        >
+                          {new Date(schedule.time_out_date) < new Date() ? "Completed" : (schedule.status || "Scheduled")}
+                        </Typography>
+                      </Box>
                     </Stack>
                   </CardContent>
                 </Card>
