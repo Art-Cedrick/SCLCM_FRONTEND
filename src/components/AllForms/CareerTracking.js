@@ -507,7 +507,7 @@ const PageThree = ({ control }) => (
           />
         )}
       />
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           alignItems: "center",
@@ -518,7 +518,7 @@ const PageThree = ({ control }) => (
         <Button variant="contained" color="primary" type="submit">
           Submit
         </Button>
-      </Box>
+      </Box> */}
     </Stack>
   </Box>
 );

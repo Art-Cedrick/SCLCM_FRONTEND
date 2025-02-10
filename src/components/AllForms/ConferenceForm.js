@@ -346,7 +346,7 @@ const ConferenceForm = ({ initialData, onClose }) => {
               />)} />
         </Box>
 
-        <Box
+        {/* <Box
           sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
         >
           <Button
@@ -357,7 +357,7 @@ const ConferenceForm = ({ initialData, onClose }) => {
           >
             Submit
           </Button>
-        </Box>
+        </Box> */}
       </Paper>
     </form>
   );

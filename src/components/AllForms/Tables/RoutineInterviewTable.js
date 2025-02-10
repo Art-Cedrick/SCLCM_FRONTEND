@@ -15,7 +15,7 @@ import RoutineInterview from "../RoutineInterview";
 import { FilePlus2 } from "lucide-react";
 
 const fetchData = async () => {
-  const response = await AxiosInstance.get(`/routine_interview/`);
+  const response = await AxiosInstance.get(`routine_interview`);
   console.log(response.data);
   return response.data;
 };
@@ -100,7 +100,7 @@ const RoutineInterviewTable = () => {
         zIndex: 2,
         display: "flex",
       }}>
-        <Button variant="contained" color="primary" size="small" onClick={handleOpenForm} type="submit"> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button>
+        {/* <Button variant="contained" color="primary" size="small" onClick={handleOpenForm} type="submit"> <FilePlus2 size={14} style={{ marginRight: '6px' }} /> Add NEW</Button> */}
       </div>
 
         <MaterialReactTable 
@@ -120,17 +120,17 @@ const RoutineInterviewTable = () => {
               onClick={() => handleEdit(row)}
               table={table}
             />,
-            <MRT_ActionMenuItem
-              icon={
-                <IconButton>
-                <Delete />
-                </IconButton>
-              }
-              key="delete"
-              label="Delete"
-              onClick={() => setConfirmDelete({open: true, row})}
-              table={table}
-            />,
+            // <MRT_ActionMenuItem
+            //   icon={
+            //     <IconButton>
+            //     <Delete />
+            //     </IconButton>
+            //   }
+            //   key="delete"
+            //   label="Delete"
+            //   onClick={() => setConfirmDelete({open: true, row})}
+            //   table={table}
+            // />,
           ]}
             />
           <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">

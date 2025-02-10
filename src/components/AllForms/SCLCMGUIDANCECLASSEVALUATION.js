@@ -447,7 +447,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                 render={({ field }) => (
                   <SingleSelect
                     {...field}
-                    label="Question1"
+                    label="Select Answer Here"
                     options={[
                       "None was new to me",
                       "Some were new to me",
@@ -468,7 +468,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                 render={({ field }) => (
                   <SingleSelect
                     {...field}
-                    label="Question2"
+                    label="Select Answer Here"
                     options={[
                       "Not at all relevant",
                       "Somewhat relevant",
@@ -489,7 +489,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                 render={({ field }) => (
                   <SingleSelect
                     {...field}
-                    label="Question3"
+                    label="Select Answer Here"
                     options={[
                       "Not at all easy",
                       "Some were easy",
@@ -510,7 +510,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                 render={({ field }) => (
                   <SingleSelect
                     {...field}
-                    label="Question4"
+                    label="Select Answer Here"
                     options={[
                       "Not at all effective",
                       "Somewhat effective",
@@ -532,7 +532,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                 render={({ field }) => (
                   <SingleSelect
                     {...field}
-                    label="Question5"
+                    label="Select Answer Here"
                     options={[
                       "Not at all confident",
                       "Somewhat confident",
@@ -553,7 +553,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                 render={({ field }) => (
                   <SingleSelect
                     {...field}
-                    label="Question6"
+                    label="Select Answer Here"
                     options={["Poor", "Satisfactory", "Good", "Excellent"]}
                     sx={{ width: "50%"  }} // Set width to 250px
                   />
@@ -569,7 +569,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label="Question7"
+                    label="Enter your answer here"
                     placeholder=""
                     multiline
                     rows={2}
@@ -588,7 +588,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label="Question8"
+                    label="Enter your answer here"
                     placeholder=""
                     multiline
                     rows={2}
@@ -606,7 +606,7 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label="Question9"
+                    label="Enter your answer here"
                     placeholder=""
                     multiline
                     rows={2}

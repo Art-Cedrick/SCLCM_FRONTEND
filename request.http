@@ -1,4 +1,4 @@
 
-GET  https://sclcm-backend.onrender.com/api/record/
+DELETE  https://sclcm-backend.onrender.com/api/storage/files/
 Authorization: Token e32ebcd1c21639cdfdfd73bf76ec39a6c86f64ad
 ###
