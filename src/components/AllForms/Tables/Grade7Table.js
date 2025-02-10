@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useQuery, useQueryClient } from "react-query";
 import Grade7 from "../Grade7";
+import { View } from "lucide-react";
 
 const fetchData = async () => {
   const response = await AxiosInstance.get(`/grade_seven/`);
@@ -84,25 +85,25 @@ const Example = () => {
           <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
             icon={
               <IconButton>
-                <Edit />
+                <View />
               </IconButton>
             }
             key="edit"
-            label="Edit"
+            label="View"
             onClick={() => handleEdit(row)}
             table={table}
           />,
-          <MRT_ActionMenuItem
-            icon={
-              <IconButton>
-                <Delete />
-              </IconButton>
-            }
-            key="delete"
-            label="Delete"
-            onClick={() => setConfirmDelete({ open: true, row })}
-            table={table}
-          />,
+          // <MRT_ActionMenuItem
+          //   icon={
+          //     <IconButton>
+          //       <Delete />
+          //     </IconButton>
+          //   }
+          //   key="delete"
+          //   label="Delete"
+          //   onClick={() => setConfirmDelete({ open: true, row })}
+          //   table={table}
+          // />,
         ]}
       />
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">

@@ -427,14 +427,14 @@ const Kinder = ({ initialData, onClose }) => {
                   marginTop: 2,
                 }}
               >
-                <Button
+                {/* <Button
                   variant="contained"
                   color="primary"
                   type="submit"
                   sx={{ marginTop: "10px" }}
                 >
                   Submit
-                </Button>
+                </Button> */}
               </Box>
             </Stack>
           </Paper>

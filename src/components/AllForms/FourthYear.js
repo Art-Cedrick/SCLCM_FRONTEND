@@ -486,7 +486,7 @@ const FourthYear = ({initialData, onClose}) => {
         </Stack>
 
         {/* Submit Button */}
-        <Box
+        {/* <Box
           sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
         >
           <Button
@@ -497,7 +497,7 @@ const FourthYear = ({initialData, onClose}) => {
           >
             Submit
           </Button>
-        </Box>
+        </Box> */}
       </Paper>
     </form>
   );
