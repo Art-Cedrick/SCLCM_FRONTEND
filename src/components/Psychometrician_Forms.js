@@ -17,11 +17,11 @@ import Grade8 from './AllForms/Grade8';
 import Grade9 from './AllForms/Grade9';
 import Kinder from './AllForms/Kinder';
 import SecondYear from './AllForms/SecondYear';
-import CareerTrackingTable from './AllForms/Tables/CareerTrackingTable';
-import ConferenceFormTable from './AllForms/Tables/ConferenceFormTable';
-import RoutineInterviewTable from './AllForms/Tables/RoutineInterviewTable';
 import ThirdYear from './AllForms/ThirdYear';
 import { Breadcrumbs, Link, Typography } from '@mui/material';
+import MS_ImpactEvaluation from './AllForms/MS_ ImpactEvaluation';
+import MSCounselingServiceEvaluation from './AllForms/MSCounselingServiceEvaluation';
+import SCLCMGUIDANCECLASSEVALUATION from './AllForms/SCLCMGUIDANCECLASSEVALUATION';
 
 const Psychometrician_Forms = () => {
 
@@ -31,6 +31,7 @@ const Psychometrician_Forms = () => {
     setActiveForm('grade_seven')
   }, [pathname])
 
+  console.log(activeForm)
 
   return (
     <div>
@@ -65,6 +66,9 @@ const Psychometrician_Forms = () => {
       {activeForm === 'grade_seven' && <Grade7 />}
       {activeForm === 'grade_two' && <Grade2 />}
       {activeForm === 'grade_eleven' && <Grade11 />}
+      {activeForm === 'MS_ImpactEvaluationTable' && <MS_ImpactEvaluation />}
+      {activeForm === 'MSCounselingServiceTable' && <MSCounselingServiceEvaluation />}
+      {activeForm === 'SCLCMGCETable' && <SCLCMGUIDANCECLASSEVALUATION />}
       {/* {activeForm === 'routine_interview' && <RoutineInterviewTable />}
       {activeForm === 'careertracking' && <CareerTrackingTable />}
       {activeForm === 'conferenceform' && <ConferenceFormTable />} */}

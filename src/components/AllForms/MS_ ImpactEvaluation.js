@@ -1661,7 +1661,7 @@ const MS_ImpactEvaluation = ({ initialData, onClose }) => {
             comfort: data.comfort,
           })
         : AxiosInstance.post(`/ms_impactevaluation/`, {
-            name: localStorage.getItem("username"),
+            name: localStorage.getItem("lastname") + ", " + localStorage.getItem("firstname") + ", " + localStorage.getItem("middlename"),
             section: localStorage.getItem("section"), 
             gradelevel: localStorage.getItem("year"),
             improved: data.improved,

@@ -17,9 +17,10 @@ export default (form) => {
         second_year: 'Second Year ',
         third_year: 'Third Year ',
         fourth_year: 'Fourth Year ',
-        // routine_interview: 'Routine Interview ',
-        // careertracking: 'Career Tracking ',
-        // conferenceform: 'Conference',
+        MS_ImpactEvaluationTable: 'MS Impact Evaluation ',
+        MSCounselingServiceTable: 'MS Counseling Service Evaluation ',
+        SCLCMGCETable: 'SCLCM Guidance Class Evaluation ',
+        
     };
 
     return titles[form] || 'New Form';

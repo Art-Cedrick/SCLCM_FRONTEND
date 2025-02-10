@@ -56,6 +56,10 @@ const DropdownMenu = ({ pathname }) => {
     "second_year",
     "third_year",
     "fourth_year",
+    "MS_ImpactEvaluation",
+    "MSCounselingServiceEvaluation",
+    "SCLCMGUIDANCECLASSEVALUATION"
+    
   ];
 
   const sortedOptions = Array.isArray(formOptions)
