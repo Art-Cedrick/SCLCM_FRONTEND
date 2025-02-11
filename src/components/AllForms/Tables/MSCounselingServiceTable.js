@@ -5,9 +5,10 @@ import { Edit, Delete } from '@mui/icons-material';
 import { IconButton, Dialog, DialogContent, DialogTitle, Button } from "@mui/material";
 import { useQuery, useQueryClient } from "react-query";
 import MSCounselingServiceEvaluation from '../MSCounselingServiceEvaluation';
+import { View } from "lucide-react";
 
 const fetchData = async () => {
-  const response = await AxiosInstance.get(`/ms_counselingserviceevaluation/`);
+  const response = await AxiosInstance.get(`/mscounselingservice/`);
   console.log(response.data)
   return response.data;
 };
@@ -24,6 +25,7 @@ const MSCounselingServiceTable = () => {
 
   const handleEdit = (row) => {
     setEdit(row.original);
+    console.log(row.original);
     setOpen(true);
   };
 
@@ -100,29 +102,29 @@ const MSCounselingServiceTable = () => {
             <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
               icon={
               <IconButton>
-              <Edit />
+              <View />
               </IconButton>
             }
               key="edit"
-              label="Edit"
+              label="View"
               onClick={() => handleEdit(row)}
               table={table}
             />,
-            <MRT_ActionMenuItem
-              icon={
-                <IconButton>
-                <Delete />
-                </IconButton>
-              }
-              key="delete"
-              label="Delete"
-              onClick={() => setConfirmDelete({open: true, row})}
-              table={table}
-            />,
+            // <MRT_ActionMenuItem
+            //   icon={
+            //     <IconButton>
+            //     <Delete />
+            //     </IconButton>
+            //   }
+            //   key="delete"
+            //   label="Delete"
+            //   onClick={() => setConfirmDelete({open: true, row})}
+            //   table={table}
+            // />,
           ]}
             />
           <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-              <DialogTitle>Edit Counseling Service Evaluation Form</DialogTitle>
+              <DialogTitle>View Counseling Service Evaluation Form</DialogTitle>
               <DialogContent>
                 <MSCounselingServiceEvaluation initialData={editData} onClose={handleClose}/>
               </DialogContent>

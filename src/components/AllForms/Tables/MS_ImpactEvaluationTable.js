@@ -5,6 +5,7 @@ import { Edit, Delete } from '@mui/icons-material';
 import { IconButton, Dialog, DialogContent, DialogTitle, Button } from "@mui/material";
 import { useQuery, useQueryClient } from "react-query";
 import MS_ImpactEvaluation from '../MS_ ImpactEvaluation';
+import { View } from "lucide-react";
 
 const fetchData = async () => {
   const response = await AxiosInstance.get(`/ms_impactevaluation/`);
@@ -125,7 +126,7 @@ const MS_impactevaluationTable = () => {
             <MRT_ActionMenuItem //or just use a normal MUI MenuItem component
               icon={
               <IconButton>
-              <Edit />
+              <View />
               </IconButton>
             }
               key="edit"
@@ -133,21 +134,21 @@ const MS_impactevaluationTable = () => {
               onClick={() => handleEdit(row)}
               table={table}
             />,
-            <MRT_ActionMenuItem
-              icon={
-                <IconButton>
-                <Delete />
-                </IconButton>
-              }
-              key="delete"
-              label="Delete"
-              onClick={() => setConfirmDelete({open: true, row})}
-              table={table}
-            />,
+            // <MRT_ActionMenuItem
+            //   icon={
+            //     <IconButton>
+            //     <Delete />
+            //     </IconButton>
+            //   }
+            //   key="delete"
+            //   label="Delete"
+            //   onClick={() => setConfirmDelete({open: true, row})}
+            //   table={table}
+            // />,
           ]}
             />
           <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-              <DialogTitle>Edit Impact Evaluation Form</DialogTitle>
+              <DialogTitle>View Impact Evaluation Form</DialogTitle>
               <DialogContent>
                 <MS_ImpactEvaluation initialData={editData} onClose={handleClose}/>
               </DialogContent>
