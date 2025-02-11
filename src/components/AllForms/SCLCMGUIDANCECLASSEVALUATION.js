@@ -283,6 +283,7 @@
 // export default SCLCMGUIDANCECLASSEVALUATION;
 
 import React from "react";
+import { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -297,7 +298,7 @@ import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect";
 import AxiosInstance from "./Axios";
 import { Toaster, toast } from "sonner";
-const SCLCMGUIDANCECLASSEVALUATION = () => {
+const SCLCMGUIDANCECLASSEVALUATION = ({ initialData, onClose }) => {
   const defaultValues = {
     name: "",
     grade: "",
@@ -313,9 +314,17 @@ const SCLCMGUIDANCECLASSEVALUATION = () => {
     question_9: "",
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({
-    defaultValues: defaultValues,
+  const { handleSubmit, reset, control, setValue } = useForm({
+    defaultValues: initialData || defaultValues,
   });
+
+  useEffect(() => {
+    if (initialData) {
+      Object.keys(initialData).forEach((key) => {
+        setValue(key, initialData[key]);
+      });
+    }
+  }, [initialData, setValue]);
 
   const submission = (data) => {
     const name = localStorage.getItem("lastname") + ", " + localStorage.getItem("firstname") + ", " + localStorage.getItem("middlename");
