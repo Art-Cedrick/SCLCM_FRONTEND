@@ -1,9 +1,7 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
-  Card,
-  CardContent,
   Stack,
   TextField,
   Button,
@@ -11,17 +9,15 @@ import {
   Select,
   InputLabel,
   MenuItem,
-  FormControl
+  FormControl,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import AxiosInstance from "./Axios";
 import { useMutation, useQueryClient } from "react-query";
 import { useStudentInfoStore } from "../../store/useStudentInfoStore";
-import { set } from "date-fns";
 import { Toaster, toast } from "sonner";
 
-const IndividualRecordForm = ({initialData, onClose}) => {
-
+const IndividualRecordForm = ({ initialData, onClose }) => {
   const queryClient = useQueryClient();
   const { studentInfo, setStudentInfo } = useStudentInfoStore();
 
@@ -37,7 +33,7 @@ const IndividualRecordForm = ({initialData, onClose}) => {
     fatherOccupation: studentInfo.fatherOccupation || "",
     fatherContactNumber: studentInfo.fatherContactNumber || "",
     fatherEmailAddress: studentInfo.fatherEmailAddress || "",
-    motherName:   studentInfo.motherName || "",
+    motherName: studentInfo.motherName || "",
     motherOccupation: studentInfo.motherOccupation || "",
     motherContactNumber: studentInfo.motherContactNumber || "",
     motherEmailAddress: studentInfo.motherEmailAddress || "",
@@ -47,41 +43,43 @@ const IndividualRecordForm = ({initialData, onClose}) => {
     club: studentInfo.club || "",
   };
 
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: initialData || defaultValues,
+  });
 
-  const { control, handleSubmit, reset } = useForm({defaultValues: initialData || defaultValues});
-
+  // If initialData exists, use it to populate the form.
   useEffect(() => {
-    if (initialData) reset(initialData);
-
+    if (initialData) {
+      reset(initialData);
+    }
   }, [initialData, reset]);
 
-
+  // Fetch data only when there's no initialData.
   useEffect(() => {
+    if (!initialData) {
+      const fetchInfoData = async () => {
+        const response = await AxiosInstance.get(`/record/`, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        });
+        setStudentInfo(response.data);
+        return response.data;
+      };
 
-    const fetchInfoData = async () => {
-
-      const response = await AxiosInstance.get(`/record/`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        }
-      });
-      setStudentInfo(response.data);
-      console.log(response.data);
-      return response.data;
+      fetchInfoData();
     }
+  }, [initialData]);
 
-    fetchInfoData();
-    
-  }, []);
-
-useEffect(() => {
-  if (studentInfo) {
-    reset({
-      ...defaultValues, 
-      ...studentInfo,     
-    });
-  }
-}, [studentInfo, reset]);
+  // Update form values from studentInfo only if initialData is not provided.
+  useEffect(() => {
+    if (!initialData && studentInfo) {
+      reset({
+        ...defaultValues,
+        ...studentInfo,
+      });
+    }
+  }, [studentInfo, reset, initialData]);
 
   const mutation = useMutation(
     (data) => 

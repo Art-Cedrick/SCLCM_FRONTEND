@@ -19,7 +19,7 @@ import { FilePlus2 } from "lucide-react";
 
 const fetchData = async () => {
   const response = await AxiosInstance.get(`/individual_record_form/`);
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -40,6 +40,7 @@ const IndividualRecordFormTable = () => {
   });
 
   const handleEdit = (row) => {
+    console.log(row.original)
     setEdit(row.original);
     setOpen(true);
   };
