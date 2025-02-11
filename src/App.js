@@ -18,7 +18,7 @@ import Psychometrician_Forms from "./components/Psychometrician_Forms";
 import Psychometrician_Table from "./components/Psychometrician_Table";
 
 function App() {
-  const myWidth = 220;
+  const myWidth = 250;
   return (
     <div className="App">
       <Routes>

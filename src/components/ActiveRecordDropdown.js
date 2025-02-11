@@ -1,75 +1,40 @@
+import React, { useContext, useState } from "react";
 import {
   Box,
+  Collapse,
+  List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Menu,
-  MenuItem,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ActiveFormContext } from "../context/SelectedFormProvider";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import { useNavigate } from "react-router-dom";
+import { ActiveFormContext, formOptions } from "../context/SelectedFormProvider";
 
 const ActiveRecordDropdown = ({ pathname }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { setActiveForm } = useContext(ActiveFormContext);
 
-  const { setActiveForm, filteredFormOptions } = useContext(ActiveFormContext);
-  console.log("Filtered Form Options:", filteredFormOptions);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    navigate("/psychometrician/psychometrician_records");
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleToggle = () => {
+    setOpen((prev) => !prev);
+    // Optionally, you can navigate to the records page immediately on toggle:
+    // navigate("/psychometrician/psychometrician_records");
   };
 
   const handleMenuItemClick = (form) => {
     setActiveForm(form);
-    setAnchorEl(null);
+    setOpen(false); // Close the dropdown after selection
     navigate("/psychometrician/psychometrician_records");
   };
-
-  // Define your custom order
-  const customOrder = [
-    "kinder",
-    "grade_one",
-    "grade_two",
-    "grade_three",
-    "grade_four",
-    "grade_five",
-    "grade_six",
-    "grade_seven",
-    "grade_eight",
-    "grade_nine",
-    "grade_ten",
-    "grade_eleven",
-    "grade_twelve",
-    "first_year",
-    "second_year",
-    "third_year",
-    "fourth_year", // Include if you have a fourth year option
-    "MS_ImpactEvaluationTable",
-    "MSCounselingServiceTable",
-    "SCLCMGCETable",
-  ];
-
-  // Sort the filtered options using the custom order array
-  const sortedOptions = Array.isArray(filteredFormOptions)
-    ? [...filteredFormOptions].sort(
-        (a, b) => customOrder.indexOf(a.value) - customOrder.indexOf(b.value)
-      )
-    : [];
 
   return (
     <>
       <ListItemButton
-        selected={"/psychometrician/psychometrician_records" === pathname}
-        onClick={handleClick}
+        onClick={handleToggle}
+        selected={pathname === "/psychometrician/psychometrician_records"}
         sx={{
           width: "100%",
           "&.Mui-selected": {
@@ -81,9 +46,9 @@ const ActiveRecordDropdown = ({ pathname }) => {
               color: "#000",
             },
           },
-          ...("Records" === "Dashboard" && { marginTop: "20px" }),
         }}
       >
+        {/* Side indicator */}
         <Box
           sx={{
             position: "absolute",
@@ -92,7 +57,10 @@ const ActiveRecordDropdown = ({ pathname }) => {
             width: 8,
             height: "100%",
             backgroundColor: "#1E90FF",
-            visibility: "Forms" === pathname ? "visible" : "hidden",
+            visibility:
+              pathname === "/psychometrician/psychometrician_records"
+                ? "visible"
+                : "hidden",
             borderTopRightRadius: "5px",
             borderBottomRightRadius: "5px",
           }}
@@ -110,41 +78,36 @@ const ActiveRecordDropdown = ({ pathname }) => {
             },
           }}
         />
+        {open ? (
+          <ExpandLess sx={{ color: "rgba(255, 255, 255, 0.7)" }} />
+        ) : (
+          <ExpandMore sx={{ color: "rgba(255, 255, 255, 0.7)" }} />
+        )}
       </ListItemButton>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        slotProps={{
-          sx: {
-            display: "block",
-            backgroundColor: "#ffffff",
-            color: "#000000",
-            width: anchorEl ? anchorEl.offsetWidth : "auto",
-          },
-        }}
-        sx={{
-          ml: 23,
-        }}
-      >
-        {sortedOptions.map((option) => (
-          <MenuItem
-            key={option.value}
-            onClick={() => handleMenuItemClick(option.value)}
-            value={option.value}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
-      </Menu>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {formOptions.map((option) => (
+            <ListItemButton
+              key={option.value}
+              onClick={() => handleMenuItemClick(option.value)}
+              sx={{
+                pl: 4, // Indentation for sub-items
+                "&.Mui-selected": {
+                  backgroundColor: "#ffffff",
+                  borderTopLeftRadius: "20px",
+                  borderBottomLeftRadius: "20px",
+                  color: "#000",
+                  "& .MuiListItemIcon-root": {
+                    color: "#000",
+                  },
+                },
+              }}
+            >
+              <span style={{ fontSize: "12px" }}>{option.label}</span>
+            </ListItemButton>
+          ))}
+        </List>
+      </Collapse>
     </>
   );
 };

@@ -547,6 +547,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import SingleSelect from "./Forms/SingleSelect";
 import AxiosInstance from "./Axios";
+import { Toaster, toast } from "sonner";
 
 const MSCounselingServiceEvaluation = () => {
   const defaultValues = {
@@ -587,15 +588,18 @@ const MSCounselingServiceEvaluation = () => {
     })
       .then((response) => {
         console.log("Data submitted successfully:", response.data);
+        toast.success("Data submitted successfully");
         reset(); // Reset form after successful submission
       })
       .catch((error) => {
         console.error("Error submitting data:", error);
+        toast.error("Error submitting data");
       });
   };
 
   return (
     <form onSubmit={handleSubmit(submission)}>
+      <Toaster richColors position="top-right" />
       <Card elevation={3} sx={{ maxWidth: "900px", margin: "20px auto" }}>
         <CardContent>
           <Typography variant="h5" gutterBottom align="center">

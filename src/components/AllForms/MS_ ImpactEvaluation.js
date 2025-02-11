@@ -936,7 +936,7 @@ import SingleSelect from "./Forms/SingleSelect";
 import { useForm, Controller } from "react-hook-form";
 import AxiosInstance from "./Axios";
 import { useMutation, useQueryClient } from "react-query";
-
+import { Toaster, toast } from "sonner";
 const PageOne = ({ control }) => (
   <Box>
     <Stack spacing={6}>
@@ -1701,9 +1701,11 @@ const MS_ImpactEvaluation = ({ initialData, onClose }) => {
         reset();
         onClose();
         console.log("Data submitted and table refreshed");
+        toast.success("Data submitted successfully");
       },
       onError: (error) => {
-        console.error("Error submitting data", error);
+        console.error("Error submitting data", error)
+        toast.error("Error submitting data");
       },
     }
   );
@@ -1725,6 +1727,7 @@ const MS_ImpactEvaluation = ({ initialData, onClose }) => {
       elevation={3}
       sx={{ padding: 2, maxWidth: "900px", margin: "20px auto" }}
     >
+      <Toaster richColors position="top-right" />
       <form onSubmit={handleSubmit(submission)}>
         <Typography variant="h5" gutterBottom align="center">
           MS IMPACT EVALUATION
