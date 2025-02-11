@@ -8,10 +8,7 @@ import {
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  ActiveFormContext,
-  formOptions,
-} from "../context/SelectedFormProvider";
+import { ActiveFormContext } from "../context/SelectedFormProvider";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 
 const ActiveRecordDropdown = ({ pathname }) => {
@@ -19,7 +16,8 @@ const ActiveRecordDropdown = ({ pathname }) => {
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
-  const { setActiveForm } = useContext(ActiveFormContext);
+  const { setActiveForm, filteredFormOptions } = useContext(ActiveFormContext);
+  console.log("Filtered Form Options:", filteredFormOptions);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -33,9 +31,39 @@ const ActiveRecordDropdown = ({ pathname }) => {
   const handleMenuItemClick = (form) => {
     setActiveForm(form);
     setAnchorEl(null);
-
     navigate("/psychometrician/psychometrician_records");
   };
+
+  // Define your custom order
+  const customOrder = [
+    "kinder",
+    "grade_one",
+    "grade_two",
+    "grade_three",
+    "grade_four",
+    "grade_five",
+    "grade_six",
+    "grade_seven",
+    "grade_eight",
+    "grade_nine",
+    "grade_ten",
+    "grade_eleven",
+    "grade_twelve",
+    "first_year",
+    "second_year",
+    "third_year",
+    "fourth_year", // Include if you have a fourth year option
+    "MS_ImpactEvaluationTable",
+    "MSCounselingServiceTable",
+    "SCLCMGCETable",
+  ];
+
+  // Sort the filtered options using the custom order array
+  const sortedOptions = Array.isArray(filteredFormOptions)
+    ? [...filteredFormOptions].sort(
+        (a, b) => customOrder.indexOf(a.value) - customOrder.indexOf(b.value)
+      )
+    : [];
 
   return (
     <>
@@ -107,17 +135,15 @@ const ActiveRecordDropdown = ({ pathname }) => {
           ml: 23,
         }}
       >
-        {formOptions.map((option) => {
-          return (
-            <MenuItem
-              key={option.value}
-              onClick={() => handleMenuItemClick(option.value)}
-              value={option.value}
-            >
-              {option.label}
-            </MenuItem>
-          );
-        })}
+        {sortedOptions.map((option) => (
+          <MenuItem
+            key={option.value}
+            onClick={() => handleMenuItemClick(option.value)}
+            value={option.value}
+          >
+            {option.label}
+          </MenuItem>
+        ))}
       </Menu>
     </>
   );

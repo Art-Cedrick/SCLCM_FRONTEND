@@ -66,9 +66,9 @@ const Psychometrician_Forms = () => {
       {activeForm === 'grade_seven' && <Grade7 />}
       {activeForm === 'grade_two' && <Grade2 />}
       {activeForm === 'grade_eleven' && <Grade11 />}
-      {activeForm === 'MS_ImpactEvaluationTable' && <MS_ImpactEvaluation />}
+      {/* {activeForm === 'MS_ImpactEvaluationTable' && <MS_ImpactEvaluation />}
       {activeForm === 'MSCounselingServiceTable' && <MSCounselingServiceEvaluation />}
-      {activeForm === 'SCLCMGCETable' && <SCLCMGUIDANCECLASSEVALUATION />}
+      {activeForm === 'SCLCMGCETable' && <SCLCMGUIDANCECLASSEVALUATION />} */}
       {/* {activeForm === 'routine_interview' && <RoutineInterviewTable />}
       {activeForm === 'careertracking' && <CareerTrackingTable />}
       {activeForm === 'conferenceform' && <ConferenceFormTable />} */}
