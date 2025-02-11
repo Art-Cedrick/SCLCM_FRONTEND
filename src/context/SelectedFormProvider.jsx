@@ -42,9 +42,13 @@ export const ActiveFormProvider = ({ children }) => {
   const pathname = location.pathname;
   const [activeForm, setActiveForm] = useState('grade_seven');
   const [councilorActiveForm, setCouncilorActiveForm] = useState('individual_record_form');
+  console.log(pathname);
+  const filteredFormOptions = pathname === "psychometrician/psychometrician_forms"
+  ? formOptions.filter(option => !["MS_ImpactEvaluationTable", "MSCounselingServiceTable", "SCLCMGCETable"].includes(option.value))
+  : formOptions;
 
   return (
-    <ActiveFormContext.Provider value={{ activeForm, setActiveForm, pathname, councilorActiveForm, setCouncilorActiveForm }}>
+    <ActiveFormContext.Provider value={{ activeForm, setActiveForm, pathname, councilorActiveForm, setCouncilorActiveForm, filteredFormOptions }}>
       {children}
     </ActiveFormContext.Provider>
   );

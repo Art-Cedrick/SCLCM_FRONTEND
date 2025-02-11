@@ -480,7 +480,7 @@ useEffect(() => {
               </Stack>
 
             {/* Submit Button at the end of Living With section, aligned to flex-end */}
-            {/* <Stack
+            <Stack
               direction="row"
               justifyContent="flex-end"
               sx={{ marginTop: 10 }}
@@ -491,7 +491,7 @@ useEffect(() => {
                 type="submit">
                 Submit
               </Button>
-            </Stack> */}
+            </Stack>
           </Stack>
         </Paper>
     

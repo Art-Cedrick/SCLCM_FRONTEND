@@ -135,12 +135,12 @@ const DropdownMenu = ({ pathname }) => {
           },
         }}
         sx={{
-          ml: 23,
+          ml: 15,
         }}
       >
         
-       {sortedOptions
-          .sort((a, b) => a.label.localeCompare(b.label)) // Sort by label alphabetically
+        {sortedOptions
+          .filter((option) => !["MS_ImpactEvaluationTable", "MSCounselingServiceTable", "SCLCMGCETable"].includes(option.value))
           .map((option) => (
             <MenuItem
               key={option.value}
