@@ -80,19 +80,8 @@ const MSCounselingServiceTable = () => {
 
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        width: "100%",
-        height: "60vh",
-        overflow: "auto",
-        marginTop: "1in",
-        marginBottom: "16px",
-      }}
-    >
-     <div style={{ maxWidth: "1000px", width: "100%", height: "100%" }}>
-      <MaterialReactTable 
+    <>
+         <MaterialReactTable 
           columns={columns} 
           data={myData} 
           
@@ -123,28 +112,27 @@ const MSCounselingServiceTable = () => {
           ]}
             />
           <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-              <DialogTitle>Edit Guidance Class Evaluation Form</DialogTitle>
-              <DialogContent>
-                <SCLCMGUIDANCECLASSEVALUATION initialData={editData} onClose={handleClose}/>
-              </DialogContent>
-            </Dialog>
+            <DialogTitle>Edit Guidance Class Evaluation Form</DialogTitle>
+            <DialogContent>
+              <SCLCMGUIDANCECLASSEVALUATION initialData={editData} onClose={handleClose}/>
+            </DialogContent>
+          </Dialog>
 
-            <Dialog open={confirmDelete.open} onClose={() => setConfirmDelete({open: false, row: null})}>
-              <DialogTitle>Confirm Delete</DialogTitle>
-              <DialogContent>
-                <p>Are you sure you want to delete this record?</p>
-                <div style={{display: "flex", justifyContent: "flex-end", gap: "10px"}}>
-                  <Button variant="outlined" onClick={() => setConfirmDelete({open: false, row: null})}>
-                    Cancel
-                  </Button>
-                  <Button variant="contained" color="error" onClick={() => handleDelete(confirmDelete.row)}>
-                    Delete
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-      </div>
-    </div>
+          <Dialog open={confirmDelete.open} onClose={() => setConfirmDelete({open: false, row: null})}>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogContent>
+              <p>Are you sure you want to delete this record?</p>
+              <div style={{display: "flex", justifyContent: "flex-end", gap: "10px"}}>
+                <Button variant="outlined" onClick={() => setConfirmDelete({open: false, row: null})}>
+                  Cancel
+                </Button>
+                <Button variant="contained" color="error" onClick={() => handleDelete(confirmDelete.row)}>
+                  Delete
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+    </>
   );
 };
 
