@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -23,7 +24,7 @@ import DropdownMenu from "./FormDropdown";
 import ActiveRecordDropdown from "./ActiveRecordDropdown";
 
 const NavBarPsych = (props) => {
-  const { drawerWidth = 260, content } = props;
+  const { drawerWidth = 270, content } = props;
   const location = useLocation();
   const path = location.pathname;
 
@@ -97,6 +98,7 @@ const NavBarPsych = (props) => {
               Student Center for Life and Career Management
           </Typography>
       <List>
+      <List>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton
@@ -105,16 +107,16 @@ const NavBarPsych = (props) => {
               selected={item.link === path}
               onClick={() => handleMenuItemClick(item.link)}
               sx={{
-                padding: "10px", // Add padding to selected item
+                padding: "10px",
                 "&.Mui-selected": {
-                  backgroundColor: "#ffffff", // White background for selected item
-                  borderTopLeftRadius: "20px", // Round only the left side
-                  borderBottomLeftRadius: "20px", // Round only the left side
-                  borderTopRighttRadius: "20px", // Round only the left side
-                  borderBottomRightRadius: "20px", // Round only the left side
-                  color: "#000", // Change text color to black when selected
+                  backgroundColor: "#ffffff",
+                  borderTopLeftRadius: "20px",
+                  borderBottomLeftRadius: "20px",
+                  // borderTopRightRadius: "20px", // Corrected typo: "borderTopRighttRadius" -> "borderTopRightRadius"
+                  // borderBottomRightRadius: "20px",
+                  color: "#000",
                   "& .MuiListItemIcon-root": {
-                    color: "#000", // Change icon color to black for selected item
+                    color: "#000",
                   },
                 },
                 ...(item.text === "Dashboard" && { marginTop: "20px" }),
@@ -136,16 +138,25 @@ const NavBarPsych = (props) => {
               <ListItemIcon sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} primaryTypographyProps={{ sx: { fontWeight: "bold", fontFamily: "'Rozha One'", fontSize: ".9rem" } }} />
+              <ListItemText
+                primary={item.text}
+                primaryTypographyProps={{
+                  sx: {
+                    fontWeight: "bold",
+                    fontFamily: "'Rozha One'",
+                    fontSize: ".9rem",
+                  },
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
-         <ListItem disablePadding>
-          <DropdownMenu pathname={path} />
-        </ListItem>
-         <ListItem disablePadding>
-          <ActiveRecordDropdown pathname={path} />
-        </ListItem>
+
+        {/* Render your dropdowns after the main menu items */}
+        <DropdownMenu pathname={path} />
+        <ActiveRecordDropdown pathname={path} />
+      </List>
+
       </List>
     </Box>
   );

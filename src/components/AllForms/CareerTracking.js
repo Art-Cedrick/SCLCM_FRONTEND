@@ -507,7 +507,8 @@ const PageThree = ({ control }) => (
           />
         )}
       />
-      <Box
+      {localStorage.getItem("role") ==! "counselor" && (
+        <Box
         sx={{
           display: "flex",
           alignItems: "center",
@@ -519,6 +520,7 @@ const PageThree = ({ control }) => (
           Submit
         </Button>
       </Box>
+      )}
     </Stack>
   </Box>
 );
