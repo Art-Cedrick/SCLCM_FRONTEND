@@ -362,8 +362,8 @@ const PageThree = ({ control }) => (
               options={[
                 "failing marks",
                 "misbehavior",
-                "transition to school sife",
-                "learning sifficulties",
+                "transition to school life",
+                "learning difficulties",
                 "low motivation",
                 "teachers",
                 "laziness",
