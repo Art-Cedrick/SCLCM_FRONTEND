@@ -22,6 +22,7 @@ import {
   Button,
   ButtonGroup,
   Box,
+  useMediaQuery,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { toast, Toaster } from "sonner";
@@ -324,7 +325,9 @@ const Dashboard = () => {
   const barData = selectedChart !== null ? chartMap[selectedChart]?.data : null;
   const barHighest = getBarHighest(barData);
   const barLowest = getBarLowest(barData);
+  const isMobile = useMediaQuery("(max-width: 768px)"); 
 
+  console.log(isMobile);
   return (
     <div style={styles.container}>
       <Toaster richColors position="top-right" />
@@ -526,7 +529,10 @@ const Dashboard = () => {
                 <Box sx={{ flex: 3 }}>
                   <div style={styles.card}>
                     <h2>{chartMap[selectedChart].title}</h2>
-                    <Bar data={filterChartData(chartMap[selectedChart].data)} />
+                    <Bar 
+                      height={isMobile ? 300 : 110}
+                      data={filterChartData(chartMap[selectedChart].data)} 
+                    />
                   </div>
                 </Box>
                 {/* Summary Cards Column for Bar Chart */}
@@ -698,7 +704,7 @@ const Dashboard = () => {
 const styles = {
   container: {
     padding: "5px",
-    maxWidth: "1200px",
+    maxWidth: "1400px",
     margin: "auto",
     fontFamily: '"Arial", sans-serif',
   },
