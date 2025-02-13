@@ -445,13 +445,13 @@ const Dashboard = () => {
                 <span style={styles.summaryCardValue}>{highestCategory.count}</span>
               </div>
             </div>
-            <div style={styles.summaryCard}>
+            {/* <div style={styles.summaryCard}>
               <TrendingDown size={48} color="#1b77cc" />
               <div style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
                 <span style={styles.summaryCardTitle}>Lowest Category</span>
                 <span style={styles.summaryCardValue}>{lowestCategory.count}</span>
               </div>
-            </div>
+            </div> */}
             <div style={styles.summaryCard}>
               <UserIcon size={48} color="#1b77cc" />
               <div style={{ display: "flex", flexDirection: "column", alignItems: "start" }}>
