@@ -211,11 +211,11 @@ const ThirdYear = ({initialData, onClose}) => {
                 <TextField
                   {...field}
                   label="Course:"
-                  slotProps={{
-                    input: {
-                      readOnly: true,
-                    },
-                  }}
+                  // slotProps={{
+                  //   input: {
+                  //     readOnly: true,
+                  //   },
+                  // }}
                 />
               )}
             />

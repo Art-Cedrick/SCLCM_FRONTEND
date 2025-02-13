@@ -1699,7 +1699,7 @@ const MS_ImpactEvaluation = ({ initialData, onClose }) => {
         queryClient.refetchQueries("ms_impactevaluationData");
         console.log("Data refetched");
         reset();
-        onClose();
+        // onClose();
         console.log("Data submitted and table refreshed");
         toast.success("Data submitted successfully");
       },
