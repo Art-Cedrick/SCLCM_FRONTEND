@@ -21,7 +21,7 @@ const SecondYear = ({ initialData, onClose }) => {
     name: "",
     age: "",
     sex: "",
-    yearLevel: "",
+    gradeLevel: "",
     course: "",
     inc: "",
     intrapersonal: "",
@@ -75,7 +75,7 @@ const SecondYear = ({ initialData, onClose }) => {
         "name",
         `${selectedOption.firstname || ""} ${selectedOption.lastname || ""}`
       );
-      setValue("yearLevel", selectedOption.year.replace("Grade", "Grade ") || "");
+      setValue("gradeLevel", selectedOption.year.replace("Grade", "Grade ") || "");
       setValue("course", selectedOption.section || "");
     }
   };
@@ -191,7 +191,7 @@ const SecondYear = ({ initialData, onClose }) => {
           </Stack>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Controller
-              name="yearLevel"
+              name="gradeLevel"
               control={control}
               render={({ field }) => (
                 <TextField

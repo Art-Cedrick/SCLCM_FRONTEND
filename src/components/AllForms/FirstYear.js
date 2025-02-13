@@ -22,7 +22,7 @@ const FirstYear = ({initialData, onClose}) => {
     name: "",
     age: "",
     sex: "",
-    gradeLevel: "",
+    yearLevel: "",
     course: "",
     vi_gstm: "",
     vi_nt: "",
@@ -50,7 +50,7 @@ const FirstYear = ({initialData, onClose}) => {
     (data) => 
       initialData
       ? AxiosInstance.put(`/first_year/${initialData.id}/`, data)
-      : AxiosInstance.post(`/first_Year/`, data), {
+      : AxiosInstance.post(`/first_year/`, data), {
       onSuccess: () => {
         queryClient.invalidateQueries('firstyearData');
         console.log("Data invalidated");
@@ -76,7 +76,7 @@ const FirstYear = ({initialData, onClose}) => {
         "name",
         `${selectedOption.firstname || ""} ${selectedOption.lastname || ""}`
       );
-      setValue("gradeLevel", selectedOption.year.replace("Grade", "Grade ") || "");
+      setValue("yearLevel", selectedOption.year.replace("Grade", "Grade ") || "");
       setValue("course", selectedOption.section || "");
     }
   };
@@ -193,7 +193,7 @@ const FirstYear = ({initialData, onClose}) => {
 
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Controller
-              name="gradeLevel"
+              name="yearLevel"
               control={control}
               render={({ field }) => (
                 <TextField

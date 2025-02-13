@@ -43,9 +43,11 @@ export const ActiveFormProvider = ({ children }) => {
   const [activeForm, setActiveForm] = useState('grade_seven');
   const [councilorActiveForm, setCouncilorActiveForm] = useState('individual_record_form');
   console.log(pathname);
-  const filteredFormOptions = pathname === "psychometrician/psychometrician_forms"
+  const filteredFormOptions = pathname === "/psychometrician/psychometrician_forms"
   ? formOptions.filter(option => !["MS_ImpactEvaluationTable", "MSCounselingServiceTable", "SCLCMGCETable"].includes(option.value))
   : formOptions;
+
+  console.log(filteredFormOptions);
 
   return (
     <ActiveFormContext.Provider value={{ activeForm, setActiveForm, pathname, councilorActiveForm, setCouncilorActiveForm, filteredFormOptions }}>

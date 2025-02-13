@@ -35,9 +35,10 @@ const Grade11 = ({ initialData, onClose }) => {
     social_boldness: "",
     sensitivity: "",
     vigilance: "",
-    abstract: "",
+    abstractedness: "",
     privateness: "",
     apprehension: "",
+    abstract: "",
     openness: "",
     self_reliance: "",
     perfectionism: "",
@@ -521,7 +522,7 @@ const Grade11 = ({ initialData, onClose }) => {
               )}
             />
             <Controller
-              name="openess"
+              name="openness"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -536,7 +537,7 @@ const Grade11 = ({ initialData, onClose }) => {
               )}
             />
             <Controller
-              name="selef_reliance"
+              name="self_reliance"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -554,7 +555,7 @@ const Grade11 = ({ initialData, onClose }) => {
 
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            spacing={2}
+            spacing={3}
             sx={{ flexWrap: "wrap" }}
           >
             <Controller
@@ -563,6 +564,21 @@ const Grade11 = ({ initialData, onClose }) => {
               render={({ field }) => (
                 <TextField
                   label="Perfectionism"
+                  {...field}
+                  sx={{
+                    flex: 1,
+                    minWidth: "200px",
+                    marginBottom: { xs: 2, sm: 0 },
+                  }}
+                />
+              )}
+            />
+            <Controller
+              name="abstract"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="Abstract"
                   {...field}
                   sx={{
                     flex: 1,

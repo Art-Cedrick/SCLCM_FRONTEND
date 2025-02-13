@@ -17,7 +17,7 @@ import { ActiveFormContext, formOptions } from "../context/SelectedFormProvider"
 const DropdownMenu = ({ pathname }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { setActiveForm } = useContext(ActiveFormContext);
+  const { setActiveForm, filteredFormOptions } = useContext(ActiveFormContext);
 
   const handleToggle = () => {
     setOpen((prev) => !prev);
@@ -49,13 +49,13 @@ const DropdownMenu = ({ pathname }) => {
     "second_year",
     "third_year",
     "fourth_year",
-    "MS_ImpactEvaluation",
-    "MSCounselingServiceEvaluation",
-    "SCLCMGUIDANCECLASSEVALUATION",
+    // "MS_ImpactEvaluation",
+    // "MSCounselingServiceEvaluation",
+    // "SCLCMGUIDANCECLASSEVALUATION",
   ];
 
-  const sortedOptions = Array.isArray(formOptions)
-    ? [...formOptions].sort(
+  const sortedOptions = Array.isArray(filteredFormOptions)
+    ? [...filteredFormOptions].sort(
         (a, b) => customOrder.indexOf(a.value) - customOrder.indexOf(b.value)
       )
     : [];
