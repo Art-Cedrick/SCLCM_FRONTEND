@@ -237,7 +237,7 @@ const FourthYear = ({initialData, onClose}) => {
               )}
             />
             <Controller
-              name="l-s"
+              name="l_s"
               control={control}
               render={({ field }) => (
                 <TextField

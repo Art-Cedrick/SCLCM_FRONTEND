@@ -21,7 +21,7 @@ const ThirdYear = ({initialData, onClose}) => {
     name: "",
     age: "",
     sex: "",
-    yearLevel: "",
+    gradeLevel: "",
     course: "",
     hypochondriasis: "",
     denial: "",
@@ -72,7 +72,7 @@ const ThirdYear = ({initialData, onClose}) => {
         "name",
         `${selectedOption.firstname || ""} ${selectedOption.lastname || ""}`
       );
-      setValue("yearLevel", selectedOption.year.replace("Grade", "Grade ") || "");
+      setValue("gradeLevel", selectedOption.year.replace("Grade", "Grade ") || "");
       setValue("course", selectedOption.section || "");
     }
   };
@@ -187,7 +187,7 @@ const ThirdYear = ({initialData, onClose}) => {
           </Stack>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Controller
-              name="yearLevel"
+              name="gradeLevel"
               control={control}
               render={({ field }) => (
                 <TextField
